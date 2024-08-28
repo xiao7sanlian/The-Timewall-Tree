@@ -19,7 +19,7 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.1</h3><br>
-		- 增加一个层级，包括24个升级，3个挑战与一个可购买<br/>
+		- 增加一个层级，包括19个升级，3个挑战与一个可购买<br/>
 		- 增加12个成就`
 
 let winText = `恭喜！你 >暂时< 通关了！`
