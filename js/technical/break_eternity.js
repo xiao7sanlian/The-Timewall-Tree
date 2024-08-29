@@ -65,7 +65,7 @@
     var powersOf10 = [];
 
     for (var i = NUMBER_EXP_MIN + 1; i <= NUMBER_EXP_MAX; i++) {
-      powersOf10.push(Number("1e" + i));
+      powersOf10.push(Number("e" + i));
     }
 
     var indexOf0InPowersOf10 = 323;
@@ -876,6 +876,10 @@
       this.normalize();
       return this;
     };
+
+    Decimal.prototype.clone = function() {
+      return this
+    }
 
     Decimal.prototype.fromComponents_noNormalize = function (sign, layer, mag) {
       this.sign = sign;
@@ -1820,8 +1824,8 @@
       var a = this;
       var b = decimal;
 
-      //special case: if a is 0, then return 0
-      if (a.sign === 0) { return a; }
+      //special case: if a is 0, then return 0 (UNLESS b is 0, then return 1)
+      if (a.sign === 0) { return b.eq(0) ? FC_NN(1, 0, 1) : a; }
       //special case: if a is 1, then return 1
       if (a.sign === 1 && a.layer === 0 && a.mag === 1) { return a; }
       //special case: if b is 0, then return 1
@@ -1831,7 +1835,7 @@
       
       var result = (a.absLog10().mul(b)).pow10();
 
-      if (this.sign === -1 && b.toNumber() % 2 === 1) {
+      if (this.sign === -1 && Math.abs(b.toNumber() % 2) === 1) {
         return result.neg();
       }
 

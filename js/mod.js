@@ -1,5 +1,5 @@
 let modInfo = {
-	name: "The Time Wall Tree",
+	name: "The Time Wall Tree NG-",
 	id: "timewall",
 	author: "QqQeInfinity",
 	pointsName: "点数",
@@ -8,7 +8,7 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (1), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	offlineLimit: Infinity,  // In hours
 }
 
 // Set your version in num and name
@@ -65,6 +65,7 @@ function getPointGen() {
 	if (inChallenge('T', 13)) gain = new Decimal(0.01)
 	if (inChallenge('T', 13)) gain = gain.times(buyableEffect('T', 11))
 	if (isEndgame()) gain = new Decimal(0)
+	gain = tetraflow(gain,0,0.5)
 	return gain
 }
 
@@ -74,7 +75,10 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-    '当前Endgame:完成TC3'
+    '当前Endgame:完成TC3',
+    function () {
+      if (getPointGen().gt(0)) return "由于点数获取速度超过0/秒，当前点数获取受到软上限限制！"
+    }
 ]
 
 // Determines when the game "ends"
@@ -98,4 +102,16 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+}
+
+function tetraflow(number,start,power) { // EXPERIMENTAL FUNCTION - x => 10^^((slog10(x)-slog10(s))*p+slog10(s))
+number = new Decimal(number)
+    if(isNaN(number.mag))return new Decimal(NaN);
+	start=new Decimal(start);
+	if(number.gt(start)){
+        let s = start.slog(10)
+        // Fun Fact: if 0 < number.slog(10) - start.slog(10) < 1, such like overflow(number,start,power,start.slog(10).sub(1).floor())
+		number=Decimal.tetrate(10,number.slog(10).sub(s).mul(power).add(s))
+	}
+	return number;
 }

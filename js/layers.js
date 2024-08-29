@@ -220,7 +220,7 @@ addLayer("T", {
         33: {
             name: "3-3",
             description: "基于点数加成点数获取",
-            cost: new Decimal(150),
+            cost: new Decimal(419),
             effect() {
                 return player.points.add(1).pow(0.1)
             },
@@ -230,19 +230,19 @@ addLayer("T", {
         34: {
             name: "3-4",
             description: "时间墙获取^1.1",
-            cost: new Decimal(250),
+            cost: new Decimal(616),
             unlocked() {return hasUpgrade('T', 33)},
         },
         35: {
             name: "3-5",
             description: "每秒自动获取1%的时间墙",
-            cost: new Decimal(500),
+            cost: new Decimal(924),
             unlocked() {return hasUpgrade('T', 34)},
         },
         41: {
             name: "4-1",
             description: "再次基于时间墙增加点数获取",
-            cost: new Decimal(500),
+            cost: new Decimal(1000),
             effect() {
                 return player[this.layer].points.add(10).log(10)
             },
@@ -282,25 +282,25 @@ addLayer("T", {
         11: {
             name: "TC1",
             challengeDescription: "当点数获取<1时，点数获取^2，反之^0.5",
-            goalDescription:"2.085 点数",
+            goalDescription:"3.473 点数",
             rewardDescription:"点数与时间墙获取x2.085",
-            canComplete: function() {return player.points.gte(2.085)},
+            canComplete: function() {return player.points.gte(3.473)},
             unlocked() {return hasUpgrade('T',32)}
         },
         12: {
             name: "TC2",
             challengeDescription: "点数获取变为原来的获取量+1再log10",
-            goalDescription:"3.08 点数",
+            goalDescription:"30.8 点数",
             rewardDescription:"时间墙升级35的效果x5，点数获取^1.01，并解锁一个新的升级",
-            canComplete: function() {return player.points.gte(3.08)},
+            canComplete: function() {return player.points.gte(3.473)},
             unlocked() {return hasUpgrade('T',42)}
         },
         13: {
             name: "TC3",
             challengeDescription: "所有加成点数获取的升级无效，但是…",
-            goalDescription:"419 点数",
+            goalDescription:"2085 点数",
             rewardDescription:"解锁下一个层级，但还没做",
-            canComplete: function() {return player.points.gte(419)},
+            canComplete: function() {return player.points.gte(2085)},
             unlocked() {return hasUpgrade('T',44)}
         },
     },
@@ -317,5 +317,11 @@ addLayer("T", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
+    },
+    softcap() {
+      return new Decimal(50)
+    },
+    softcapPower() {
+      return new Decimal(0.5)
     }
 })
