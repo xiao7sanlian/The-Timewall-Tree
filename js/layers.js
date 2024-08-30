@@ -81,8 +81,8 @@ addLayer("A", {
        },
        25: {
         name: "反客为主",
-        done() {return player.points.gte(player.T.points)&&player.T.points.gte(100)}, 
-        tooltip: "使你的点数>时间墙>100<br/>奖励：点数获取x5，并解锁时间墙升级42（需要先购买升级41）", 
+        done() {return player.points.gte(player.T.points)&&player.T.points.gte(1000)&&hasUpgrade('T', 35)}, 
+        tooltip: "在购买时间墙升级35后，使你的点数>时间墙>1,000<br/>奖励：点数获取x5，并解锁时间墙升级42（需要先购买升级41）", 
         textStyle: {'color': '#4bdc13'},
        },
        31: {
@@ -252,7 +252,7 @@ addLayer("T", {
         42: {
             name: "4-2",
             description: "解锁第二个时间墙挑战",
-            cost: new Decimal(1000),
+            cost: new Decimal(16000),
             unlocked() {return hasUpgrade('T', 41)&&hasAchievement('A', 25)},
         },
         43: {
