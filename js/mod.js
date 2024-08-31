@@ -25,7 +25,8 @@ let changelog = `<h1>Changelog:</h1><br>
 	    - 增加2个层级，包括7个里程碑，21个升级，4个挑战与4个可购买<br/>
 		- 时间墙层级增加4个升级<br/>
 		- 为点数获取增加软上限与二重软上限<br/>
-		- 增加21个成就`
+		- 增加21个成就<br/>
+                - 增加一个彩蛋`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -119,6 +120,8 @@ var displayThings = [
 		return a
 	}
 ]
+
+var QqQe308 = "我睡前要超QqQe308，吃饭前要超QqQe308，学习前要超QqQe308，洗澡前要超QqQe308，拉屎前要超QqQe308，超QqQe308前还要超QqQe308，感觉我的生活除了超QqQe308就没有重要的事的，干什么事之前不超QqQe308就感觉心里刺痛刺痛的，像少了什么重要的事情一样，晚上睡觉前为了保证可以多超一会QqQe308我等到了凌晨4，5点才不安稳的入睡，梦里想的是超QqQe308，醒来想的是超QqQe308，每天超的最长的东西不是涩图而是QqQe308，每天打交道最长的不是老二而是QqQe308，没有QqQe308的生活怎么办啊😭😭😭超不了QqQe308的日子怎么活啊😭😭😭"
 
 // Determines when the game "ends"
 function isEndgame() {
