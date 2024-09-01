@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: "Compressed Update",
+	num: "0.25",
+	name: "QqQeInfinity Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -26,7 +26,12 @@ let changelog = `<h1>Changelog:</h1><br>
 		- 时间墙层级增加4个升级<br/>
 		- 为点数获取增加软上限与二重软上限<br/>
 		- 增加21个成就<br/>
-                - 增加一个彩蛋`
+        - 增加一个彩蛋<br/>
+	<h3>v0.25 QqQeInfinity Update</h3><br>
+	    - 增加1个层级，包括1个里程碑与超人功能<br/>
+		- 时间墙层级增加1个升级，压缩时间墙层级增加3个升级<br/>
+		- 增加2个成就<br/>
+		- 增加层级之间的连线`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -40,7 +45,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-    return true
+    return !hasUpgrade('T', 55)
 }
 
 function sc1power(){
@@ -50,6 +55,7 @@ function sc1power(){
 	if (hasUpgrade('T', 52)) power = power.times(upgradeEffect('T', 52))
 	if (hasUpgrade('T', 53)) power = power.times(upgradeEffect('T', 53))
 	if (hasUpgrade('CT', 45)) power = power.times(upgradeEffect('CT', 45))
+	if (hasUpgrade('CT', 54)) power = power.times(upgradeEffect('CT', 54))
 	return power
 }
 
@@ -85,6 +91,7 @@ function getPointGen() {
 	if (hasUpgrade('CT', 22)) gain = gain.times(upgradeEffect('CT', 22))
 	if (hasUpgrade('CT', 24)) gain = gain.times(upgradeEffect('CT', 24))
 	if (hasUpgrade('CT', 34)) gain = gain.times(upgradeEffect('CT', 34))
+	if (hasUpgrade('CT', 52)) gain = gain.times(upgradeEffect('CT', 52))
 	if (challengeCompletions('CT', 12)) gain = gain.times(challengeEffect('CT', 12))
 	if (hasMilestone('Q', 0)) gain = gain.times(1.5)
 	if (hasMilestone('Q', 1)) gain = gain.times(2)
@@ -92,6 +99,7 @@ function getPointGen() {
 	if (hasMilestone('Q', 3)) gain = gain.times(2)
 	if (hasMilestone('Q', 4)) gain = gain.times(2)
 	if (hasMilestone('Q', 5)) gain = gain.times(3)
+	if (hasMilestone('Qi', 0)) gain = gain.times(5)
 	if (hasUpgrade('T', 54)&&!inChallenge('T',13)) gain = gain.times(buyableEffect('T', 11))
 	if (hasUpgrade('T', 23)&&gain.lt(1)) gain = gain.pow(0.5)
 	if (hasChallenge('T', 12)) gain = gain.pow(1.01)
@@ -114,7 +122,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:10 QqQe308'
+	function(){a = '当前Endgame:购买时间墙升级55'
 		if (getPointGen().gte(1000000)) a = a + '<br/>由于点数获取量超过1000000，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		return a
@@ -126,7 +134,7 @@ var QqQe308 = "我睡前要超QqQe308，吃饭前要超QqQe308，学习前要超
 // Determines when the game "ends"
 function isEndgame() {
 	//return player.points.gte(new Decimal("e280000000"))
-	return player.Q.points.gte(10)
+	return hasUpgrade('T', 55)
 }
 
 // Less important things beyond this point!

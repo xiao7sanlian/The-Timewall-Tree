@@ -21,6 +21,11 @@ addLayer("A", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
+    devSpeedCal() {//我也不知道为什么放这里
+	    let dev=n(1)
+	    if(isEndgame()) dev=n(0)
+	    return dev
+	   },
     row: 'side', // Row the layer is in on the tree (0 is the first row)
     layerShown(){return true},
     achievementPopups: true,
@@ -223,6 +228,18 @@ addLayer("A", {
         tooltip: "获得9个QqQe308", 
         textStyle: {'color': '#ffe125'},
        },
+       74: {
+        name: "支线二!",
+        done() {return player.Qi.points.gte(1)}, 
+        tooltip: "获得1个QqQeInfinity", 
+        textStyle: {'color': '#ffe125'},
+       },
+       75: {
+        name: "Top10我最香草的AD群群友——Top1:QqQe308",
+        done() {return player.Qi.QqQe308.gte(1)}, 
+        tooltip: "超一次QqQe308<br/>奖励：解锁压缩时间墙升级52(需要先购买升级51)", 
+        textStyle: {'color': '#4bdc13'},
+       },
     }
 })
 
@@ -251,6 +268,7 @@ addLayer("T", {
         if (hasMilestone('Q', 3)) mult = mult.times(2)
         if (hasMilestone('Q', 4)) mult = mult.times(2)
         if (hasMilestone('Q', 5)) mult = mult.times(3)
+        if (hasMilestone('Qi', 0)) mult = mult.times(5)
         if (hasUpgrade('CT', 14)) mult = mult.times(upgradeEffect('CT', 14))
         if (hasUpgrade('CT', 25)) mult = mult.times(upgradeEffect('CT', 25))
         if (hasChallenge('CT', 13)) mult = mult.times(challengeEffect('CT', 13))
@@ -465,6 +483,12 @@ addLayer("T", {
             cost: new Decimal(5e9),
             unlocked() {return hasUpgrade('T', 53)},
         },
+        55: {
+            title: "5-5",
+            description: "解锁第三个层级(WIP)",
+            cost: new Decimal(6.66e12),
+            unlocked() {return hasUpgrade('T', 54)},
+        },
     },
     challenges: {
         11: {
@@ -520,7 +544,10 @@ addLayer("Q", {
 		points: new Decimal(0),
     }},
     color: "#eee308",
-    requires: new Decimal(1024), // Can be a function that takes requirement increases into account
+    requires(){a = new Decimal(1024)
+        a = a.div(tmp.Qi.QqQe308effect)
+        return a
+    }, // Can be a function that takes requirement increases into account
     resource: "QqQe308", // Name of prestige currency
     baseResource: "点数", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -583,7 +610,7 @@ addLayer("Q", {
         },
         6: {
             requirementDescription: "10 QqQe308",
-            effectDescription: "解锁第二个支线层级(WIP)",
+            effectDescription: "解锁第二个支线层级",
             done() { return player.Q.points.gte(10) }
         },
     },
@@ -623,10 +650,12 @@ addLayer("CT", {
     layerShown(){return hasAchievement('A', 32)},
     passiveGeneration()
     {
-        mult = 0
+        mult = n(0)
+        if (hasUpgrade('CT', 53)) mult = n(upgradeEffect('CT', 53)).times(0.01)
+        if (isEndgame()) mult = 0
         return mult
     },
-
+    branches: ['T','Q'],
     microtabs: {
         stuff: {       
             "Upgrades": {
@@ -812,6 +841,36 @@ addLayer("CT", {
             cost: new Decimal(5000),
             unlocked() {return hasUpgrade('CT', 45)},
         },
+        52: {
+            title: "5-2",
+            description: "基于超QqQe308的次数增加点数获取",
+            cost: new Decimal(20000),
+            effect() {
+                return player.Qi.QqQe308.add(1).pow(2)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+            unlocked() {return hasUpgrade('CT', 51)&&hasAchievement('A', 75)},
+        },
+        53: {
+            title: "5-3",
+            description: "基于超QqQe308的次数，每秒自动获取一定比例的压缩时间墙",
+            cost: new Decimal(20850),
+            effect() {
+                return player.Qi.QqQe308.add(1).pow(0.5)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"%/s" },
+            unlocked() {return hasUpgrade('CT', 52)},
+        },
+        54: {
+            title: "5-4",
+            description: "基于超QqQe308的次数削弱点数获取软上限的效果",
+            cost: new Decimal(30000),
+            effect() {
+                return player.Qi.QqQe308.add(1).pow(0.2).log(10).add(1)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+            unlocked() {return hasUpgrade('CT', 53)},
+        },
     },
     challenges: {
         11: {
@@ -906,4 +965,109 @@ addLayer("CT", {
             },
         }
     }
+})
+
+addLayer("Qi", {
+    name: "QqQeInfinity", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "Qi", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        QqQe308: new Decimal(0),
+        Supermantime: new Decimal(0),
+        choice: new Decimal(1),
+    }},
+    color: "#aee308",
+    requires: new Decimal(10), // Can be a function that takes requirement increases into account
+    resource: "QqQeInfinity", // Name of prestige currency
+    baseResource: "QqQe308", // Name of resource prestige is based on
+    baseAmount() {return player.Q.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "i", description: "I: 进行QqQeInfinity重置", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    ayerShown(){return hasMilestone('Q', 6)},
+    doReset(resettingLayer) {
+        //if (layers[resettingLayer].row > layers[this.layer].row) {
+     //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
+     //layerDataReset(this.layer, kept)
+        //}
+    },
+    update(diff){
+        if (hasMilestone('Qi', 0)&&player.Qi.choice.eq(n(2))&&!isEndgame()) player.Qi.Supermantime = player.Qi.Supermantime.add(n(diff));
+        if (player.Qi.Supermantime.gte(n(tmp.Qi.Supermanspeed))&&hasMilestone('Qi', 0)) player.Qi.QqQe308 = player.Qi.QqQe308.add(1); 
+        if (player.Qi.Supermantime.gte(n(tmp.Qi.Supermanspeed))&&hasMilestone('Qi', 0)) player.Qi.Supermantime = player.Qi.Supermantime.sub(n(tmp.Qi.Supermanspeed))
+    },
+    passiveGeneration()
+    {
+        mult = 0
+        return mult
+    },
+    branches: ['Q'],
+    microtabs: {
+        stuff: {       
+            "Milestones": {
+                unlocked() {return true},
+                content: [ "milestones"]}, 
+            "Superman": {
+                unlocked() {return hasMilestone('Qi', 0)},
+                content: [["display-text", () => "你超了QqQe308 <h3 style='color: #aee308; text-shadow: 0 0 3px #c2b280'>" + 
+                    format(player.Qi.QqQe308) + "</h3> 次, 使QqQe308的获取需求 <h3 style='color: #aee308; text-shadow: 0 0 3px #c2b280'> " + "/" +format(tmp.Qi.QqQe308effect)+ "</h3>.<br>" + 
+                    "<h4>" + " 基于你的QqQeInfinity数量，QqQeInfinity每"+ format(tmp.Qi.Supermanspeed) +"秒超一次QqQe308<h4> <br>" + 
+                    "当前剩余"+format(n(tmp.Qi.Supermanspeed).sub(player.Qi.Supermantime))+"秒<br/>"+tmp.Qi.Showchoice],
+                "clickables"]},
+        },
+        },
+    tabFormat: [
+        "main-display",
+        "prestige-button",
+        ["microtabs", "stuff"],
+        ["blank", "25px"],
+    ],
+    milestones: {
+        0: {
+            requirementDescription: "1 QqQeInifnity",
+            effectDescription: "获得5倍点数与时间墙，并解锁QqQeInfinity的超人功能",
+            done() { return player.Qi.points.gte(1) }
+        },
+    },
+    clickables:{
+        11: {
+            title: "停止超人",
+            display() {return "点击以停止超人"},
+            canClick() {return true},
+            onClick() {player.Qi.choice = n(1)},
+        },
+        12: {
+            title: "超QqQe308",
+            display() {return "点击以选择超QqQe308"},
+            canClick() {return true},
+            onClick() {player.Qi.choice = n(2)},
+        },
+    },
+    QqQe308effect() {
+        a = n(player.Qi.QqQe308).add(1)
+        return a
+    },
+    Supermanspeed() {
+        a = n(1200).div(player.Qi.points.min(1))
+        return a
+    },
+    Showchoice() {
+        a = "QqQeInfinity当前"
+        if (player.Qi.choice.eq(n(1))) a = a + "不在超人"
+        if (player.Qi.choice.eq(n(2))) a = a + "正在超QqQe308"
+        return a
+    },
 })
