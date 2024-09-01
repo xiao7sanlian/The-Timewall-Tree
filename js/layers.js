@@ -997,7 +997,7 @@ addLayer("Qi", {
     hotkeys: [
         {key: "i", description: "I: 进行QqQeInfinity重置", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    ayerShown(){return hasMilestone('Q', 6)},
+    layerShown(){return hasMilestone('Q', 6)},
     doReset(resettingLayer) {
         //if (layers[resettingLayer].row > layers[this.layer].row) {
      //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
