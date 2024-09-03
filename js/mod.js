@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.25",
-	name: "QqQeInfinity Update",
+	num: "0.3",
+	name: "Double Compressed Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -31,7 +31,12 @@ let changelog = `<h1>Changelog:</h1><br>
 	    - 增加1个层级，包括1个里程碑与超人功能<br/>
 		- 时间墙层级增加1个升级，压缩时间墙层级增加3个升级<br/>
 		- 增加2个成就<br/>
-		- 增加层级之间的连线`
+		- 增加层级之间的连线<br/>
+	<h3>v0.3 Double Compressed Update</h3><br>
+	    - 增加2个层级，包括15个里程碑，4个挑战与16个二重压缩成就<br/>
+		- QqQeInfinity层级增加1个里程碑，可以让QqQeInfinity超cokecole<br/>
+		- 增加12个成就<br/>
+		- 一些细节修改<br/>`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -45,7 +50,14 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-    return !hasUpgrade('T', 55)
+    return !isEndgame()
+}
+
+function sc1start(){
+    start = n(1e6)
+	if (challengeCompletions('DC', 11)) start = start.times(challengeEffect('DC', 11))
+	if (inChallenge('DC',11)) start = 1
+	return start
 }
 
 function sc1power(){
@@ -56,11 +68,19 @@ function sc1power(){
 	if (hasUpgrade('T', 53)) power = power.times(upgradeEffect('T', 53))
 	if (hasUpgrade('CT', 45)) power = power.times(upgradeEffect('CT', 45))
 	if (hasUpgrade('CT', 54)) power = power.times(upgradeEffect('CT', 54))
+	if (power.gte(0.8)) power = n(0.8)
 	return power
 }
 
 function sc2power(){
 	power = new Decimal(0.1)
+	if (hasAchievement('DC', 11)) power = power.times(achievementEffect('DC', 11))
+	return power
+}
+
+function sc3power(){
+	power = new Decimal(0.05)
+	if (hasAchievement('DC', 33)) power = power.add(0.025)
 	return power
 }
 
@@ -93,16 +113,23 @@ function getPointGen() {
 	if (hasUpgrade('CT', 34)) gain = gain.times(upgradeEffect('CT', 34))
 	if (hasUpgrade('CT', 52)) gain = gain.times(upgradeEffect('CT', 52))
 	if (challengeCompletions('CT', 12)) gain = gain.times(challengeEffect('CT', 12))
-	if (hasMilestone('Q', 0)) gain = gain.times(1.5)
-	if (hasMilestone('Q', 1)) gain = gain.times(2)
-	if (hasMilestone('Q', 2)) gain = gain.times(2)
-	if (hasMilestone('Q', 3)) gain = gain.times(2)
-	if (hasMilestone('Q', 4)) gain = gain.times(2)
-	if (hasMilestone('Q', 5)) gain = gain.times(3)
-	if (hasMilestone('Qi', 0)) gain = gain.times(5)
+	if (hasMilestone('Q', 0)&&!inChallenge('DC', 13)) gain = gain.times(1.5)
+	if (hasMilestone('Q', 1)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 2)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 3)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 4)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 5)&&!inChallenge('DC', 13)) gain = gain.times(3)
+	if (hasMilestone('Qi', 0)&&!inChallenge('DC', 13)) gain = gain.times(5)
+	if (hasMilestone('DC', 0)) gain = gain.times(2)
+	if (hasMilestone('DC', 2)) gain = gain.times(tmp.DC.effect)
+	if (hasAchievement('DC', 12)) gain = gain.times(achievementEffect('DC', 12))
+	if (n(challengeCompletions('DC', 14)).gte(1)&&!hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
+	if (hasAchievement('DC', 43)) gain = gain.times(achievementEffect('DC', 43))
 	if (hasUpgrade('T', 54)&&!inChallenge('T',13)) gain = gain.times(buyableEffect('T', 11))
 	if (hasUpgrade('T', 23)&&gain.lt(1)) gain = gain.pow(0.5)
 	if (hasChallenge('T', 12)) gain = gain.pow(1.01)
+	if (hasMilestone('DC', 1)) gain = gain.pow(1.01)
+	if (hasAchievement('DC', 12)) gain = gain.pow(1.01)
 	if (hasChallenge('CT', 11)) gain = gain.pow(1.05)
 	if (inChallenge('T', 11)&&gain.lt(1)) gain = gain.pow(2)
 	if (inChallenge('T', 11)&&gain.gt(1)) gain = gain.pow(0.5)
@@ -111,8 +138,15 @@ function getPointGen() {
 	if (inChallenge('T', 13)) gain = new Decimal(0.01)
 	if (inChallenge('T', 13)) gain = gain.times(buyableEffect('T', 11))
 
-	if (gain.gte(n(1000000))) gain = gain.div(n(1000000)).pow(sc1power()).times(n(1000000)) //sc1
+	if (gain.gte(n(sc1start()))) gain = gain.div(n(sc1start())).pow(sc1power()).times(n(sc1start())) //sc1
 	if (gain.gte(n(1e9))) gain = gain.div(n(1e9)).pow(sc2power()).times(n(1e9)) //sc2
+	if (gain.gte(n(1e13))) gain = gain.div(n(1e13)).pow(sc3power()).times(n(1e13)) //sc3
+
+	if (hasMilestone('co', 0)) gain = gain.times(1.5)
+	if (n(challengeCompletions('DC', 14)).gte(1)&&hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
+	if (hasMilestone('Qi', 1)&&!inChallenge('DC', 13)) gain = gain.times(10)
+	if (hasMilestone('co', 1)) gain = gain.times(3)
+
 	return gain
 }
 
@@ -122,9 +156,10 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:购买时间墙升级55'
-		if (getPointGen().gte(1000000)) a = a + '<br/>由于点数获取量超过1000000，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
+	function(){a = '当前Endgame:2 cokecole+16 二重压缩成就'
+		if (getPointGen().gte(sc1start())) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
+		if (getPointGen().gte(1e13)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
 		return a
 	}
 ]
@@ -134,7 +169,7 @@ var QqQe308 = "我睡前要超QqQe308，吃饭前要超QqQe308，学习前要超
 // Determines when the game "ends"
 function isEndgame() {
 	//return player.points.gte(new Decimal("e280000000"))
-	return hasUpgrade('T', 55)
+	return hasMilestone('co', 1)&&hasMilestone('DC', 104)
 }
 
 // Less important things beyond this point!
