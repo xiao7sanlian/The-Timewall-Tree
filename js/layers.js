@@ -1464,7 +1464,7 @@ addLayer("DC", {
         22: {
             name: "Very hard...?",
             done() {return inChallenge('DC', 12)&&n(getPointGen()).gte(1e8)}, 
-            tooltip(){ return "在DCTC2中使点数获取到达1e9/s<br/>奖励：基于压缩时间墙加成时间墙获取<br/>当前：x"+format(achievementEffect('DC', 22))}, 
+            tooltip(){ return "在DCTC2中使点数获取到达1e8/s<br/>奖励：基于压缩时间墙加成时间墙获取<br/>当前：x"+format(achievementEffect('DC', 22))}, 
             effect(){
                 return player.CT.points.add(1).pow(0.2)
             },
