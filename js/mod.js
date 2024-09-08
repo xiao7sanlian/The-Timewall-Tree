@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
-	name: "Double Compressed Update",
+	num: "0.35",
+	name: "Pre-Infnity Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -36,7 +36,11 @@ let changelog = `<h1>Changelog:</h1><br>
 	    - 增加2个层级，包括15个里程碑，4个挑战与16个二重压缩成就<br/>
 		- QqQeInfinity层级增加1个里程碑，可以让QqQeInfinity超cokecole<br/>
 		- 增加12个成就<br/>
-		- 一些细节修改<br/>`
+		- 一些细节修改<br/>
+	<h3>v0.35 Pre-Infinity Update</h3><br>
+	    - DC层级增加1个里程碑，Co层级增加2个里程碑<br/>
+		- 增加3个成就与成就统计<br/>
+		- 增加了下一个层级(请等待下次更新)<br/>`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -50,7 +54,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-    return !isEndgame()
+    return !isEndgame()&&player.points.lt(1.79e308)
 }
 
 function sc1start(){
@@ -75,6 +79,7 @@ function sc1power(){
 function sc2power(){
 	power = new Decimal(0.1)
 	if (hasAchievement('DC', 11)) power = power.times(achievementEffect('DC', 11))
+	if (power.gte(0.5)) power = n(0.5)
 	return power
 }
 
@@ -146,6 +151,8 @@ function getPointGen() {
 	if (n(challengeCompletions('DC', 14)).gte(1)&&hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
 	if (hasMilestone('Qi', 1)&&!inChallenge('DC', 13)) gain = gain.times(10)
 	if (hasMilestone('co', 1)) gain = gain.times(3)
+	if (hasMilestone('co', 2)) gain = gain.times(10)
+	if (hasMilestone('co', 3)) gain = gain.times(tmp.co.effect)
 
 	return gain
 }
@@ -156,10 +163,11 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:2 cokecole+16 二重压缩成就'
+	function(){a = '当前Endgame:1.79e308点数'
 		if (getPointGen().gte(sc1start())) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (getPointGen().gte(1e13)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
+		if (player.points.gte(1.79e308)) a = a + '<br/>点数到达硬上限！'
 		return a
 	}
 ]
@@ -169,7 +177,7 @@ var QqQe308 = "我睡前要超QqQe308，吃饭前要超QqQe308，学习前要超
 // Determines when the game "ends"
 function isEndgame() {
 	//return player.points.gte(new Decimal("e280000000"))
-	return hasMilestone('co', 1)&&hasMilestone('DC', 104)
+	return player.points.gte(1.79e308)
 }
 
 // Less important things beyond this point!

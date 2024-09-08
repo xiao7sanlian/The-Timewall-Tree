@@ -26,6 +26,12 @@ addLayer("A", {
 	    if(isEndgame()) dev=n(0)
 	    return dev
 	   },
+       doReset(resettingLayer) {
+        if (resettingLayer == 'I') {
+            let kept = []
+            layerDataReset(this.layer, kept)
+        }
+    },
     row: 'side', // Row the layer is in on the tree (0 is the first row)
     layerShown(){return true},
     achievementPopups: true,
@@ -33,288 +39,392 @@ addLayer("A", {
         11: {
      name: "时间墙之始",
      done() {return player.T.points.gte(1)}, 
+     onComplete() {player.A.points = player.A.points.add(1)},
      tooltip: "获得你的第一个时间墙！", 
      textStyle: {'color': '#ffe125'},
         },
     12: {
         name: "进展很慢",
         done() {return hasUpgrade('T', 15)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "购买第一行的5个时间墙升级", 
         textStyle: {'color': '#ffe125'},
     },
     13: {
         name: "结束痛苦",
         done() {return hasUpgrade('T', 23)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "购买时间墙升级23", 
         textStyle: {'color': '#ffe125'},
        },
        14: {
         name: "六六大顺",
         done() {return player.T.points.gte(6)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "同时拥有6个时间墙", 
         textStyle: {'color': '#ffe125'},
        },
        15: {
         name: "一箭双雕",
         done() {return player.points.gte(32)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "在没有对时间墙加成的情况下，一次重置获得2个时间墙（即获得32点数）<br/>奖励：获得3.14倍的时间墙", 
         textStyle: {'color': '#4bdc13'},
        },
        21: {
         name: "双倍点数",
         done() {return player.T.points.gte(31)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "使时间墙升级25的效果达到2x", 
         textStyle: {'color': '#ffe125'},
        },
        22: {
         name: "开始挑战",
         done() {return hasChallenge('T', 11)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成一个TC（时间墙挑战）", 
         textStyle: {'color': '#ffe125'},
        },
        23: {
         name: "TS181?",
         done() {return hasUpgrade('T', 35)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "购买时间墙升级35", 
         textStyle: {'color': '#ffe125'},
        },
        24: {
         name: "点数膨胀",
         done() {return player.points.gte(100)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得100点数", 
         textStyle: {'color': '#ffe125'},
        },
        25: {
         name: "反客为主",
         done() {return player.points.gte(player.T.points)&&player.T.points.gte(100)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "使你的点数>时间墙>100<br/>奖励：点数获取x5，并解锁时间墙升级42（需要先购买升级41）", 
         textStyle: {'color': '#4bdc13'},
        },
        31: {
         name: "继续挑战",
         done() {return hasChallenge('T', 12)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成TC2", 
         textStyle: {'color': '#ffe125'},
        },
        32: {
         name: "TC3?LC3!",
         done() {return hasChallenge('T', 13)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成TC3", 
         textStyle: {'color': '#ffe125'},
        },
        33: {
         name: "终于重置",
         done() {return hasUpgrade('CT', 11)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得一个压缩时间墙，并购买压缩时间墙升级11", 
         textStyle: {'color': '#ffe125'},
        },
        34: {
         name: "重获TS181",
         done() {return hasUpgrade('CT', 11)&&hasUpgrade('T', 35)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "第一次压缩时间墙重置后购买时间墙升级35", 
         textStyle: {'color': '#ffe125'},
        },
        35: {
         name: "第二次重置",
         done() {return hasUpgrade('CT', 12)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得第二个压缩时间墙，并购买压缩时间墙升级12<br/>奖励：时间墙升级35的效果x2，并降低时间墙升级45的价格", 
         textStyle: {'color': '#4bdc13'},
        },
        41: {
         name: "这是什么?",
         done() {return hasUpgrade('T', 45)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "解锁支线层级", 
         textStyle: {'color': '#ffe125'},
        },
        42: {
         name: "这就是支线层级吗?",
         done() {return player.Q.points.gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得一个QqQe308<br/>菜的不能再菜了、[笑哭][笑哭][喜欢][笑哭][笑哭][笑哭][笑哭][笑哭][喜欢][星星眼][打call][吃瓜][打call][打call][星星眼][打call]", 
         textStyle: {'color': '#ffe125'},
        },
        43: {
         name: "终于破百了!",
         done() {return getPointGen().gte(100)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "使点数获取到达100/s", 
         textStyle: {'color': '#ffe125'},
        },
        44: {
         name: "Very hard",
         done() {return hasChallenge('CT', 11)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成压缩时间墙挑战1", 
         textStyle: {'color': '#ffe125'},
        },
        45: {
         name: "不是哥们凭什么我完成了压缩时间墙挑战还要手动完成时间墙挑战啊",
         done() {return hasChallenge('CT', 11)&&hasChallenge('T',11)&&hasChallenge('T', 13)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成压缩时间墙挑战1后完成3个时间墙挑战<br/>奖励：压缩时间墙重置后保留时间墙挑战完成状态", 
         textStyle: {'color': '#4bdc13'},
        },
        51: {
         name: "QqQe616",
         done() {return player.Q.points.gte(2)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得2个QqQe308", 
         textStyle: {'color': '#ffe125'},
        },
        52: {
         name: "一箭双雕 II",
         done() {return player.T.points.gte(160000)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得160000时间墙<br/>(能让你在无加成的情况下一次获得2压缩时间墙)", 
         textStyle: {'color': '#ffe125'},
        },
        53: {
         name: "不止这一次",
         done() {return new Decimal(challengeCompletions('CT', 12)).gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成一次CTC2", 
         textStyle: {'color': '#ffe125'},
        },
        54: {
         name: "这不是反反软上限树",
         done() {return getPointGen().gte(1000000)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "使点数获取到达软上限", 
         textStyle: {'color': '#ffe125'},
        },
        55: {
         name: "作者不会没活了吧",
         done() {return player.Q.points.gte(5)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得5个QqQe308<br/>奖励：作者都没活了还有啥奖励", 
         textStyle: {'color': '#4bdc13'},
        },
        61: {
         name: "终于有QoL了!",
         done() {return hasUpgrade('CT', 31)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得压缩时间墙升级31", 
         textStyle: {'color': '#ffe125'},
        },
        62: {
         name: "完美完成!",
         done() {return new Decimal(challengeCompletions('CT', 12)).gte(5)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成5次CTC2", 
         textStyle: {'color': '#ffe125'},
        },
        63: {
         name: "没有TS181你让我怎么活啊",
         done() {return hasChallenge('CT', 13)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成CTC3", 
         textStyle: {'color': '#ffe125'},
        },
        64: {
         name: "还来?",
         done() {return hasUpgrade('CT', 42)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "解锁CTC4", 
         textStyle: {'color': '#ffe125'},
        },
        65: {
         name: "终于买到了!",
         done() {return hasUpgrade('T', 53)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "购买时间墙升级53<br/>奖励：时间墙升级35的效果x10，并解锁压缩时间墙升级43(需要先购买升级42)", 
         textStyle: {'color': '#4bdc13'},
        },
        71: {
         name: "软上限快废了，作者正在考虑搞二重软上限",
         done() {return new Decimal(sc1power()).gte(0.2)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "使软上限指数到达0.2", 
         textStyle: {'color': '#ffe125'},
        },
        72: {
         name: "这下真有二重软上限了",
         done() {return n(getPointGen()).gte(1e9)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "使点数获取到达二重软上限", 
         textStyle: {'color': '#ffe125'},
        },
        73: {
         name: "QqQe2772",
         done() {return player.Q.points.gte(9)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得9个QqQe308", 
         textStyle: {'color': '#ffe125'},
        },
        74: {
         name: "支线二!",
         done() {return player.Qi.points.gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得1个QqQeInfinity", 
         textStyle: {'color': '#ffe125'},
        },
        75: {
         name: "Top10我最香草的AD群群友——Top1:QqQe308",
         done() {return player.Qi.QqQe308.gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "超一次QqQe308<br/>奖励：解锁压缩时间墙升级52(需要先购买升级51)", 
         textStyle: {'color': '#4bdc13'},
        },
        81: {
         name: "第三层级!",
         done() {return player.DC.points.gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得一个二重压缩时间墙", 
         textStyle: {'color': '#ffe125'},
        },
        82: {
         name: "So Easy",
         done() {return new Decimal(challengeCompletions('DC', 11)).gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成一次DCTC1<br/>二重压缩时间墙不重置成就与支线层级导致的", 
         textStyle: {'color': '#ffe125'},
        },
        83: {
         name: "更多成就",
         done() {return player.DC.ach.gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得一个二重压缩成就", 
         textStyle: {'color': '#ffe125'},
        },
        84: {
         name: "成就里程碑",
         done() {return hasMilestone('DC',101)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得一个二重压缩成就里程碑", 
         textStyle: {'color': '#ffe125'},
        },
        85: {
         name: "即日起，此树正式改名为QQ企鹅树",
         done() {return player.Q.points.gte(15)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得15个QqQe308<br/>奖励：解锁DCTC4", 
         textStyle: {'color': '#4bdc13'},
        },
        91: {
         name: "新的支线",
         done() {return hasMilestone('DC',102)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "解锁cokecole", 
         textStyle: {'color': '#ffe125'},
        },
        92: {
         name: "强大的里程碑效果",
         done() {return player.co.points.gte(1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得一个cokecole", 
         textStyle: {'color': '#ffe125'},
        },
        93: {
         name: "终于有QoL^2了!",
         done() {return hasMilestone('DC', 7)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得12二重压缩时间墙的里程碑", 
         textStyle: {'color': '#ffe125'},
        },
        94: {
         name: "Very Timewall",
         done() {return hasMilestone('Qi', 1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "解锁QqQeInfinity超cokecole的功能", 
         textStyle: {'color': '#ffe125'},
        },
        95: {
         name: "一箭双雕 III",
         done() {return player.CT.points.gte(51200000)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得51200000压缩时间墙<br/>(能让你在无加成的情况下一次获得2二重压缩时间墙)<br/>奖励：QqQeInfinity超人的速度x1.05", 
         textStyle: {'color': '#4bd123'},
        },
        101: {
         name: "就结束了?",
         done() {return hasMilestone('DC',104)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "完成所有二重压缩成就", 
         textStyle: {'color': '#ffe125'},
        },
        102: {
         name: "cokecole*2",
         done() {return hasMilestone('co', 1)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
         tooltip: "获得2个cokecole", 
         textStyle: {'color': '#ffe125'},
+       },
+       103: {
+        name: "终于有加成了",
+        done() {return hasMilestone('DC', 9)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
+        tooltip: "获得200二重压缩时间墙的里程碑", 
+        textStyle: {'color': '#ffe125'},
+       },
+       104: {
+        name: "QokeQole3",
+        done() {return hasMilestone('co', 2)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
+        tooltip: "获得3个cokecole", 
+        textStyle: {'color': '#ffe125'},
+       },
+       105: {
+        name: "Infinity in AD",
+        done() {return player.points.gte(1.79e308)}, 
+        onComplete() {player.A.points = player.A.points.add(1)},
+        tooltip: "获得1.79e308点数<br/>奖励：解锁下一个层级(会重置之前所有内容)", 
+        textStyle: {'color': '#4bd123'},
        },
     }
 })
 
+addLayer("A2", {
+    name: "Achievement2", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "A2", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        ach: new Decimal(0)
+    }},
+    color: "#ffe125",
+    requires: new Decimal(1), // Can be a function that takes requirement increases into account
+    resource: "二级成就", // Name of prestige currency
+    baseResource: "点数", // Name of resource prestige is based on
+    //baseAmount() {return player.points}, // Get the current amount of baseResource
+    //type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.2, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 'side', // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasAchievement('A2', 11)},
+    achievementPopups: true,
+    achievements: {
+        11: {
+     name: "真正的重置",
+     done() {return player.I.points.gte(1)}, 
+     onComplete() {player.A2.points = player.A2.points.add(1)},
+     tooltip: "无限一次", 
+     textStyle: {'color': '#ffe125'},
+        },
+    }
+})
 
 addLayer("T", {
     name: "Timewall", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -648,10 +758,10 @@ addLayer("Q", {
     layerShown(){return hasAchievement('A', 41)},
     branches: ['T'],
     doReset(resettingLayer) {
-        //if (layers[resettingLayer].row > layers[this.layer].row) {
-     //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
-     //layerDataReset(this.layer, kept)
-        //}
+        if (resettingLayer == 'I') {
+            let kept = []
+            layerDataReset(this.layer, kept)
+        }
     },
     passiveGeneration()
     {
@@ -1108,10 +1218,10 @@ addLayer("Qi", {
     ],
     layerShown(){return hasMilestone('Q', 6)},
     doReset(resettingLayer) {
-        //if (layers[resettingLayer].row > layers[this.layer].row) {
-     //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
-     //layerDataReset(this.layer, kept)
-        //}
+        if (resettingLayer == 'I') {
+            let kept = []
+            layerDataReset(this.layer, kept)
+        }
     },
     update(diff){
         if (hasMilestone('Qi', 0)&&player.Qi.choice.eq(n(2))&&!isEndgame()) player.Qi.Supermantime = player.Qi.Supermantime.add(n(diff));
@@ -1189,6 +1299,10 @@ addLayer("Qi", {
         a = n(player.Qi.cokecole).add(1)
         return a
     },
+    cokecoleffect2() {
+        a = n(player.Qi.cokecole).add(1).pow(1.5)
+        return a
+    },
     Supermanspeed() {
         a = n(1200)
         if (player.Qi.points.gte(1)) a = a.div(player.Qi.points).div(challengeEffect('DC',13))
@@ -1206,6 +1320,7 @@ addLayer("Qi", {
     Showdetail() {
         a = "你超了QqQe308 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.QqQe308) + "</h3> 次, 使QqQe308的获取需求 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'> " + "/" +format(tmp.Qi.QqQe308effect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Supermanspeed) +"</h3> 秒超一次QqQe308<br>" + "当前剩余 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.Qi.Supermanspeed).sub(player.Qi.Supermantime))+"</h3> 秒<br/>"
         if (hasMilestone('Qi', 1)) a = a + "<br/>你超了cokecole <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.cokecole) + "</h3> 次, 使二重压缩时间墙的获取需求 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'> " + "/" +format(tmp.Qi.cokecoleffect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Supermanspeed2) +"</h3> 秒超一次cokecole<br>" + "当前剩余 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.Qi.Supermanspeed2).sub(player.Qi.Supermantime2))+"</h3> 秒<br/>"
+        if (hasMilestone('DC', 9)) a = a + "由于200二重压缩时间墙里程碑，这也使二重压缩时间墙获取 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.cokecoleffect2)+ "</h3>.<br>"
         a = a + tmp.Qi.Showchoice
         return a
     },
@@ -1239,6 +1354,7 @@ addLayer("DC", {
     exponent: 0.2, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasMilestone('DC', 9)) mult = mult.times(tmp.Qi.cokecoleffect2)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1253,12 +1369,14 @@ addLayer("DC", {
         a = player.DC.points.times(0.05).add(1)
         if (hasMilestone('DC', 8)) a = n(10).pow(n(a).pow(2))
         if (a.gte(1e6)) a = n(10).pow(a.log(10).div(6).pow(0.5).times(6))
+        if (a.gte(n('1e2085'))) a = n('1e2085')
             return a
       },
       effectDescription() { 
         if (hasMilestone('DC', 2)) {
             a = "使点数获取x"+format(tmp.DC.effect)
-            if (tmp.DC.effect.gte(1e6)) a = a + "(受软上限限制)"
+            if (tmp.DC.effect.gte(1e6)&&tmp.DC.effect.lt(n('1e2085'))) a = a + "(受软上限限制)"
+            if (tmp.DC.effect.gte(n('1e2085'))) a = a + "(已到达硬上限)"
         } else {
             a = "使点数获取x1.00"
         }
@@ -1276,7 +1394,7 @@ addLayer("DC", {
         stuff: {       
             "Milestones": {
                 unlocked() {return true},
-                content: [ ["milestones",[0,1,2,3,4,5,6,7,8]]]}, 
+                content: [ ["milestones",[0,1,2,3,4,5,6,7,8,9]]]}, 
             "Challenges": {
                 unlocked() {return hasMilestone('DC', 0)},
                 content: [ "challenges"]}, 
@@ -1342,6 +1460,11 @@ addLayer("DC", {
             effectDescription: "改进二重压缩时间墙对点数获取的加成效果",
             done() { return player.DC.points.gte(15) }
         },
+        9: {
+            requirementDescription: "200 二重压缩时间墙",
+            effectDescription: "QqQeInfinity超cokecole的次数也加成二重压缩时间墙获取",
+            done() { return player.DC.points.gte(200) }
+        },
         101: {
             requirementDescription: "4 二重压缩成就",
             effectDescription: "解锁DCTC3",
@@ -1359,7 +1482,7 @@ addLayer("DC", {
         },
         104: {
             requirementDescription: "16 二重压缩成就",
-            effectDescription: "解锁下一层级",
+            effectDescription: "解锁下一层级(需要1.79e308点数)",
             done() { return player.DC.ach.gte(16)&&hasMilestone('DC',5) }
         },
     },
@@ -1564,6 +1687,7 @@ addLayer("co", {
     color: "#cce308",
     requires(){a = new Decimal(1e5)
         if (player.co.points.gte(2)) a = a.times(player.co.points.pow(3))
+        if (player.co.points.gte(5)) a = a.times(n(2).pow(player.co.points))
         return a
     }, // Can be a function that takes requirement increases into account
     resource: "cokecole", // Name of prestige currency
@@ -1586,10 +1710,24 @@ addLayer("co", {
     layerShown(){return hasAchievement('A', 91)},
     branches: ['DC'],
     doReset(resettingLayer) {
-        //if (layers[resettingLayer].row > layers[this.layer].row) {
-     //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
-     //layerDataReset(this.layer, kept)
-        //}
+        if (resettingLayer == 'I') {
+            let kept = []
+            layerDataReset(this.layer, kept)
+        }
+    },
+    effect(){
+        a = n(10).pow(n(5).times(player.co.points))
+        if (a.gte(1e290)) a = n(1e290)
+            return a
+      },
+      effectDescription() { 
+        if (hasMilestone('co', 3)) {
+            a = "使点数获取x"+format(tmp.co.effect)
+            if (tmp.co.effect.gte(1e290)) a = a + "(已到达硬上限)"
+        } else {
+            a = "使点数获取x1.00"
+        }
+        return a
     },
     passiveGeneration()
     {
@@ -1607,5 +1745,62 @@ addLayer("co", {
             effectDescription: "获得3倍点数，忽略软上限与其他指数加成",
             done() { return player.co.points.gte(2) }
         },
+        2: {
+            requirementDescription: "3 cokecole",
+            effectDescription: "获得10倍点数，忽略软上限与其他指数加成",
+            done() { return player.co.points.gte(3) }
+        },
+        3: {
+            requirementDescription: "4 cokecole",
+            effectDescription: "cokecole数量加成点数获取，无视软上限与其他指数",
+            done() { return player.co.points.gte(4) }
+        },
+    },
+})
+
+addLayer("I", {
+    name: "Infinity", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "I", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#179308",
+    requires(){a = new Decimal(1.79e308)
+        return a
+    }, // Can be a function that takes requirement increases into account
+    resource: "无限点数", // Name of prestige currency
+    baseResource: "点数", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.001, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    update(diff){
+        if (player.points.gte(1.79e308)) player.points = n(1.79e308)
+    },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "I", description: "I(大写): 无限", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return hasAchievement('A', 105)||hasAchievement('A2', 11)},
+    branches: ['DC'],
+    doReset(resettingLayer) {
+        //if (layers[resettingLayer].row > layers[this.layer].row) {
+     //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
+     //layerDataReset(this.layer, kept)
+        //}
+    },
+    passiveGeneration()
+    {
+        mult = 0
+        return mult
     },
 })
