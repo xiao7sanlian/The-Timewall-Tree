@@ -423,6 +423,20 @@ addLayer("A2", {
      tooltip: "无限一次", 
      textStyle: {'color': '#ffe125'},
         },
+    12: {
+            name: "再次重置",
+            done() {return player.I.inf.gte(2)}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "无限2次<br>奖励：解锁普通挑战", 
+            textStyle: {'color': '#4bd123'},
+               },
+        13: {
+        name: "Infinity QoL",
+        done() {return player.I.chal.gte(1)}, 
+        onComplete() {player.A2.points = player.A2.points.add(1)},
+        tooltip: "完成一个普通挑战", 
+        textStyle: {'color': '#ffe125'},
+                   },
     }
 })
 
@@ -473,13 +487,14 @@ addLayer("T", {
     doReset(resettingLayer) {
         if (layers[resettingLayer].row > layers[this.layer].row) {
     let kept = []
-    if (hasAchievement('A', 45)) kept.push("challenges")
+    if (hasAchievement('A', 45)&&resettingLayer!='I') kept.push("challenges")
     if (hasUpgrade('CT', 31)||hasAchievement('DC', 41)) kept.push("upgrades")
     layerDataReset(this.layer, kept)
        }
     },
     update(diff){
         if (hasUpgrade('CT',51)&&layers.T.buyables[11].canAfford()) layers.T.buyables[11].buy();
+        player.devSpeed = tmp.A.devSpeedCal
     },
     passiveGeneration()
     {
@@ -492,6 +507,7 @@ addLayer("T", {
         if (isEndgame()) mult = 0
         return mult
     },
+    autoUpgrade() {if (hasChallenge('I', 11)) return true},
     upgrades: {
         11: {
             title: "1-1",
@@ -855,7 +871,7 @@ addLayer("CT", {
     layerDataReset(this.layer, kept)
        }
     },
-    autoUpgrade() { if (hasMilestone("DC",7)) return true},
+    autoUpgrade() { if (hasMilestone("DC",7)||hasChallenge('I', 11)) return true},
     passiveGeneration()
     {
         mult = n(0)
@@ -1559,7 +1575,7 @@ addLayer("DC", {
            },
         13: {
             name: "我们需要二重软上限",
-            done() {return inChallenge('DC', 11)&&n(getPointGen()).gte(1e8)}, 
+            done() {return inChallenge('DC', 11)&&n(getPointGen()).gte(1e9)}, 
             tooltip(){ return "在DCTC1中使点数获取到达1e9/s<br/>奖励：点数获取^1.05"}, 
             onComplete(){player.DC.ach = player.DC.ach.add(1)},
             textStyle: {'color': '#ffe125'},
@@ -1765,6 +1781,17 @@ addLayer("I", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
+        inf: n(0),
+        ipower: n(1),
+        id1: n(0),
+        id2: n(0),
+        id3: n(0),
+        id4: n(0),
+        id5: n(0),
+        id6: n(0),
+        id7: n(0),
+        id8: n(0),
+        chal: n(0)
     }},
     color: "#179308",
     requires(){a = new Decimal(1.79e308)
@@ -1774,7 +1801,7 @@ addLayer("I", {
     baseResource: "点数", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.001, // Prestige currency exponent
+    exponent: 0.0032, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -1785,6 +1812,14 @@ addLayer("I", {
     },
     update(diff){
         if (player.points.gte(1.79e308)) player.points = n(1.79e308)
+        if (getBuyableAmount(this.layer, 18).gte(1)) player.I.id7 = player.I.id7.add(player.I.id8.times(tmp.I.id8mult).times(diff))
+        if (getBuyableAmount(this.layer, 17).gte(1)) player.I.id6 = player.I.id6.add(player.I.id7.times(tmp.I.id7mult).times(diff))
+        if (getBuyableAmount(this.layer, 16).gte(1)) player.I.id5 = player.I.id5.add(player.I.id6.times(tmp.I.id6mult).times(diff))
+        if (getBuyableAmount(this.layer, 15).gte(1)) player.I.id4 = player.I.id4.add(player.I.id5.times(tmp.I.id5mult).times(diff))
+        if (getBuyableAmount(this.layer, 14).gte(1)) player.I.id3 = player.I.id3.add(player.I.id4.times(tmp.I.id4mult).times(diff))
+        if (getBuyableAmount(this.layer, 13).gte(1)) player.I.id2 = player.I.id2.add(player.I.id3.times(tmp.I.id3mult).times(diff))
+        if (getBuyableAmount(this.layer, 12).gte(1)) player.I.id1 = player.I.id1.add(player.I.id2.times(tmp.I.id2mult).times(diff))
+        if (getBuyableAmount(this.layer, 11).gte(1)) player.I.ipower = player.I.ipower.add(player.I.id1.times(tmp.I.id1mult).times(diff))
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -1792,7 +1827,39 @@ addLayer("I", {
     ],
     layerShown(){return hasAchievement('A', 105)||hasAchievement('A2', 11)},
     branches: ['DC'],
+    microtabs: {
+        stuff: {       
+            "Dimensions": {
+                unlocked() {return true},
+                content: [ ["display-text", () => "你无限了"+format(player.I.inf)+"次，使无限维度x"+format(tmp.I.idmult)+
+                    "<br>你需要完成所有普通挑战以打破无限。<br>你有"
+                    +format(player.I.ipower)+"无限之力，使点数获取x"+format(player.I.ipower)+"^2="+format(tmp.I.ipowereffect)
+                    +"<br>你当前正在生产"+format(player.I.id1.times(tmp.I.id1mult))+"无限之力每秒"],
+                "buyables"]}, 
+            "Challenges": {
+                unlocked() {return hasAchievement('A2', 12)},
+                content: [ ["display-text", () => "你完成了"+format(player.I.chal)+"个普通挑战，使无限维度x"+format(tmp.I.chaltoidmult)],
+                "challenges"]}, 
+        },     
+    },
+    tabFormat: [
+        "main-display",
+        "prestige-button",
+        ["microtabs", "stuff"],
+        ["blank", "25px"],
+    ],
     doReset(resettingLayer) {
+        if (resettingLayer='I') {player.I.inf = player.I.inf.add(1)
+            player.I.ipower = n(1)
+        player.I.id1 = n(getBuyableAmount(this.layer, 11))
+        player.I.id2 = n(getBuyableAmount(this.layer, 12))
+        player.I.id3 = n(getBuyableAmount(this.layer, 13))
+        player.I.id4 = n(getBuyableAmount(this.layer, 14))
+        player.I.id5 = n(getBuyableAmount(this.layer, 15))
+        player.I.id6 = n(getBuyableAmount(this.layer, 16))
+        player.I.id7 = n(getBuyableAmount(this.layer, 17))
+        player.I.id8 = n(getBuyableAmount(this.layer, 18))
+        }
         //if (layers[resettingLayer].row > layers[this.layer].row) {
      //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
      //layerDataReset(this.layer, kept)
@@ -1802,5 +1869,168 @@ addLayer("I", {
     {
         mult = 0
         return mult
+    },
+    buyables: {
+        11: {
+            cost(x) { return new Decimal(2).pow(x) },
+            title: '第一无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id1mult)+"<br>当前数量："+format(player.I.id1)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id1 = player.I.id1.add(1)
+            },
+        },
+        12: {
+            cost(x) { return n(4).times(new Decimal(4).pow(x)) },
+            title: '第二无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id2mult)+"<br>当前数量："+format(player.I.id2)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id2 = player.I.id2.add(1)
+            },
+        },
+        13: {
+            cost(x) { return n(16).times(new Decimal(8).pow(x)) },
+            title: '第三无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id3mult)+"<br>当前数量："+format(player.I.id3)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id3 = player.I.id3.add(1)
+            },
+        },
+        14: {
+            cost(x) { return n(2).pow(8).times(new Decimal(16).pow(x)) },
+            title: '第四无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id4mult)+"<br>当前数量："+format(player.I.id4)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id4 = player.I.id4.add(1)
+            },
+        },
+        15: {
+            cost(x) { return n(2).pow(16).times(new Decimal(2).pow(5).pow(x)) },
+            title: '第五无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id5mult)+"<br>当前数量："+format(player.I.id5)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id5 = player.I.id5.add(1)
+            },
+        },
+        16: {
+            cost(x) { return n(2).pow(32).times(new Decimal(2).pow(6).pow(x)) },
+            title: '第六无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id6mult)+"<br>当前数量："+format(player.I.id6)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id6 = player.I.id6.add(1)
+            },
+        },
+        17: {
+            cost(x) { return n(2).pow(64).times(new Decimal(2).pow(7).pow(x)) },
+            title: '第七无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id7mult)+"<br>当前数量："+format(player.I.id7)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id7 = player.I.id7.add(1)
+            },
+        },
+        18: {
+            cost(x) { return n(2).pow(128).times(new Decimal(2).pow(8).pow(x)) },
+            title: '第八无限维度',
+            display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id8mult)+"<br>当前数量："+format(player.I.id8)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.I.id8 = player.I.id8.add(1)
+            },
+        },
+    },
+    challenges: {
+        11: {
+            name: "Normal Challenge 1",
+            challengeDescription(){return "点数获取^0.5"},
+            goalDescription(){return "1.79e308 点数"},
+            rewardDescription(){return "自动购买之前层级的所有升级"},
+            unlocked(){return hasAchievement('A2', 12)},
+            onComplete(){player.I.chal = player.I.chal.add(1)
+                player.I.points = player.I.points.add(1)
+            },
+            onEnter(){player.I.inf = player.I.inf.sub(1)},
+            onExit(){player.I.inf = player.I.inf.sub(1)},
+            canComplete: function() {return player.points.gte(1.79e308)},
+        },
+    },
+    idmult() {a = player.I.inf.div(256)
+        if (a.gte(1)) a = n(1)
+            return a
+    },
+    chaltoidmult() {a = n(12).pow(n(1).div(12)).pow(player.I.chal)
+        return a
+    },
+    ipowereffect() {a = player.I.ipower.pow(2)
+        return a
+    },
+    id1mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 11))))
+        return a
+    },
+    id2mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 12))))
+        return a
+    },
+    id3mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 13))))
+        return a
+    },
+    id4mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 14))))
+        return a
+    },
+    id5mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 15))))
+        return a
+    },
+    id6mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 16))))
+        return a
+    },
+    id7mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 17))))
+        return a
+    },
+    id8mult() {a = n(1)
+        a = a.times(tmp.I.idmult)
+        a = a.times(tmp.I.chaltoidmult)
+        a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 18))))
+        return a
     },
 })
