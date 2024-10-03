@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4",
-	name: "Infnity Update (Part. I)",
+	num: "0.45",
+	name: "Pre-break Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -41,8 +41,12 @@ let changelog = `<h1>Changelog:</h1><br>
 	    - DC层级增加1个里程碑，Co层级增加2个里程碑<br/>
 		- 增加3+1个成就与成就统计<br/>
 		- 增加了下一个层级(请等待下次更新)<br/>
-	<h3>v0.4 Infnity Update (Part. I)<h3/><br/>
-	    - 增加了2个成就、8个维度与一个挑战`
+	<h3>v0.4 Infnity Update (Part. I)</h3><br/>
+	    - 增加了2个成就、8个维度与一个挑战<br>
+	<h3>v0.45 Pre-break Update</h3><br/>
+	    - 增加了1个成就与7个挑战<br>
+		- 增加了黑洞与打破无限(不过都没有效果)<br>
+		- 增加了一个新层级(也没什么用)`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -168,7 +172,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:完成普通挑战1'
+	function(){a = '当前Endgame:打破无限'
 		if (getPointGen().gte(sc1start())) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (getPointGen().gte(1e13)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
@@ -182,7 +186,7 @@ var QqQe308 = "我睡前要超QqQe308，吃饭前要超QqQe308，学习前要超
 // Determines when the game "ends"
 function isEndgame() {
 	//return player.points.gte(new Decimal("e280000000"))
-	return hasChallenge('I', 11)
+	return hasUpgrade('I', 21)
 }
 
 // Less important things beyond this point!

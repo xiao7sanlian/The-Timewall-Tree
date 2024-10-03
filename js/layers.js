@@ -23,11 +23,12 @@ addLayer("A", {
     },
     devSpeedCal() {//我也不知道为什么放这里
 	    let dev=n(1)
-	    if(isEndgame()) dev=n(0)
+        if (inChallenge('I', 13)) dev=dev.div(2)
+	    if (isEndgame()) dev=n(0)
 	    return dev
 	   },
        doReset(resettingLayer) {
-        if (resettingLayer == 'I') {
+        if (resettingLayer == 'I'&&!hasChallenge('I', 12)) {
             let kept = []
             layerDataReset(this.layer, kept)
         }
@@ -432,11 +433,18 @@ addLayer("A2", {
                },
         13: {
         name: "Infinity QoL",
-        done() {return player.I.chal.gte(1)}, 
+        done() {return n(tmp.I.NcComp).gte(1)}, 
         onComplete() {player.A2.points = player.A2.points.add(1)},
         tooltip: "完成一个普通挑战", 
         textStyle: {'color': '#ffe125'},
-                   },
+        },
+    14: {
+    name: "打破限制",
+        done() {return hasUpgrade('I', 21)}, 
+        onComplete() {player.A2.points = player.A2.points.add(1)},
+        tooltip: "打破无限", 
+        textStyle: {'color': '#ffe125'},
+    },
     }
 })
 
@@ -477,6 +485,7 @@ addLayer("T", {
         exp = new Decimal(1)
         if (hasUpgrade('T',34)) exp = exp.times(1.1)
         if (inChallenge('CT', 11)) exp = exp.times(0.5)
+        if (inChallenge('I', 12)) exp = exp.times(0.9)
         return exp
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
@@ -489,11 +498,16 @@ addLayer("T", {
     let kept = []
     if (hasAchievement('A', 45)&&resettingLayer!='I') kept.push("challenges")
     if (hasUpgrade('CT', 31)||hasAchievement('DC', 41)) kept.push("upgrades")
+    if (hasChallenge('I', 13)) {kept.push('challenges')
+        kept.push('upgrades')
+    kept.push('milestones')
+    kept.push('achievements')
+    }
     layerDataReset(this.layer, kept)
        }
     },
     update(diff){
-        if (hasUpgrade('CT',51)&&layers.T.buyables[11].canAfford()) layers.T.buyables[11].buy();
+        if ((hasUpgrade('CT',51)||hasChallenge('I', 12))&&layers.T.buyables[11].canAfford()) layers.T.buyables[11].buy();
         player.devSpeed = tmp.A.devSpeedCal
     },
     passiveGeneration()
@@ -503,6 +517,8 @@ addLayer("T", {
         if (hasChallenge('T', 12)) mult = mult.times(5)
         if (hasAchievement('A', 35)) mult = mult.times(2)
         if (hasAchievement('A', 65)) mult = mult.times(10)
+        if (hasChallenge('I', 15)) mult = mult.times(10)
+            if (inChallenge('I', 15)) mult = n(0)
         if (inChallenge('CT', 13)) mult = 0
         if (isEndgame()) mult = 0
         return mult
@@ -752,6 +768,7 @@ addLayer("Q", {
         a = a.div(tmp.Qi.QqQe308effect)
         if (hasAchievement('DC',31)) a = a.div(2)
         if (player.Q.points.gte(20)) a = a.times(player.Q.points.sub(18).pow(2))
+            if (inChallenge('I', 14)) a = a.times(1024)
         return a
     }, // Can be a function that takes requirement increases into account
     resource: "QqQe308", // Name of prestige currency
@@ -761,6 +778,7 @@ addLayer("Q", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (inChallenge('I', 14)) mult = mult.times(10)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -771,6 +789,11 @@ addLayer("Q", {
     hotkeys: [
         {key: "q", description: "Q: 进行QqQe308重置", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    autoPrestige() {a = false
+        if (hasChallenge('I', 14)) a = true
+        return a
+    },
+    resetsNothing() {return hasChallenge('I', 14)},
     layerShown(){return hasAchievement('A', 41)},
     branches: ['T'],
     doReset(resettingLayer) {
@@ -856,6 +879,7 @@ addLayer("CT", {
         exp = new Decimal(1)
         if (hasChallenge('CT', 14)) exp = exp.times(1.01)
         if (hasAchievement('DC', 23)) exp = exp.times(1.05)
+            if (inChallenge('I', 12)) exp = exp.times(0.9)
         return exp
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
@@ -868,6 +892,11 @@ addLayer("CT", {
     let kept = []
     if (hasMilestone('DC', 7)) kept.push("challenges")
     if (hasMilestone('DC', 103)) kept.push("upgrades")
+        if (hasChallenge('I', 13)) {kept.push('challenges')
+            kept.push('upgrades')
+        kept.push('milestones')
+        kept.push('achievements')
+        }
     layerDataReset(this.layer, kept)
        }
     },
@@ -877,15 +906,17 @@ addLayer("CT", {
         mult = n(0)
         if (hasUpgrade('CT', 53)||hasAchievement('DC', 32)) mult = n(upgradeEffect('CT', 53)).times(0.01)
         if (hasAchievement('DC', 44)) mult = mult.times(10)
+            if (hasChallenge('I', 15)) mult = mult.times(10)
+                if (inChallenge('I', 15)) mult = n(0)
         if (isEndgame()) mult = 0
         return mult
     },
     branches: ['T','Q'],
     update(diff){
-        if (hasMilestone('DC',6)&&layers.CT.buyables[11].canAfford()) layers.CT.buyables[11].buy();
-        if (hasMilestone('DC',6)&&layers.CT.buyables[12].canAfford()) layers.CT.buyables[12].buy();
-        if (hasMilestone('DC',6)&&layers.CT.buyables[13].canAfford()) layers.CT.buyables[13].buy();
-        if (hasMilestone('DC',6)&&layers.CT.buyables[14].canAfford()) layers.CT.buyables[14].buy();
+        if ((hasMilestone('DC',6)||hasChallenge('I', 12))&&layers.CT.buyables[11].canAfford()) layers.CT.buyables[11].buy();
+        if ((hasMilestone('DC',6)||hasChallenge('I', 12))&&layers.CT.buyables[12].canAfford()) layers.CT.buyables[12].buy();
+        if ((hasMilestone('DC',6)||hasChallenge('I', 12))&&layers.CT.buyables[13].canAfford()) layers.CT.buyables[13].buy();
+        if ((hasMilestone('DC',6)||hasChallenge('I', 12))&&layers.CT.buyables[14].canAfford()) layers.CT.buyables[14].buy();
     },
     microtabs: {
         stuff: {       
@@ -1214,6 +1245,7 @@ addLayer("Qi", {
     color: "#aee308",
     requires() {a = new Decimal(10)
         if (player.Qi.points.gte(2)) a = a.times(player.Qi.points)
+            if (inChallenge('I', 14)) a = n(1.79e309)
         return a}, // Can be a function that takes requirement increases into account
     resource: "QqQeInfinity", // Name of prestige currency
     baseResource: "QqQe308", // Name of resource prestige is based on
@@ -1239,6 +1271,11 @@ addLayer("Qi", {
             layerDataReset(this.layer, kept)
         }
     },
+    autoPrestige() {a = false
+        if (hasChallenge('I', 14)) a = true
+        return a
+    },
+    resetsNothing() {return hasChallenge('I', 14)},
     update(diff){
         if (hasMilestone('Qi', 0)&&player.Qi.choice.eq(n(2))&&!isEndgame()) player.Qi.Supermantime = player.Qi.Supermantime.add(n(diff));
         if (player.Qi.Supermantime.gte(n(tmp.Qi.Supermanspeed))&&hasMilestone('Qi', 0)) player.Qi.QqQe308 = player.Qi.QqQe308.add(1); 
@@ -1375,6 +1412,7 @@ addLayer("DC", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         exp = new Decimal(0.5)
+        if (inChallenge('I', 12)) exp = exp.times(0.9)
         return exp
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
@@ -1385,14 +1423,19 @@ addLayer("DC", {
         a = player.DC.points.times(0.05).add(1)
         if (hasMilestone('DC', 8)) a = n(10).pow(n(a).pow(2))
         if (a.gte(1e6)) a = n(10).pow(a.log(10).div(6).pow(0.5).times(6))
-        if (a.gte(n('1e2085'))) a = n('1e2085')
+        if (a.gte(tmp.DC.hardcap)) a = tmp.DC.hardcap
             return a
       },
+    hardcap(){
+        a = n('1e2085')
+        if (inChallenge('I', 16)) a = n('1e24191')
+            return a
+    },
       effectDescription() { 
         if (hasMilestone('DC', 2)) {
             a = "使点数获取x"+format(tmp.DC.effect)
-            if (tmp.DC.effect.gte(1e6)&&tmp.DC.effect.lt(n('1e2085'))) a = a + "(受软上限限制)"
-            if (tmp.DC.effect.gte(n('1e2085'))) a = a + "(已到达硬上限)"
+            if (tmp.DC.effect.gte(1e6)&&tmp.DC.effect.lt(tmp.DC.hardcap)) a = a + "(受软上限限制)"
+            if (tmp.DC.effect.gte(tmp.DC.hardcap)) a = a + "(已到达硬上限)"
         } else {
             a = "使点数获取x1.00"
         }
@@ -1430,6 +1473,18 @@ addLayer("DC", {
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
+    doReset(resettingLayer) {
+        if (layers[resettingLayer].row > layers[this.layer].row) {
+    let kept = []
+    if (hasChallenge('I', 13)) {kept.push('challenges')
+        kept.push('upgrades')
+    kept.push('milestones')
+    kept.push('achievements')
+    }
+    layerDataReset(this.layer, kept)
+    if (hasChallenge('I', 13)) player.DC.ach = n(16)
+       }
+    },
     milestones:{
         0: {
             requirementDescription: "1 二重压缩时间墙",
@@ -1704,6 +1759,7 @@ addLayer("co", {
     requires(){a = new Decimal(1e5)
         if (player.co.points.gte(2)) a = a.times(player.co.points.pow(3))
         if (player.co.points.gte(5)) a = a.times(n(2).pow(player.co.points))
+            if (inChallenge('I', 16)) a = n(1.79e309)
         return a
     }, // Can be a function that takes requirement increases into account
     resource: "cokecole", // Name of prestige currency
@@ -1731,6 +1787,10 @@ addLayer("co", {
             layerDataReset(this.layer, kept)
         }
     },
+    autoPrestige() {a = false
+        if (hasChallenge('I', 16)) a = true
+        return a
+    },
     effect(){
         a = n(10).pow(n(5).times(player.co.points))
         if (a.gte(1e290)) a = n(1e290)
@@ -1745,6 +1805,7 @@ addLayer("co", {
         }
         return a
     },
+    resetsNothing() {return hasChallenge('I', 16)},
     passiveGeneration()
     {
         mult = 0
@@ -1838,8 +1899,15 @@ addLayer("I", {
                 "buyables"]}, 
             "Challenges": {
                 unlocked() {return hasAchievement('A2', 12)},
-                content: [ ["display-text", () => "你完成了"+format(player.I.chal)+"个普通挑战，使无限维度x"+format(tmp.I.chaltoidmult)],
+                content: [ ["display-text", () => "你完成了"+format(tmp.I.NcComp)+"个普通挑战，使无限维度x"+format(tmp.I.chaltoidmult)],
                 "challenges"]}, 
+            "Black Hole": {
+                unlocked() {return hasChallenge('I', 13)},
+                content: [ ["upgrades", [1]] ]}, 
+            "Breaking Infinity": {
+                unlocked() {return tmp.I.NcComp.gte(6)},
+                content: [ ["upgrades", [2]],
+                    ["display-text", () => "打破无限也将使你解锁点数里程碑与新的无限升级"]]},
         },     
     },
     tabFormat: [
@@ -1967,19 +2035,104 @@ addLayer("I", {
             goalDescription(){return "1.79e308 点数"},
             rewardDescription(){return "自动购买之前层级的所有升级"},
             unlocked(){return hasAchievement('A2', 12)},
-            onComplete(){player.I.chal = player.I.chal.add(1)
+            onComplete(){
                 player.I.points = player.I.points.add(1)
+                player.I.inf = player.I.inf.add(1)
+            },
+            onEnter(){player.I.inf = player.I.inf.sub(1)},
+            onExit(){player.I.inf = player.I.inf.sub(1)},
+            canComplete: function() {return player.points.gte(1.79e308)},
+        },
+        12: {
+            name: "Normal Challenge 2",
+            challengeDescription(){return "所有无限前资源获取^0.9"},
+            goalDescription(){return "1.79e308 点数"},
+            rewardDescription(){return "自动购买之前层级的可购买，无限后保留成就"},
+            unlocked(){return hasAchievement('A2', 12)},
+            onComplete(){
+                player.I.points = player.I.points.add(1)
+                player.I.inf = player.I.inf.add(1)
+            },
+            onEnter(){player.I.inf = player.I.inf.sub(1)},
+            onExit(){player.I.inf = player.I.inf.sub(1)},
+            canComplete: function() {return player.points.gte(1.79e308)},
+        },
+        13: {
+            name: "Normal Challenge 3",
+            challengeDescription(){return "游戏速度x0.5"},
+            goalDescription(){return "1.79e308 点数"},
+            rewardDescription(){return "解锁黑洞，无限后保留之前主线层级的升级、挑战与里程碑"},
+            unlocked(){return hasAchievement('A2', 12)},
+            onComplete(){
+                player.I.points = player.I.points.add(1)
+                player.I.inf = player.I.inf.add(1)
+            },
+            onEnter(){player.I.inf = player.I.inf.sub(1)},
+            onExit(){player.I.inf = player.I.inf.sub(1)},
+            canComplete: function() {return player.points.gte(1.79e308)},
+        },
+        14: {
+            name: "Normal Challenge 4",
+            challengeDescription(){return "你不能获得QqQeInfinity，QqQe308的获取需求大幅上升"},
+            goalDescription(){return "1.79e308 点数"},
+            rewardDescription(){return "自动获取QqQe308与QqQeInfinity且不重置任何东西"},
+            unlocked(){return hasAchievement('A2', 12)},
+            onComplete(){
+                player.I.points = player.I.points.add(1)
+                player.I.inf = player.I.inf.add(1)
+            },
+            onEnter(){player.I.inf = player.I.inf.sub(1)},
+            onExit(){player.I.inf = player.I.inf.sub(1)},
+            canComplete: function() {return player.points.gte(1.79e308)},
+        },
+        15: {
+            name: "Normal Challenge 5",
+            challengeDescription(){return "所有被动生成资源的QoL均被禁用"},
+            goalDescription(){return "1.79e308 点数"},
+            rewardDescription(){return "所有被动生成资源且效果x10"},
+            unlocked(){return hasAchievement('A2', 12)},
+            onComplete(){
+                player.I.points = player.I.points.add(1)
+                player.I.inf = player.I.inf.add(1)
+            },
+            onEnter(){player.I.inf = player.I.inf.sub(1)},
+            onExit(){player.I.inf = player.I.inf.sub(1)},
+            canComplete: function() {return player.points.gte(1.79e308)},
+        },
+        16: {
+            name: "Normal Challenge 6",
+            challengeDescription(){return "你不能获得cokecole，二重压缩时间墙加成硬上限增加"},
+            goalDescription(){return "1.79e308 点数"},
+            rewardDescription(){return "自动获取cokecole且不重置任何东西，解锁第四个支线层级"},
+            unlocked(){return hasAchievement('A2', 12)},
+            onComplete(){
+                player.I.points = player.I.points.add(1)
+                player.I.inf = player.I.inf.add(1)
             },
             onEnter(){player.I.inf = player.I.inf.sub(1)},
             onExit(){player.I.inf = player.I.inf.sub(1)},
             canComplete: function() {return player.points.gte(1.79e308)},
         },
     },
+    upgrades: {
+        11: {
+            title: "解锁黑洞",
+            description: "基础情况下，黑洞每3473秒激活一次，每次持续20.85秒，使游戏速度x63.65",
+            cost: new Decimal(Infinity),
+            unlocked() {return hasChallenge('I', 13)},
+        },
+        21: {
+            title: "打破无限！",
+            description: "你的点数可以超过1.79e308，但在这之后增长更慢",
+            cost: new Decimal(0),
+            unlocked() {return tmp.I.NcComp.gte(6)},
+        },
+    },
     idmult() {a = player.I.inf.div(256)
         if (a.gte(1)) a = n(1)
             return a
     },
-    chaltoidmult() {a = n(12).pow(n(1).div(12)).pow(player.I.chal)
+    chaltoidmult() {a = n(6).pow(n(1).div(6)).pow(tmp.I.NcComp)
         return a
     },
     ipowereffect() {a = player.I.ipower.pow(2)
@@ -2032,5 +2185,65 @@ addLayer("I", {
         a = a.times(tmp.I.chaltoidmult)
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 18))))
         return a
+    },
+    NcComp() {a = n(0)
+        if (hasChallenge('I', 11)) a = a.add(1)
+            if (hasChallenge('I', 12)) a = a.add(1)
+                if (hasChallenge('I', 13)) a = a.add(1)
+                    if (hasChallenge('I', 14)) a = a.add(1)
+                        if (hasChallenge('I', 15)) a = a.add(1)
+                            if (hasChallenge('I', 16)) a = a.add(1)
+            return a
+    }
+})
+
+addLayer("qa", {
+    name: "qaqe308", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "Qa", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#ab4308",
+    requires(){a = new Decimal('1e919')
+        return a
+    }, // Can be a function that takes requirement increases into account
+    resource: "qaqe308", // Name of prestige currency
+    baseResource: "点数", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.001, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "a", description: "A: 进行qaqe308重置", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return hasChallenge('I', 16)},
+    branches: ['I'],
+    doReset(resettingLayer) {
+    },
+    autoPrestige() {a = false
+        return a
+    },
+    resetsNothing() {return false},
+    passiveGeneration()
+    {
+        mult = 0
+        return mult
+    },
+    milestones: {
+        0: {
+            requirementDescription: "1 qaqe308",
+            effectDescription: "解锁Monika",
+            done() { return player.qa.points.gte(1) }
+        },
     },
 })
