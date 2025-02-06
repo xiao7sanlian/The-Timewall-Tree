@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.45",
-	name: "Pre-break Update",
+	num: "0.5",
+	name: "Breaking Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -46,7 +46,11 @@ let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.45 Pre-break Update</h3><br/>
 	    - 增加了1个成就与7个挑战<br>
 		- 增加了黑洞与打破无限(不过都没有效果)<br>
-		- 增加了一个新层级(也没什么用)`
+		- 增加了一个新层级(也没什么用)<br>
+	<h3>v0.5 Breaking Update 2025/2/6</h3><br/>
+	    - 增加了12个成就与3个挑战<br>
+		- 增加了12个无限升级，7个可购买<br>
+		- 打破无限与qaqe308层级有效果了<br>`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -60,7 +64,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-    return !isEndgame()&&player.points.lt(1.79e308)
+    return !isEndgame()
 }
 
 function sc1start(){
@@ -92,6 +96,17 @@ function sc2power(){
 function sc3power(){
 	power = new Decimal(0.05)
 	if (hasAchievement('DC', 33)) power = power.add(0.025)
+	return power
+}
+
+function sc4power(){
+	power = new Decimal(0.5)
+	power = power.add(buyableEffect('I', 22))
+	return power
+}
+
+function sc5power(){
+	power = new Decimal(2)
 	return power
 }
 
@@ -136,8 +151,9 @@ function getPointGen() {
 	if (hasAchievement('DC', 12)) gain = gain.times(achievementEffect('DC', 12))
 	if (n(challengeCompletions('DC', 14)).gte(1)&&!hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
 	if (hasAchievement('DC', 43)) gain = gain.times(achievementEffect('DC', 43))
-	if (tmp.I.ipowereffect.gte(1)) gain = gain.times(tmp.I.ipowereffect)
+	if (tmp.I.ipowereffect.gte(1)&&!hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
 	if (hasUpgrade('T', 54)&&!inChallenge('T',13)) gain = gain.times(buyableEffect('T', 11))
+	gain = gain.times(buyableEffect('qa', 11))
 	if (hasUpgrade('T', 23)&&gain.lt(1)) gain = gain.pow(0.5)
 	if (hasChallenge('T', 12)) gain = gain.pow(1.01)
 	if (hasMilestone('DC', 1)) gain = gain.pow(1.01)
@@ -151,19 +167,27 @@ function getPointGen() {
 	if (inChallenge('T', 13)) gain = new Decimal(0.01)
 	if (inChallenge('T', 13)) gain = gain.times(buyableEffect('T', 11))
 
-	if (gain.gte(n(sc1start()))) gain = gain.div(n(sc1start())).pow(sc1power()).times(n(sc1start())) //sc1
-	if (gain.gte(n(1e9))) gain = gain.div(n(1e9)).pow(sc2power()).times(n(1e9)) //sc2
-	if (gain.gte(n(1e13))) gain = gain.div(n(1e13)).pow(sc3power()).times(n(1e13)) //sc3
+	if (gain.gte(n(sc1start()))&&!hasAchievement('A2', 25)) gain = gain.div(n(sc1start())).pow(sc1power()).times(n(sc1start())) //sc1
+	if (gain.gte(n(1e9))&&!hasAchievement('A2', 25)) gain = gain.div(n(1e9)).pow(sc2power()).times(n(1e9)) //sc2
+	if (gain.gte(n(1e13))&&!hasAchievement('A2', 25)) gain = gain.div(n(1e13)).pow(sc3power()).times(n(1e13)) //sc3
 
 	if (hasMilestone('co', 0)) gain = gain.times(1.5)
 	if (n(challengeCompletions('DC', 14)).gte(1)&&hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
 	if (hasMilestone('Qi', 1)&&!inChallenge('DC', 13)) gain = gain.times(10)
 	if (hasMilestone('co', 1)) gain = gain.times(3)
 	if (hasMilestone('co', 2)) gain = gain.times(10)
-	if (hasMilestone('co', 3)) gain = gain.times(tmp.co.effect)
+	if (hasMilestone('co', 3)&&!inChallenge('I', 16)) gain = gain.times(tmp.co.effect)
+	if (tmp.I.ipowereffect.gte(1)&&hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
 
+	if (gain.gte(n(1.79e308))) gain = gain.div(n(1e308)).pow(sc4power()).times(n(1e308)) //sc4
+	if (gain.gte(n('1e616'))) gain = powsoftcap(gain,n('1e616'),sc5power())
+
+	if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) gain = n(0)
+	if (player.points.gte(1.79e308)&&inChallenge('I', 16)) gain = n(0)
 	return gain
 }
+
+
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
@@ -172,11 +196,13 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:打破无限'
-		if (getPointGen().gte(sc1start())) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
-		if (getPointGen().gte(1e9)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
-		if (getPointGen().gte(1e13)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
-		if (player.points.gte(1.79e308)) a = a + '<br/>点数到达硬上限！'
+	function(){a = '当前Endgame:解锁黑洞'
+		if (getPointGen().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
+		if (getPointGen().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
+		if (getPointGen().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
+		if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) a = a + '<br/>点数到达硬上限！'
+		if (getPointGen().gte(1.79e308)&&hasUpgrade('I', 21)) a = a + '<br/>由于点数获取量超过1.79e308，点数获取量受到四重软上限限制！<br/>四重软上限指数：' + format(sc4power())
+		if (getPointGen().gte('1e616')) a = a + '<br/>由于点数获取量超过1e616，点数获取量指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc5power()))
 		return a
 	}
 ]
@@ -186,7 +212,8 @@ var QqQe308 = "我睡前要超QqQe308，吃饭前要超QqQe308，学习前要超
 // Determines when the game "ends"
 function isEndgame() {
 	//return player.points.gte(new Decimal("e280000000"))
-	return hasUpgrade('I', 21)
+	//return player.qa.points.gte(1)
+	return hasUpgrade('I', 11)
 }
 
 // Less important things beyond this point!
