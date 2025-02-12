@@ -2131,6 +2131,8 @@ addLayer("I", {
         exp = new Decimal(1)
         return exp
     },
+    softcap: n(1e140),
+    softcapPower: 0.1,
     update(diff){
         if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) player.points = n(1.79e308)
         if (getBuyableAmount(this.layer, 18).gte(1)) player.I.id7 = player.I.id7.add(player.I.id8.times(tmp.I.id8mult).times(diff))
