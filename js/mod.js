@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5",
-	name: "Breaking Update",
+	num: "0.55",
+	name: "Black Hole Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -50,7 +50,11 @@ let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.5 Breaking Update 2025/2/6</h3><br/>
 	    - 增加了12个成就与3个挑战<br>
 		- 增加了12个无限升级，7个可购买<br>
-		- 打破无限与qaqe308层级有效果了<br>`
+		- 打破无限与qaqe308层级有效果了<br>
+	<h3>v0.55 Black Hole Update 2025/2/8~2025/2/12</h3><br/>
+	    - 黑洞有效果了<br>
+		- 增加了1个可购买，5个挑战，10个成就与不知道多少个里程碑<br>
+		- 增加了复制器(还没用)<br>`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -102,13 +106,44 @@ function sc3power(){
 function sc4power(){
 	power = new Decimal(0.5)
 	power = power.add(buyableEffect('I', 22))
+	if (inChallenge('I', 26)) power = power.sub(0.2)
 	return power
 }
 
 function sc5power(){
-	power = new Decimal(2)
-	return power
+	power = new Decimal(0.5)
+	if (inChallenge('I', 26)) power = power.sub(0.01)
+	power = power.add(buyableEffect('I', 24))
+	root = n(1).div(power)
+	return root
 }
+
+function sc6power(){
+	power = new Decimal(0.33)
+	root = n(1).div(power)
+	return root
+}
+
+function bhcost1(x){s = n(1.5e11)
+	a = s.times(n(3.5).pow(x))
+	if (x.gte(20)) a = s.times(n(3.5).pow(20)).times((x.times(0.1).add(1.5)).pow(x.sub(20)))
+	if (x.gte(50)) a = s.times((x.times(0.2).sub(3.5)).pow(x))
+		return a
+ }
+
+ function bhcost2(x){s = n(2e11)
+	a = s.times(n(4).pow(x))
+	if (x.gte(20)) a = s.times(n(4).pow(20)).times((x.times(0.1).add(2)).pow(x.sub(20)))
+	if (x.gte(30)) a = s.times((x.sub(25)).pow(x))
+		return a
+ }
+
+ function bhcost3(x){s = n(1e11)
+	a = s.times(n(5).pow(x))
+	if (x.gte(20)) a = s.times(n(5).pow(20)).times((x.times(0.1).add(3)).pow(x.sub(20)))
+	if (x.gte(50)) a = s.times((x.times(0.2).sub(2)).pow(x))
+		return a
+ }
 
 // Calculate points/sec!
 function getPointGen() {
@@ -180,7 +215,8 @@ function getPointGen() {
 	if (tmp.I.ipowereffect.gte(1)&&hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
 
 	if (gain.gte(n(1.79e308))) gain = gain.div(n(1e308)).pow(sc4power()).times(n(1e308)) //sc4
-	if (gain.gte(n('1e616'))) gain = powsoftcap(gain,n('1e616'),sc5power())
+	if (gain.gte(n('1e616'))) gain = powsoftcap(gain,n('1e616'),sc5power()) //sc5
+	if (gain.gte(n('1e10000'))) gain = powsoftcap(gain,n('1e10000'),sc6power()) //sc6
 
 	if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) gain = n(0)
 	if (player.points.gte(1.79e308)&&inChallenge('I', 16)) gain = n(0)
@@ -196,13 +232,14 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:解锁黑洞'
+	function(){a = '当前Endgame:解锁复制器'
 		if (getPointGen().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (getPointGen().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
 		if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) a = a + '<br/>点数到达硬上限！'
 		if (getPointGen().gte(1.79e308)&&hasUpgrade('I', 21)) a = a + '<br/>由于点数获取量超过1.79e308，点数获取量受到四重软上限限制！<br/>四重软上限指数：' + format(sc4power())
 		if (getPointGen().gte('1e616')) a = a + '<br/>由于点数获取量超过1e616，点数获取量指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc5power()))
+		if (getPointGen().gte('1e10000')) a = a + '<br/>由于点数获取量超过1e10000，点数获取量指数受到二重软上限限制！<br/>二重软上限指数：' + format(n(1).div(sc6power()))
 		return a
 	}
 ]
@@ -213,7 +250,8 @@ var QqQe308 = "我睡前要超QqQe308，吃饭前要超QqQe308，学习前要超
 function isEndgame() {
 	//return player.points.gte(new Decimal("e280000000"))
 	//return player.qa.points.gte(1)
-	return hasUpgrade('I', 11)
+	//return hasUpgrade('I', 11)
+	return hasUpgrade('I', 71)
 }
 
 // Less important things beyond this point!
