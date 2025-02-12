@@ -2403,7 +2403,7 @@ addLayer("I", {
              },
             effect(x) {return new Decimal(1.35).pow(x)},
             display() { return "每次购买使黑洞加速+35%<br/>当前已购买了"+ getBuyableAmount('I', 32) +"次<br/>效果：黑洞使游戏速度x"+format(tmp.I.bh1speed)+'<br/>下一次花费'+format(bhcost2(getBuyableAmount('I', 32)))+'无限点数' },
-            unlocked() {return hasUpgrade('I', 11)&&tmp.I.bh1speed.lt(86400)},
+            unlocked() {return hasUpgrade('I', 11)&&tmp.I.bh1speed.lt(72000)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
                 player.I.points = player.I.points.sub(this.cost())
@@ -3022,7 +3022,7 @@ addLayer("I", {
     bh1speed() {a = n(63.65)
         a = a.times(buyableEffect('I', 32))
         if (hasAchievement('I', 45)) a = a.times(1.1)
-        if (a.gte(86400)) a = n(86400)
+        if (a.gte(72000)) a = n(72000)
         return a
     },
     bh1acttime() {a = n(20.85)
