@@ -29,7 +29,7 @@ addLayer("A", {
 	    return dev
 	   },
        doReset(resettingLayer) {
-        if (resettingLayer == 'I'&&!hasChallenge('I', 12)) {
+        if (resettingLayer == 'I'&&!hasChallenge('I', 12)||resettingLayer == 'E') {
             let kept = []
             layerDataReset(this.layer, kept)
         }
@@ -415,7 +415,13 @@ addLayer("A2", {
         return new Decimal(1)
     },
     row: 'side', // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasAchievement('A2', 11)},
+    layerShown(){return hasAchievement('A2', 11)||hasAchievement('A3', 11)},
+    doReset(resettingLayer) {
+        if (resettingLayer == 'E') {
+            let kept = []
+            layerDataReset(this.layer, kept)
+        }
+    },
     achievementPopups: true,
     achievements: {
         11: {
@@ -590,9 +596,119 @@ addLayer("A2", {
         name: "新的时间墙",
             done() {return hasUpgrade('I', 71)}, 
             onComplete() {player.A2.points = player.A2.points.add(1)},
-            tooltip: "解锁复制器<br>这个成就现在没有奖励，后面会加上", 
+            tooltip: "解锁复制器（无限点数在此受到软上限限制）<br>奖励：无限维度*2(太敷衍了)", 
+            textStyle: {'color': '#4bd123'},
+    },
+    61: {
+        name: "请停止软上限",
+            done() {return player.I.rep.gte(5)}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "拥有5个复制器", 
             textStyle: {'color': '#ffe125'},
     },
+    62: {
+        name: "通往永恒的一半",
+            done() {return player.I.points.gte(n(2).pow(512))}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "获得1.33e154无限点数", 
+            textStyle: {'color': '#ffe125'},
+    },
+    63: {
+        name: "名不副实",
+            done() {return tmp.I.ipowereffect.gte('1e1000000')}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "使无限之力给点数的加成达到1e1000000", 
+            textStyle: {'color': '#ffe125'},
+    },
+    64: {
+        name: "复制器星系",
+            done() {return player.rg.points.gte(1)}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "获得一个ReplicantiGalaxy", 
+            textStyle: {'color': '#ffe125'},
+    },
+    65: {
+        name: "Big Big Crunch",
+            done() {return player.I.points.gte(1e200)}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip() {return "获得1e200无限点数<br>奖励：基于无限点数提升无限点数获取（无视软上限与其他指数）<br>当前：x"+format(achievementEffect('A2', 65))}, 
+            effect(){
+                return player.I.points.add(10).log(10)
+            },
+            textStyle: {'color': '#4bd123'},
+    },
+    71: {
+        name: "逸一时，误一世",
+            done() {return player.points.gte('1e114514')}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "获得1e114514点数", 
+            textStyle: {'color': '#ffe125'},
+    },
+    72: {
+        name: "我感觉我没有必要再给加成了",
+            done() {return player.I.points.gte('1e250')}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "获得1e250无限点数", 
+            textStyle: {'color': '#ffe125'},
+    },
+    73: {
+        name: "这个成就是用来凑数的",
+            done() {return player.points.gte('1e200000')}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "获得1e200000点数", 
+            textStyle: {'color': '#ffe125'},
+    },
+    74: {
+        name: "最终的试炼",
+            done() {return player.I.points.gte('1e300')}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "获得1e300无限点数", 
+            textStyle: {'color': '#ffe125'},
+    },
+    75: {
+        name: "达到永恒！",
+            done() {return player.I.points.gte('1.79e308')}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "获得1.79e308无限点数<br>奖励：解锁下一个层级", 
+            textStyle: {'color': '#4bd123'},
+    },
+    }
+})
+
+addLayer("A3", {
+    name: "Achievement3", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "A3", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        ach: new Decimal(0)
+    }},
+    color: "#ffe125",
+    requires: new Decimal(1), // Can be a function that takes requirement increases into account
+    resource: "三级成就", // Name of prestige currency
+    baseResource: "点数", // Name of resource prestige is based on
+    //baseAmount() {return player.points}, // Get the current amount of baseResource
+    //type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.2, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 'side', // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasAchievement('A3', 11)},
+    achievementPopups: true,
+    achievements: {
+        11: {
+     name: "Time is relative",
+     done() {return player.E.points.gte(1)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "永恒一次", 
+     textStyle: {'color': '#ffe125'},
+        },
     }
 })
 
@@ -653,6 +769,7 @@ addLayer("T", {
     kept.push('achievements')
     }
     if (hasMilestone('I', 6)) kept.push('buyables')
+    if (resettingLayer == 'E') kept = []
     layerDataReset(this.layer, kept)
        }
     },
@@ -962,7 +1079,7 @@ addLayer("Q", {
     layerShown(){return hasAchievement('A', 41)},
     branches: ['T'],
     doReset(resettingLayer) {
-        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)) {
+        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)||resettingLayer == 'E') {
             let kept = []
             layerDataReset(this.layer, kept)
         }
@@ -1063,6 +1180,7 @@ addLayer("CT", {
         kept.push('achievements')
         }
     if (hasMilestone('I', 6)) kept.push('buyables')
+    if (resettingLayer == 'E') kept = []
     layerDataReset(this.layer, kept)
        }
     },
@@ -1083,6 +1201,10 @@ addLayer("CT", {
         if ((hasMilestone('DC',6)||hasChallenge('I', 12))&&layers.CT.buyables[12].canAfford()) layers.CT.buyables[12].buy();
         if ((hasMilestone('DC',6)||hasChallenge('I', 12))&&layers.CT.buyables[13].canAfford()) layers.CT.buyables[13].buy();
         if ((hasMilestone('DC',6)||hasChallenge('I', 12))&&layers.CT.buyables[14].canAfford()) layers.CT.buyables[14].buy();
+        if (hasMilestone('I', 18)&&player.points.gt(1)) setBuyableAmount(this.layer, 11, player.points.log(2))
+        if (hasMilestone('I', 18)&&player.T.points.gt(1)) setBuyableAmount(this.layer, 12, player.T.points.log(10))
+        if (hasMilestone('I', 18)&&player.CT.points.gt(1)) setBuyableAmount(this.layer, 13, player.CT.points.log(2))
+        if (hasMilestone('I', 18)&&player.points.gt(1e6)) setBuyableAmount(this.layer, 14, player.points.div(1e6).log(2))
     },
     microtabs: {
         stuff: {       
@@ -1436,7 +1558,7 @@ addLayer("Qi", {
     ],
     layerShown(){return hasMilestone('Q', 6)},
     doReset(resettingLayer) {
-        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)) {
+        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)||resettingLayer == 'E') {
             let kept = []
             layerDataReset(this.layer, kept)
         }
@@ -1527,7 +1649,7 @@ addLayer("Qi", {
         },
         102: {
             requirementDescription: "超市qaqe308（需要超9190次）",
-            effectDescription: "超qaqe308次数也加成无限点数<br>在超10000次qaqe308后，超qaqe308的速度将减慢！",
+            effectDescription: "超qaqe308次数也加成无限点数<br>在超5000次qaqe308后，超qaqe308的速度将减慢！",
             done() { return player.Qi.qaqe308.gte(9190) }
         },
     },
@@ -1578,10 +1700,11 @@ addLayer("Qi", {
     qaqe308effect() {
         a = n(10).pow(player.Qi.qaqe308)
         if (a.gte(1e100)) a = powsoftcap(a,n('1e100'),2)
+        if (a.gte('1e5555')) a = powsoftcap(a,n('1e5555'),4)
         return a
     },
     qaqe308effect2() {
-        a = player.Qi.qaqe308.pow(0.5)
+        a = player.Qi.qaqe308.pow(10)
         return a
     },
     Supermanspeed() {
@@ -1589,6 +1712,8 @@ addLayer("Qi", {
         if (player.Qi.points.gte(1)) a = a.div(player.Qi.points).div(challengeEffect('DC',13))
         if (hasAchievement('DC', 14)) a = a.div(achievementEffect('DC', 14))
         if (hasAchievement('A', 95)) a = a.div(1.05)
+        if (hasMilestone('I', 24)) a = a.div(tmp.I.mil24effect)
+        if (hasMilestone('I', 25)) a = a.div(tmp.I.mil25effect)
         if (player.Qi.QqQe308.gte(50000)) a = a.times(n(10).pow(player.Qi.QqQe308.div(50000).sub(1)))
         return a
     },
@@ -1597,6 +1722,8 @@ addLayer("Qi", {
         if (player.Qi.points.gte(1)) a = a.div(player.Qi.points)
         if (hasAchievement('DC', 34)) a = a.div(achievementEffect('DC', 34))
         if (hasAchievement('A', 95)) a = a.div(1.05)
+        if (hasMilestone('I', 24)) a = a.div(tmp.I.mil24effect)
+        if (hasMilestone('I', 25)) a = a.div(tmp.I.mil25effect)
         if (player.Qi.cokecole.gte(25000)) a = a.times(n(10).pow(player.Qi.cokecole.div(25000).sub(1)))
         return a
     },
@@ -1604,7 +1731,9 @@ addLayer("Qi", {
         a = n(6480000)
         if (player.Qi.points.gte(1)) a = a.div(player.Qi.points)
         if (hasAchievement('A', 95)) a = a.div(1.05)
-        if (player.Qi.qaqe308.gte(10000)) a = a.times(n(10).pow(player.Qi.qaqe308.div(10000).sub(1)))
+        if (hasMilestone('I', 24)) a = a.div(tmp.I.mil24effect)
+        if (hasMilestone('I', 25)) a = a.div(tmp.I.mil25effect)
+        if (player.Qi.qaqe308.gte(5000)) a = a.times(n(10).pow(player.Qi.qaqe308.div(5000).sub(1)))
         return a
     },
     Showdetail() {
@@ -1731,6 +1860,7 @@ addLayer("DC", {
     kept.push('achievements')
     }
     layerDataReset(this.layer, kept)
+    if (resettingLayer == 'E') kept = []
     if (hasChallenge('I', 13)) player.DC.ach = n(16)
        }
     },
@@ -2031,7 +2161,7 @@ addLayer("co", {
     layerShown(){return hasAchievement('A', 91)},
     branches: ['DC'],
     doReset(resettingLayer) {
-        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)) {
+        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)||resettingLayer == 'E') {
             let kept = []
             layerDataReset(this.layer, kept)
         }
@@ -2087,7 +2217,7 @@ addLayer("co", {
 addLayer("I", {
     name: "Infinity", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "I", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
@@ -2107,6 +2237,7 @@ addLayer("I", {
         bh1duration: n(0),
         bhpaused: n(0),
         resetTime: n(0),
+        rep: n(1)
     }},
     color: "#b67f33",
     requires(){a = new Decimal(1.79e308)
@@ -2129,8 +2260,16 @@ addLayer("I", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         exp = new Decimal(1)
+        if (hasMilestone('I', 22)) exp = exp.add(tmp.I.mil22effect)
+        if (hasMilestone('I', 26)) exp = exp.add(buyableEffect('I', 26))
         return exp
     },
+    directmult() {a = n(1)
+        if (hasMilestone('I', 23)) a = a.times(77777)
+        if (hasAchievement('A2', 65)) a = a.times(achievementEffect('A2', 65))
+            return a
+    },
+    canReset() {return player.points.gte(1.79e308)&&player.I.points.lt(1.79e308)},
     softcap: n(1e140),
     softcapPower: 0.1,
     update(diff){
@@ -2153,6 +2292,9 @@ addLayer("I", {
             player.I.bh1activation = n(0)}}
         if (tmp.I.bh1percent.gte(0.9999)) player.I.bh1activation = n(1)
         if (inChallenge('I', 27)||inChallenge('I', 28)) player.I.bhpaused = n(1)
+        if (hasUpgrade('I', 71)&&player.devSpeed.gt(1)&&player.I.rep.lt(1048576)) player.I.rep = player.I.rep.times(tmp.I.repmult.pow(n(diff).div(player.devSpeed)))
+        if (player.I.rep.gt(1048576)) player.I.rep = n(1048576)
+        if (player.I.points.gt(n(2).pow(1024))) player.I.points = n(2).pow(1024)
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -2197,7 +2339,7 @@ addLayer("I", {
             "Replicanti": {
                 unlocked() {return hasChallenge('I', 28)},
                 content: [ ["upgrades", [7]],
-                ["display-text", () => ''],]}, 
+                ["display-text", () => tmp.I.repshow],["buyables", [4]]]}, 
         },     
     },
     tabFormat: [
@@ -2207,7 +2349,7 @@ addLayer("I", {
         ["blank", "25px"],
     ],
     doReset(resettingLayer) {
-        if (resettingLayer='I') {player.I.inf = player.I.inf.add(1)
+        if (resettingLayer=='I') {player.I.inf = player.I.inf.add(1)
             player.I.ipower = n(1)
         player.I.id1 = n(getBuyableAmount(this.layer, 11))
         player.I.id2 = n(getBuyableAmount(this.layer, 12))
@@ -2217,11 +2359,12 @@ addLayer("I", {
         player.I.id6 = n(getBuyableAmount(this.layer, 16))
         player.I.id7 = n(getBuyableAmount(this.layer, 17))
         player.I.id8 = n(getBuyableAmount(this.layer, 18))
+        if (player.I.rep.gte(tmp.rg.effect)) player.I.rep = tmp.rg.effect
         }
-        //if (layers[resettingLayer].row > layers[this.layer].row) {
-     //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
-     //layerDataReset(this.layer, kept)
-        //}
+        if (layers[resettingLayer].row > layers[this.layer].row) {
+     let kept = []
+     layerDataReset(this.layer, kept)
+        }
     },
     passiveGeneration()
     {
@@ -2367,10 +2510,40 @@ addLayer("I", {
             },
             cost(x) { return new Decimal(1e70).times(n(1e10).pow(x)) },
             effect(x) {return new Decimal(0.01).times(x)},
-            display() { return "每次购买使指数软上限指数+0.05<br/>当前已购买了"+ getBuyableAmount('I', 24) +"/10次<br/>效果：指数软上限指数+"+format(buyableEffect('I', 24))+'<br/>下一次花费'+format(new Decimal(1e10).pow(n(getBuyableAmount('I', 24)).add(7)))+'无限点数' },
+            display() { return "每次购买使指数软上限指数+0.01<br/>当前已购买了"+ getBuyableAmount('I', 24) +"/10次<br/>效果：指数软上限指数+"+format(buyableEffect('I', 24))+'<br/>下一次花费'+format(new Decimal(1e10).pow(n(getBuyableAmount('I', 24)).add(7)))+'无限点数' },
             unlocked() {return hasMilestone('I', 16)},
             canAfford() { return player.I.points.gte(this.cost()) },
             purchaseLimit: n(10),
+            buy() {
+                player.I.points = player.I.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        25: {
+            title(){text = '指数二重软上限削弱'
+                return text
+            },
+            cost(x) { return new Decimal(1e170).times(n(1e10).pow(x)) },
+            effect(x) {return new Decimal(0.03).times(x)},
+            display() { return "每次购买使指数二重软上限指数+0.03<br/>当前已购买了"+ getBuyableAmount('I', 25) +"/14次<br/>效果：指数二重软上限指数+"+format(buyableEffect('I', 25))+'<br/>下一次花费'+format(new Decimal(1e10).pow(n(getBuyableAmount('I', 25)).add(17)))+'无限点数' },
+            unlocked() {return hasMilestone('I', 22)},
+            canAfford() { return player.I.points.gte(this.cost()) },
+            purchaseLimit: n(14),
+            buy() {
+                player.I.points = player.I.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        26: {
+            title(){text = '无限点数指数增加'
+                return text
+            },
+            cost(x) { return new Decimal(1e200).times(n(1e20).pow(x)) },
+            effect(x) {return new Decimal(0.1).times(x)},
+            display() { return "每次购买使无限点数指数+0.1<br/>当前已购买了"+ getBuyableAmount('I', 26) +"/6次<br/>效果：无限点数指数+"+format(buyableEffect('I', 26))+'<br/>下一次花费'+format(new Decimal(1e20).pow(n(getBuyableAmount('I', 26)).add(10)))+'无限点数' },
+            unlocked() {return hasMilestone('I', 25)},
+            canAfford() { return player.I.points.gte(this.cost()) },
+            purchaseLimit: n(6),
             buy() {
                 player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -2424,6 +2597,60 @@ addLayer("I", {
             effect(x) {return new Decimal(1.3).pow(x)},
             display() { return "每次购买使黑洞激活时间+30%<br/>当前已购买了"+ getBuyableAmount('I', 33) +"次<br/>效果：黑洞持续时间为"+format(tmp.I.bh1acttime)+'s<br/>下一次花费'+format(bhcost3(getBuyableAmount('I', 33)))+'无限点数' },
             unlocked() {return hasUpgrade('I', 11)&&!tmp.I.bh1percent.gte(0.9999)},
+            canAfford() { return player.I.points.gte(this.cost()) },
+            buy() {
+                player.I.points = player.I.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        41: {
+            title(){text = 'a值强化'
+                return text
+            },
+            cost(x) { a = repcost1(x)//new Decimal(1.5e9).times(n(3.5).pow(x))
+                //if (x.gte(30)) a = new Decimal(1.5e9).times(n(3.5).pow(30)).times((x.times(0.1).add(0.5)).pow(x.sub(30)))
+                //if (x.gte(100)) a = new Decimal(1.5e9).times((x.times(0.2).sub(5.5)).pow(x))
+                    return a
+             },
+            effect(x) {return new Decimal(1.05).pow(x)},
+            display() { return "每次购买使a值x1.05<br/>当前已购买了"+ getBuyableAmount('I', 41) +"次<br/>效果：a x"+format(buyableEffect('I', 41))+'<br/>下一次花费'+format(repcost1(getBuyableAmount('I', 41)))+'无限点数' },
+            unlocked() {return hasMilestone('I', 19)},
+            canAfford() { return player.I.points.gte(this.cost()) },
+            buy() {
+                player.I.points = player.I.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        42: {
+            title(){text = 'x值强化'
+                return text
+            },
+            cost(x) { a = repcost2(x)//new Decimal(1.5e9).times(n(3.5).pow(x))
+                //if (x.gte(30)) a = new Decimal(1.5e9).times(n(3.5).pow(30)).times((x.times(0.1).add(0.5)).pow(x.sub(30)))
+                //if (x.gte(100)) a = new Decimal(1.5e9).times((x.times(0.2).sub(5.5)).pow(x))
+                    return a
+             },
+            effect(x) {return new Decimal(0.01).times(x)},
+            display() { return "每次购买使x值+0.01<br/>当前已购买了"+ getBuyableAmount('I', 42) +"次<br/>效果：x +"+format(buyableEffect('I', 42))+'<br/>下一次花费'+format(repcost2(getBuyableAmount('I', 42)))+'无限点数' },
+            unlocked() {return hasMilestone('I', 19)},
+            canAfford() { return player.I.points.gte(this.cost()) },
+            buy() {
+                player.I.points = player.I.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        43: {
+            title(){text = '软上限延迟'
+                return text
+            },
+            cost(x) { a = repcost3(x)//new Decimal(1.5e9).times(n(3.5).pow(x))
+                //if (x.gte(30)) a = new Decimal(1.5e9).times(n(3.5).pow(30)).times((x.times(0.1).add(0.5)).pow(x.sub(30)))
+                //if (x.gte(100)) a = new Decimal(1.5e9).times((x.times(0.2).sub(5.5)).pow(x))
+                    return a
+             },
+            effect(x) {return new Decimal(2).pow(x)},
+            display() { return "每次购买使软上限起始复制器x2<br/>当前已购买了"+ getBuyableAmount('I', 43) +"次<br/>效果：x"+format(buyableEffect('I', 43))+'<br/>下一次花费'+format(repcost3(getBuyableAmount('I', 43)))+'无限点数' },
+            unlocked() {return hasMilestone('I', 19)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
                 player.I.points = player.I.points.sub(this.cost())
@@ -2854,6 +3081,51 @@ addLayer("I", {
             effectDescription: "解锁第八个无限挑战",
             done() { return player.points.gte(n('1e20000')) }
         },
+        18: {
+            requirementDescription: "1e35000 点数",
+            effectDescription: "最大化购买CT层的可购买",
+            done() { return player.points.gte(n('1e35000')) }
+        },
+        19: {
+            requirementDescription: "1e50000 点数",
+            effectDescription: "解锁复制器相关的可购买",
+            done() { return player.points.gte(n('1e50000')) }
+        },
+        20: {
+            requirementDescription: "1e52000 点数",
+            effectDescription: "指数三重软上限指数+0.05",
+            done() { return player.points.gte(n('1e52000')) }
+        },
+        21: {
+            requirementDescription: "1e56000 点数",
+            effectDescription: "指数三重软上限指数+0.03",
+            done() { return player.points.gte(n('1e56000')) }
+        },
+        22: {
+            requirementDescription: "1e66686 点数",
+            effectDescription() {return "基于点数增加无限点数获取指数 当前：+"+format(tmp.I.mil22effect)+"<br>并解锁一个新的可购买"},
+            done() { return player.points.gte(n('1e66686')) }
+        },
+        23: {
+            requirementDescription: "7e77777 点数",
+            effectDescription() {return "获得77777倍的Monika点数与无限点数（忽略软上限与其他指数）"},
+            done() { return player.points.gte(n('7e77777')) }
+        },
+        24: {
+            requirementDescription: "1e80000 点数 & 1e185 无限点数",
+            effectDescription() {return "基于点数加快QqQeInfinity超人的速度 当前：x"+format(tmp.I.mil24effect)+"<br>并解锁一个新的支线层级"},
+            done() { return player.points.gte(n('1e80000'))&&player.I.points.gte(1e185) }
+        },
+        25: {
+            requirementDescription: "1e100000 点数 & 1e195 无限点数",
+            effectDescription() {return "基于二重压缩时间墙加快QqQeInfinity超人的速度 当前：x"+format(tmp.I.mil25effect)+"<br>并解锁一个新的可购买"},
+            done() { return player.points.gte(n('1e100000'))&&player.I.points.gte(1e195) }
+        },
+        26: {
+            requirementDescription: "1e150000 点数 & 1e220 无限点数",
+            effectDescription() {return "指数三重软上限指数+0.02"},
+            done() { return player.points.gte(n('1e150000'))&&player.I.points.gte(1e220) }
+        },
     },
     clickables:{
         11: {
@@ -2907,6 +3179,7 @@ addLayer("I", {
         if (hasUpgrade('I', 61)) a = a.times(upgradeEffect('I', 61))
         if (hasUpgrade('I', 62)) a = a.times(upgradeEffect('I', 62))
         if (!inChallenge('I', 27)) a = a.times(tmp.Qi.qaqe308effect)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         a = a.times(tmp.qa.monikatoidmult)
         if (inChallenge('I', 23)) a = a.div(1e20)
         if (hasChallenge('I', 23)) a = a.times(challengeEffect(this.layer,23))
@@ -2914,6 +3187,7 @@ addLayer("I", {
         if (hasChallenge('I', 24)) a = a.times(challengeEffect(this.layer,24))
         if (inChallenge('I', 25)&&n(player.I.resetTime).lte(27705)) a = a.div(1e40).times(n(2).pow(n(player.I.resetTime).div(208.5)))
         if (inChallenge('I', 28)) a = a.div(n(1e10).pow(player.I.resetTime))
+        if (hasAchievement('A2', 25)) a = a.times(2)
             return a
     },
     id1mult() {a = n(1)
@@ -2926,6 +3200,7 @@ addLayer("I", {
         if (hasUpgrade('I', 53)) a = a.times(upgradeEffect('I', 53))
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = a.pow(2)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     id2mult() {a = n(1)
@@ -2937,6 +3212,7 @@ addLayer("I", {
         if (hasUpgrade('I', 51)) a = a.times(upgradeEffect('I', 51))
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     id3mult() {a = n(1)
@@ -2947,6 +3223,7 @@ addLayer("I", {
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 13))))
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     id4mult() {a = n(1)
@@ -2957,6 +3234,7 @@ addLayer("I", {
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 14))))
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     id5mult() {a = n(1)
@@ -2967,6 +3245,7 @@ addLayer("I", {
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 15))))
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     id6mult() {a = n(1)
@@ -2977,6 +3256,7 @@ addLayer("I", {
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 16))))
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     id7mult() {a = n(1)
@@ -2987,6 +3267,7 @@ addLayer("I", {
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 17))))
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     id8mult() {a = n(1)
@@ -2996,6 +3277,7 @@ addLayer("I", {
         a = a.times(tmp.I.ictoidmult)
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 18))))
         if (inChallenge('I', 22)) a = n(1)
+        if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
         return a
     },
     NcComp() {a = n(0)
@@ -3015,6 +3297,7 @@ addLayer("I", {
                         if (hasChallenge('I', 25)) a = a.add(1)
                             if (hasChallenge('I', 26)) a = a.add(1)
                                 if (hasChallenge('I', 27)) a = a.add(1)
+                                    if (hasChallenge('I', 28)) a = a.add(1)
             return a
     },
     bh1duration() {a = n(3473)
@@ -3041,12 +3324,49 @@ addLayer("I", {
         if (tmp.I.bh1percent.lt(0.9999)) a = a +"<br>黑洞激活持续时长为 <h3 style='color: #b67f33; text-shadow: 0 0 3px #c2b280'>" +format(tmp.I.bh1acttime)+ "</h3> 秒，距离黑洞激活结束还有 <h3 style='color: #b67f33; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.I.bh1acttime).sub(player.I.bh1duration))+"</h3> 秒<br/>"
         }
     return a},
+    repshow() {a = ''
+        if (hasUpgrade('I', 71)) {a = "你的复制器数量每秒(现实时间)x <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+ format(tmp.I.repmult) + "</h3>"
+            a = "你有 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>" + format(player.I.rep) + "</h3> 个复制器，使无限维度^ <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(tmp.I.repeff)+"</h3><br>" + a
+            a = a + "<br>乘数公式：y=a^x，其中a="+format(tmp.I.formulaa)+",x="+format(tmp.I.formulax)
+            if (player.I.rep.gte(tmp.I.repmultsoft)) a = a + "<br>由于你的复制器数量超过了 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(tmp.I.repmultsoft)+"</h3> ，复制速度将变为原来的 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.I.repmultsoft).log(player.I.rep).pow(2))+"</h3> 次方！"
+            if (player.I.rep.gte(1048576)) a = a + "<br>由于你的复制器数量到达了 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(1048576)+"</h3> ，复制器将停止增长！"
+        }
+        return a
+        },
+    formulaa() {a = n(2)
+        a = a.times(buyableEffect('I', 41))
+        return a
+    },
+    formulax() {x = n(0.01)
+        x = x.add(buyableEffect('I', 42))
+        return x
+            },
+    repmultsoft() {s = n(5)
+        s= s.times(buyableEffect('I', 43))
+        return s
+    },
+    repmult() {y = n(tmp.I.formulaa).pow(tmp.I.formulax)
+        if (player.I.rep.gte(tmp.I.repmultsoft)) y = y.pow(n(tmp.I.repmultsoft).log(player.I.rep).pow(2))
+        return y
+    },
+    repeff() {a = player.I.rep.add(9).log(10).log(10).add(1)
+        return a
+    },
+    mil22effect() {a = player.points.add(9).log(10).log(10).times(0.05)
+        return a
+    },
+    mil24effect() {a = player.points.add(10).log(10).pow(0.75)
+        return a
+    },
+    mil25effect() {a = player.DC.points.add(10).log(10)
+        return a
+    },
 })
 
 addLayer("qa", {
     name: "qaqe308", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "Qa", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
@@ -3090,6 +3410,10 @@ addLayer("qa", {
         },
         },
     doReset(resettingLayer) {
+        if (layers[resettingLayer].row > layers[this.layer].row) {
+            let kept = []
+            layerDataReset(this.layer, kept)
+               }
     },
     update(diff){
         player.qa.monika = player.qa.monika.add(tmp.qa.effect2.times(diff))
@@ -3124,6 +3448,11 @@ addLayer("qa", {
             requirementDescription: "11 qaqe308",
             effectDescription: "qaqe308进一步加成无限点数获取",
             done() { return player.qa.points.gte(11) }
+        },
+        3: {
+            requirementDescription: "14 qaqe308",
+            effectDescription: "qaqe308更进一步加成无限点数获取",
+            done() { return player.qa.points.gte(14) }
         },
     },
     buyables: {
@@ -3181,13 +3510,14 @@ addLayer("qa", {
     },
     Showdetail() {
         a = "你有 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>" + format(player.qa.monika) + "</h3> Monika点数，使你的无限维度<h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'> x" +format(tmp.qa.monikatoidmult)+ "</h3>."
-        a = a + "<br/>你有 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>" + format(player.qa.points) + "</h3> qaqe308, 每秒生产 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'> " +format(tmp.qa.effect2)+ "</h3> Monika点数."
+        a = a + "<br/>你有 <h3 style='color:#ab4308; text-shadow: 0 0 3px #c2b280'>" + format(player.qa.points) + "</h3> qaqe308, 每秒生产 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'> " +format(tmp.qa.effect2)+ "</h3> Monika点数."
         return a
     },
     effect2() {a = player.qa.points.pow(2)
         a = a.times(buyableEffect('qa', 13))
         if (hasMilestone('I', 11)) a = a.times(2)
         if (hasChallenge('I', 25)) a = a.times(challengeEffect('I', 25))
+        if (hasMilestone('I', 23)) a = a.times(77777)
         return a
     },
     monikatoidmult() {a = player.qa.monika.add(1).log(n(10).sub(buyableEffect('qa', 12))).add(1)
@@ -3196,6 +3526,7 @@ addLayer("qa", {
     effect(){
         a = n(2).pow(player.qa.points)
         if (hasMilestone('qa', 2)) a = n(3).pow(player.qa.points)
+            if (hasMilestone('qa', 3)) a = n(1e10).pow(player.qa.points)
             return a
       },
       effectDescription() { 
@@ -3206,4 +3537,146 @@ addLayer("qa", {
         }
         return a
     },
+})
+
+addLayer("rg", {
+    name: "ReplicantiGalaxy", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "RG", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        monika: n(0)
+    }},
+    color: "#998e15",
+    requires(){a = new Decimal('1e190')
+        return a
+    }, // Can be a function that takes requirement increases into account
+    resource: "ReplicantiGalaxy", // Name of prestige currency
+    baseResource: "无限点数", // Name of resource prestige is based on
+    baseAmount() {return player.I.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1.1, // Prestige currency exponent
+    base: n(1e100),
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "r", description: "R: 获得ReplicantiGalaxy", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return hasMilestone('I', 24)},
+    branches: ['I'],
+    //microtabs: {
+
+      //  },
+    doReset(resettingLayer) {        
+        if (layers[resettingLayer].row > layers[this.layer].row) {
+        let kept = []
+        layerDataReset(this.layer, kept)
+           }
+    },
+    update(diff){
+
+    },
+    autoPrestige() {a = false
+        return a
+    },
+    resetsNothing() {return true},
+    passiveGeneration()
+    {
+        mult = 0
+        return mult
+    },
+    //tabFormat: [
+    //    "main-display",
+    //    "prestige-button",
+    //    ["microtabs", "stuff"],
+    //    ["blank", "25px"],
+    //],
+    milestones: {
+        0: {
+            requirementDescription: "1 ReplicantiGalaxy",
+            effectDescription: "无限重置后保留部分复制器",
+            done() { return player.rg.points.gte(1) }
+        },
+
+    },
+    buyables: {
+
+    },
+    effect(){
+        a = n(1e3).pow(player.rg.points)
+            return a
+      },
+      effectDescription() { 
+        if (hasMilestone('rg', 0)) {
+            a = "使无限后保留"+format(tmp.rg.effect)+"个复制器"
+        } else {
+            a = "使无限后保留1个复制器"
+        }
+        return a
+    },
+})
+
+addLayer("E", {
+    name: "Eternity", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "Et", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        etr: n(0),
+    }},
+    color: "#b743de",
+    requires(){a = new Decimal(2).pow(1024)
+        return a
+    }, // Can be a function that takes requirement increases into account
+    resource: "永恒点数", // Name of prestige currency
+    baseResource: "无限点数", // Name of resource prestige is based on
+    baseAmount() {return player.I.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.0043, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 5, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "e", description: "E: 进行永恒", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return hasAchievement('A2', 75)||hasAchievement('A3', 11)},
+    branches: ['I'],
+    microtabs: {
+
+      },
+    doReset(resettingLayer) {
+        if(resettingLayer == 'E') player.E.etr = player.E.etr.add(1)
+    },
+    update(diff){
+
+    },
+    passiveGeneration()
+    {
+        mult = 0
+        return mult
+    },
+    tabFormat: [
+        "main-display",
+        "prestige-button",
+        ["microtabs", "stuff"],
+        ["blank", "25px"],
+    ],
+    milestones: {
+
+}
 })
