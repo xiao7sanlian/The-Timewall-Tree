@@ -393,7 +393,7 @@ addLayer("A", {
 
 addLayer("A2", {
     name: "Achievement2", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "A2", // This appears on the layer's node. Default is the id with the first letter capitalized
+    symbol: "A<sup>2</sup>", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -677,7 +677,7 @@ addLayer("A2", {
 
 addLayer("A3", {
     name: "Achievement3", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "A3", // This appears on the layer's node. Default is the id with the first letter capitalized
+    symbol: "A<sup>3</sup>", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -707,6 +707,13 @@ addLayer("A3", {
      done() {return player.E.points.gte(1)}, 
      onComplete() {player.A3.points = player.A3.points.add(1)},
      tooltip: "永恒一次", 
+     textStyle: {'color': '#ffe125'},
+        },
+    12: {
+     name: "Twice Eternity",
+     done() {return player.E.points.gte(2)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "永恒2次", 
      textStyle: {'color': '#ffe125'},
         },
     }
@@ -744,6 +751,7 @@ addLayer("T", {
         if (hasChallenge('CT', 13)) mult = mult.times(challengeEffect('CT', 13))
         if (n(challengeCompletions('DC', 14)).gte(1)) mult = mult.times(challengeEffect('DC', 14))
         if (hasAchievement('DC', 22)) mult = mult.times(achievementEffect('DC', 22))
+        mult = mult.times(tmp.E.mil0effect1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1063,6 +1071,10 @@ addLayer("Q", {
         exp = new Decimal(0.1)
         return exp
     },
+    directMult() {mult = n(1)
+        mult = mult.times(tmp.E.mil0effect2)
+        return mult
+    },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "q", description: "Q: 进行QqQe308重置", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -1155,6 +1167,7 @@ addLayer("CT", {
         if (n(challengeCompletions('DC', 14)).gte(1)) mult = mult.times(challengeEffect('DC', 14))
         if (hasAchievement('DC', 21)) mult = mult.times(achievementEffect('DC', 21))
         if (hasAchievement('DC', 24)) mult = mult.times(achievementEffect('DC', 24))
+        mult = mult.times(tmp.E.mil0effect1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1552,6 +1565,10 @@ addLayer("Qi", {
         //if (player.Qi.points.gte(160)) exp = exp.div(player.Qi.points.times(0.05).add(1))
         return exp
     },
+    directMult() {mult = n(1)
+        mult = mult.times(tmp.E.mil0effect2)
+        return mult
+    },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "i", description: "I: 进行QqQeInfinity重置", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -1785,6 +1802,7 @@ addLayer("DC", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasMilestone('DC', 9)) mult = mult.times(tmp.Qi.cokecoleffect2)
+        mult = mult.times(tmp.E.mil0effect1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2154,6 +2172,10 @@ addLayer("co", {
         exp = new Decimal(0.1)
         return exp
     },
+    directMult() {mult = n(1)
+        mult = mult.times(tmp.E.mil0effect2)
+        return mult
+    },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "o", description: "O: 进行cokecole重置", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -2256,6 +2278,7 @@ addLayer("I", {
         if (hasChallenge('I', 26)) mult = mult.times(challengeEffect('I', 26))
         if (hasMilestone('Qi', 102)) mult = mult.times(tmp.Qi.qaqe308effect2)
         if (hasChallenge('I', 27)) mult = mult.times(challengeEffect('I', 27))
+        mult = mult.times(tmp.E.mil0effect3)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2333,7 +2356,7 @@ addLayer("I", {
                 unlocked() {return hasUpgrade('I', 41)},
                 content: [["clickables",[1]]],},
             "Infinity Challenges": {
-                unlocked() {return hasMilestone('I', 4)},
+                unlocked() {return hasMilestone('I', 5)},
                 content: [ ["display-text", () => "你完成了"+format(tmp.I.IcComp)+"个无限挑战，使无限维度x"+format(tmp.I.ictoidmult)],
                 ["challenges", [2]]]}, 
             "Replicanti": {
@@ -2748,7 +2771,7 @@ addLayer("I", {
             challengeDescription(){return "无限之力给点数乘数的指数固定为1"},
             goalDescription(){return "1e355 点数"},
             rewardDescription(){return "去除无限次数给无限维度的加成的上限"},
-            unlocked(){return hasMilestone('I', 4)},
+            unlocked(){return hasMilestone('I', 5)},
             onComplete(){
                 player.I.inf = player.I.inf.add(1)
             },
@@ -2841,7 +2864,7 @@ addLayer("I", {
             rewardEffect() {eff= player.I.ipower.add(1).log(100).add(1)
                 return eff
                 },
-            unlocked(){return hasMilestone('I', 14)},
+            unlocked(){return hasMilestone('I', 15)},
             onComplete(){
                 player.I.inf = player.I.inf.add(1)
             },
@@ -2857,7 +2880,7 @@ addLayer("I", {
             rewardEffect() {eff= tmp.I.id1mult.times(tmp.I.id8mult).pow(0.1)
                 return eff
                 },
-            unlocked(){return hasMilestone('I', 14)},
+            unlocked(){return hasMilestone('I', 17)},
             onComplete(){
                 player.I.inf = player.I.inf.add(1)
             },
@@ -3188,6 +3211,7 @@ addLayer("I", {
         if (inChallenge('I', 25)&&n(player.I.resetTime).lte(27705)) a = a.div(1e40).times(n(2).pow(n(player.I.resetTime).div(208.5)))
         if (inChallenge('I', 28)) a = a.div(n(1e10).pow(player.I.resetTime))
         if (hasAchievement('A2', 25)) a = a.times(2)
+        a = a.times(tmp.E.mil0effect4)
             return a
     },
     id1mult() {a = n(1)
@@ -3327,7 +3351,7 @@ addLayer("I", {
     repshow() {a = ''
         if (hasUpgrade('I', 71)) {a = "你的复制器数量每秒(现实时间)x <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+ format(tmp.I.repmult) + "</h3>"
             a = "你有 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>" + format(player.I.rep) + "</h3> 个复制器，使无限维度^ <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(tmp.I.repeff)+"</h3><br>" + a
-            a = a + "<br>乘数公式：y=a^x，其中a="+format(tmp.I.formulaa)+",x="+format(tmp.I.formulax)
+            a = a + "<br>乘数公式：y=a<sup>x</sup>，其中a="+format(tmp.I.formulaa)+",x="+format(tmp.I.formulax)
             if (player.I.rep.gte(tmp.I.repmultsoft)) a = a + "<br>由于你的复制器数量超过了 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(tmp.I.repmultsoft)+"</h3> ，复制速度将变为原来的 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.I.repmultsoft).log(player.I.rep).pow(2))+"</h3> 次方！"
             if (player.I.rep.gte(1048576)) a = a + "<br>由于你的复制器数量到达了 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(1048576)+"</h3> ，复制器将停止增长！"
         }
@@ -3339,6 +3363,7 @@ addLayer("I", {
     },
     formulax() {x = n(0.01)
         x = x.add(buyableEffect('I', 42))
+        x = x.times(tmp.E.mil0effect6)
         return x
             },
     repmultsoft() {s = n(5)
@@ -3390,6 +3415,10 @@ addLayer("qa", {
         exp = new Decimal(1)
         if (hasMilestone('I', 13)) exp = exp.add(1)
         return exp
+    },
+    directmult() {mult = n(1)
+        mult = mult.times(tmp.E.mil0effect5)
+        return mult
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -3632,6 +3661,14 @@ addLayer("E", {
         unlocked: true,
 		points: new Decimal(0),
         etr: n(0),
+        td1: n(0),
+        td2: n(0),
+        td3: n(0),
+        td4: n(0),
+        td5: n(0),
+        td6: n(0),
+        td7: n(0),
+        td8: n(0),
     }},
     color: "#b743de",
     requires(){a = new Decimal(2).pow(1024)
@@ -3657,7 +3694,11 @@ addLayer("E", {
     layerShown(){return hasAchievement('A2', 75)||hasAchievement('A3', 11)},
     branches: ['I'],
     microtabs: {
-
+        stuff: {       
+        "Milestone": {
+            unlocked() {return true},
+            content: ["milestones"]},
+        }
       },
     doReset(resettingLayer) {
         if(resettingLayer == 'E') player.E.etr = player.E.etr.add(1)
@@ -3676,7 +3717,34 @@ addLayer("E", {
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
-    milestones: {
-
-}
+    milestones:{
+        0: {
+            requirementDescription: "1次永恒",
+            effectDescription() {return "基于永恒次数对永恒前资源给予各种加成 当前：<br>无限前所有主线资源获取x"+format(tmp.E.mil0effect1)+" 所有支线资源获取x"+format(tmp.E.mil0effect2)+"<br>无限点数获取x"+format(tmp.E.mil0effect3)+" 无限维度倍率x"+format(tmp.E.mil0effect4)+"<br>qaqe308获取x"+format(tmp.E.mil0effect5)+" 复制器速度公式中x值x"+format(tmp.E.mil0effect6)+"<br>你当前的永恒次数："+format(player.E.etr)},
+            done() { return player.E.etr.gte(1) }
+        },
+        1: {
+            requirementDescription: "2次永恒",
+            effectDescription() {return "解锁升级树，解锁自动IP倍增购买器"},
+            done() { return player.E.etr.gte(2) }
+        },
+    },
+    mil0effect1() {a = player.E.etr.add(1).pow(3)
+        return a
+    },//pre-inf mainline
+    mil0effect2() {a = player.E.etr.add(1).pow(1.5)
+        return a
+    },//pre-inf side-story
+    mil0effect3() {a = player.E.etr.add(1)
+        return a
+    },//IP mult
+    mil0effect4() {a = n(5).pow(player.E.etr)
+        return a
+    },//ID mult
+    mil0effect5() {a = player.E.etr.add(1).log(2).add(1)
+        return a
+    },//qaqe308
+    mil0effect6() {a = player.E.etr.add(1).log(2).times(0.01).add(1)
+        return a
+    },//rep x(add)
 })

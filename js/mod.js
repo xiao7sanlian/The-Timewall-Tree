@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.6",
-	name: "Replicanti Update",
+	num: "0.65.1",
+	name: "Eternity Update (I)",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -58,7 +58,10 @@ let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.6 Replicanti Update 2025/4/5~2024/4/13</h3><br/>
 	    - 实装复制器<br>
 		- 增加10个成就，2个可购买与不知道多少个里程碑<br>
-		- 增加了下一个层级(永恒)`
+		- 增加了下一个层级(永恒)
+	<h3>v0.65.1 Eternity Update (I) 2025/5/4~2024/5/18</h3><br/>
+	    - 增加了2个永恒里程碑<br>
+		- Endgame:2次永恒`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -134,6 +137,12 @@ function sc7power(){
 	if (hasMilestone('I', 20)) power = power.add(0.05)
 	if (hasMilestone('I', 21)) power = power.add(0.03)
 	if (hasMilestone('I', 26)) power = power.add(0.02)
+	root = n(1).div(power)
+	return root
+}
+
+function sc8power(){
+	power = new Decimal(0.01)
 	root = n(1).div(power)
 	return root
 }
@@ -224,6 +233,8 @@ function getPointGen() {
 	if (tmp.I.ipowereffect.gte(1)&&!hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
 	if (hasUpgrade('T', 54)&&!inChallenge('T',13)) gain = gain.times(buyableEffect('T', 11))
 	gain = gain.times(buyableEffect('qa', 11))
+    gain = gain.times(tmp.E.mil0effect1)
+
 	if (hasUpgrade('T', 23)&&gain.lt(1)) gain = gain.pow(0.5)
 	if (hasChallenge('T', 12)) gain = gain.pow(1.01)
 	if (hasMilestone('DC', 1)) gain = gain.pow(1.01)
@@ -253,6 +264,7 @@ function getPointGen() {
 	if (gain.gte(n('1e616'))) gain = powsoftcap(gain,n('1e616'),sc5power()) //sc5
 	if (gain.gte(n('1e10000'))) gain = powsoftcap(gain,n('1e10000'),sc6power()) //sc6
 	if (gain.gte(n('1e50000'))) gain = powsoftcap(gain,n('1e50000'),sc7power()) //sc7
+	if (gain.gte(n('1e208500'))) gain = expRootSoftcap(gain,n('1e208500'),sc8power()) //sc8
 
 	if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) gain = n(0)
 	if (player.points.gte(1.79e308)&&inChallenge('I', 16)) gain = n(0)
@@ -268,7 +280,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:永恒'
+	function(){a = '当前Endgame:2此永恒'
 		if (getPointGen().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (getPointGen().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
@@ -277,6 +289,7 @@ var displayThings = [
 		if (getPointGen().gte('1e616')) a = a + '<br/>由于点数获取量超过1e616，点数获取量指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc5power()))
 		if (getPointGen().gte('1e10000')) a = a + '<br/>由于点数获取量超过1e10000，点数获取量指数受到二重软上限限制！<br/>二重软上限指数：' + format(n(1).div(sc6power()))
 		if (getPointGen().gte('1e50000')) a = a + '<br/>由于点数获取量超过1e50000，点数获取量指数受到三重软上限限制！<br/>三重软上限指数：' + format(n(1).div(sc7power()))
+			if (getPointGen().gte('1e208500')) a = a + '<br/>由于点数获取量超过1e208500，点数获取量指数的指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc8power()))
 		return a
 	}
 ]
@@ -289,7 +302,8 @@ function isEndgame() {
 	//return player.qa.points.gte(1)
 	//return hasUpgrade('I', 11)
 	//return hasUpgrade('I', 71)
-	return player.E.points.gte(1)
+	return player.E.points.gte(2)
+	//return false
 }
 
 // Less important things beyond this point!
