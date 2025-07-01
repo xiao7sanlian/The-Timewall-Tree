@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.65.1",
-	name: "Eternity Update (I)",
+	num: "0.65.2",
+	name: "Eternity Update (II)",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -58,10 +58,13 @@ let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.6 Replicanti Update 2025/4/5~2024/4/13</h3><br/>
 	    - 实装复制器<br>
 		- 增加10个成就，2个可购买与不知道多少个里程碑<br>
-		- 增加了下一个层级(永恒)
+		- 增加了下一个层级(永恒)<br>
 	<h3>v0.65.1 Eternity Update (I) 2025/5/4~2024/5/18</h3><br/>
 	    - 增加了2个永恒里程碑<br>
-		- Endgame:2次永恒`
+		- Endgame:2次永恒<br>
+	<h3>v0.65.2 Eternity Update (I) 2025/5/18~2024/6/29</h3><br/>
+	    - 增加了1个永恒里程碑、升级树与时间维度<br>
+		- Endgame:3次永恒+打破无限`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -280,7 +283,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:2此永恒'
+	function(){a = '当前Endgame:???'
 		if (getPointGen().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (getPointGen().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
@@ -302,8 +305,8 @@ function isEndgame() {
 	//return player.qa.points.gte(1)
 	//return hasUpgrade('I', 11)
 	//return hasUpgrade('I', 71)
-	return player.E.points.gte(2)
-	//return false
+	//return player.E.points.gte(2)
+	return player.E.etr.gte(3)&&hasUpgrade('I', 21)
 }
 
 // Less important things beyond this point!
@@ -384,3 +387,9 @@ function quickSUP(str){
 function quickColor(str,color){
     return `<text style='color:${color}'>${str}</text>`
 }
+
+function gba(a,b){return getBuyableAmount(a,b)}
+
+function gcs(a,b){return getClickableState(a,b)}
+
+function ce(a,b) {return clickableEffect(a,b)}
