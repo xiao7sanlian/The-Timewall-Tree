@@ -4029,7 +4029,7 @@ addLayer("E", {
         if (a.gte(1)) a=n(1)
         return a
     },
-    TSeffect() {a = player.E.timeshard.add(10).log(10)
+    TSeffect() {a = player.E.timeshard.log(10)
         return a
     },
     alltdmult() {a = tmp.E.etrtotdmult
