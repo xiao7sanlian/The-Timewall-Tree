@@ -30,9 +30,9 @@ addLayer("A", {
 	    return dev
 	   },
        doReset(resettingLayer) {
-        if (resettingLayer == 'I'&&!hasChallenge('I', 12)||resettingLayer == 'E') {
+        if ((resettingLayer == 'I'&&!hasChallenge('I', 12))||(resettingLayer == 'E'&&!hasMilestone('E', 2))) {
             let kept = []
-            layerDataReset(this.layer, kept)
+            if(!hasMilestone('E', 3)) layerDataReset(this.layer, kept)
         }
     },
     row: 'side', // Row the layer is in on the tree (0 is the first row)
@@ -705,24 +705,38 @@ addLayer("A3", {
     achievements: {
         11: {
      name: "Time is relative",
-     done() {return player.E.points.gte(1)}, 
+     done() {return player.E.etr.gte(1)}, 
      onComplete() {player.A3.points = player.A3.points.add(1)},
      tooltip: "永恒一次", 
      textStyle: {'color': '#ffe125'},
         },
     12: {
-     name: "Twice Eternity",
-     done() {return player.E.points.gte(2)}, 
+     name: "Double Eternity",
+     done() {return player.E.etr.gte(2)}, 
      onComplete() {player.A3.points = player.A3.points.add(1)},
      tooltip: "永恒2次", 
      textStyle: {'color': '#ffe125'},
         },
     13: {
-     name: "I'm going to water achievements I",
-     done() {return player.E.points.gte(3)}, 
+     name: "Triple Eternity",
+     done() {return player.E.etr.gte(3)}, 
      onComplete() {player.A3.points = player.A3.points.add(1)},
      tooltip: "永恒3次", 
      textStyle: {'color': '#ffe125'},
+        },
+    14: {
+     name: "Quadraeternal",
+     done() {return player.E.etr.gte(4)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "永恒4次", 
+     textStyle: {'color': '#ffe125'},
+        },
+    15: {
+     name: "Five eternity",
+     done() {return player.E.etr.gte(5)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "永恒5次<br>奖励：获得一个升级点数（每个完成的绿名三级成就都会额外奖励一个升级点数）", 
+     textStyle: {'color': '#4bd123'},
         },
     }
 })
@@ -1250,6 +1264,7 @@ addLayer("CT", {
     tabFormat: [
         "main-display",
         "prestige-button",
+        "resource-display",
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
@@ -1655,6 +1670,7 @@ addLayer("Qi", {
     tabFormat: [
         "main-display",
         "prestige-button",
+        "resource-display",
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
@@ -1884,6 +1900,7 @@ addLayer("DC", {
     tabFormat: [
         "main-display",
         "prestige-button",
+        "resource-display",
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
@@ -2337,6 +2354,7 @@ addLayer("I", {
         if (player.I.rep.gt(1048576)) player.I.rep = n(1048576)
         if (player.I.points.gt(n(2).pow(1024))) player.I.points = n(2).pow(1024)
         if (player.E.IPmultauto == true&&hasMilestone('I', 2)&&layers.I.buyables[21].canAfford()) layers.I.buyables[21].buy()
+        if (hasMilestone('E', 3)&&player.I.inf.lt(256)) player.I.inf=n(256) //4 etr mil
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -2387,6 +2405,7 @@ addLayer("I", {
     tabFormat: [
         "main-display",
         "prestige-button",
+        "resource-display",
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
@@ -2405,7 +2424,6 @@ addLayer("I", {
         }
         if (layers[resettingLayer].row > layers[this.layer].row) {
      let kept = []
-     if (hasMilestone('E', 1)) kept = [['challenges',[1]]]
      layerDataReset(this.layer, kept)
         }
     },
@@ -2709,8 +2727,8 @@ addLayer("I", {
             rewardDescription(){return "自动购买之前层级的所有升级"},
             unlocked(){return hasAchievement('A2', 12)},
             onComplete(){
-                player.I.points = player.I.points.add(1)
-                player.I.inf = player.I.inf.add(1)
+                if (player.points.gte(1.79e308)) player.I.points = player.I.points.add(1)
+                if (player.points.gte(1.79e308)) player.I.inf = player.I.inf.add(1)
             },
             onEnter(){player.I.inf = player.I.inf.sub(1)},
             onExit(){player.I.inf = player.I.inf.sub(1)},
@@ -2725,8 +2743,8 @@ addLayer("I", {
             rewardDescription(){return "自动购买之前层级的可购买，无限后保留成就"},
             unlocked(){return hasAchievement('A2', 12)},
             onComplete(){
-                player.I.points = player.I.points.add(1)
-                player.I.inf = player.I.inf.add(1)
+                if (player.points.gte(1.79e308))player.I.points = player.I.points.add(1)
+                if (player.points.gte(1.79e308))player.I.inf = player.I.inf.add(1)
             },
             onEnter(){player.I.inf = player.I.inf.sub(1)},
             onExit(){player.I.inf = player.I.inf.sub(1)},
@@ -2741,8 +2759,8 @@ addLayer("I", {
             rewardDescription(){return "解锁黑洞，无限后保留之前主线层级的升级、挑战与里程碑"},
             unlocked(){return hasAchievement('A2', 12)},
             onComplete(){
-                player.I.points = player.I.points.add(1)
-                player.I.inf = player.I.inf.add(1)
+                if (player.points.gte(1.79e308))player.I.points = player.I.points.add(1)
+                if (player.points.gte(1.79e308))player.I.inf = player.I.inf.add(1)
             },
             onEnter(){player.I.inf = player.I.inf.sub(1)},
             onExit(){player.I.inf = player.I.inf.sub(1)},
@@ -2757,8 +2775,8 @@ addLayer("I", {
             rewardDescription(){return "自动获取QqQe308与QqQeInfinity且不重置任何东西"},
             unlocked(){return hasAchievement('A2', 12)},
             onComplete(){
-                player.I.points = player.I.points.add(1)
-                player.I.inf = player.I.inf.add(1)
+                if (player.points.gte(1.79e308))player.I.points = player.I.points.add(1)
+                if (player.points.gte(1.79e308))player.I.inf = player.I.inf.add(1)
             },
             onEnter(){player.I.inf = player.I.inf.sub(1)},
             onExit(){player.I.inf = player.I.inf.sub(1)},
@@ -2773,8 +2791,8 @@ addLayer("I", {
             rewardDescription(){return "所有被动生成资源且效果x10"},
             unlocked(){return hasAchievement('A2', 12)},
             onComplete(){
-                player.I.points = player.I.points.add(1)
-                player.I.inf = player.I.inf.add(1)
+                if (player.points.gte(1.79e308))player.I.points = player.I.points.add(1)
+                if (player.points.gte(1.79e308))player.I.inf = player.I.inf.add(1)
             },
             onEnter(){player.I.inf = player.I.inf.sub(1)},
             onExit(){player.I.inf = player.I.inf.sub(1)},
@@ -2789,8 +2807,8 @@ addLayer("I", {
             rewardDescription(){return "自动获取cokecole且不重置任何东西，解锁第四个支线层级"},
             unlocked(){return hasAchievement('A2', 12)},
             onComplete(){
-                player.I.points = player.I.points.add(1)
-                player.I.inf = player.I.inf.add(1)
+                if (player.points.gte(1.79e308))player.I.points = player.I.points.add(1)
+                if (player.points.gte(1.79e308))player.I.inf = player.I.inf.add(1)
             },
             onEnter(){player.I.inf = player.I.inf.sub(1)},
             onExit(){player.I.inf = player.I.inf.sub(1)},
@@ -3498,6 +3516,7 @@ addLayer("qa", {
     tabFormat: [
         "main-display",
         "prestige-button",
+        "resource-display",
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
@@ -3748,6 +3767,7 @@ addLayer("E", {
      ['row',[['clickable',11]]],"blank",
        ['row',[['clickable',21]]],"blank","blank","blank","blank","blank",
        ['row',[['clickable',31],"blank",['clickable',32]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',41]]],"blank","blank","blank","blank","blank",
        //tabf
         ],
     },
@@ -3794,6 +3814,7 @@ addLayer("E", {
     tabFormat: [
         "main-display",
         "prestige-button",
+        "resource-display",
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
@@ -3813,6 +3834,16 @@ addLayer("E", {
             requirementDescription: "3次永恒",
             effectDescription() {return "无限层级所有普通挑战目标为0"},
             done() { return player.E.etr.gte(3) }
+        },
+        3: {
+            requirementDescription: "4次永恒",
+            effectDescription() {return "永恒后保留所有一级成就，且每次永恒以256次无限开始"},
+            done() { return player.E.etr.gte(4) }
+        },
+        4: {
+            requirementDescription: "5次永恒",
+            effectDescription() {return "获得滚木（将在下一个版本更新）"},
+            done() { return player.E.etr.gte(5) }
         },
     },
     buyables: {
@@ -3942,6 +3973,8 @@ addLayer("E", {
            },
            onClick() {
             //setClickableState("E",21,0)
+            setClickableState("E",31,0)
+            setClickableState("E",32,0)
             player.E.upcost=n(0).add(n(gcs('E', 21)))
              doReset('E')
            },
@@ -4006,6 +4039,27 @@ addLayer("E", {
            branches(){return ["21"]},
             unlocked(){return hasMilestone('E',1)},
         },
+        41: {
+           title(){return "32" },
+           display() {return "游戏速度以削弱的效果加强时间维度<br>当前：x"+format(this.effect())+"<br>价格: 2 升级点数"},
+           effect() {a = player.devSpeed.add(1).log(10).add(1)
+            return a
+           },
+           tooltip() {
+           return "购买要求: 21|22"
+           },
+   style() { return { 'background-color': getClickableState('E',32)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',41)==1||(!gcs('E', 21)==1&&!gcs('E', 22)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(2)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(2)
+           },
+           branches(){return ["31","32"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
    },
     mil0effect1() {a = player.E.etr.add(1).pow(3)
         return a
@@ -4033,6 +4087,7 @@ addLayer("E", {
         return a
     },
     alltdmult() {a = tmp.E.etrtotdmult
+        if (gcs('E', 41)==1) a = a.times(ce('E', 41))
         return a
     },
     td1mult() {a = tmp.E.alltdmult
