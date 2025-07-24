@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.65.3",
-	name: "Eternity Update (III)",
+	num: "0.65.4",
+	name: "Eternity Update (IV)",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -67,8 +67,12 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Endgame:3次永恒+打破无限<br>
 	<h3>v0.65.3 Eternity Update (III) 2025/7/10~2025/7/13</h3><br/>
 	    - 增加了"resource-display"<br>
-		- 增加了2个成就，1个里程碑，1个升级
-		- Endgame:5次永恒`
+		- 增加了2个成就，1个里程碑，1个升级<br>
+		- Endgame:5次永恒<br>
+	<h3>v0.65.4 Eternity Update (IV) 2025/7/20~2025/7/24</h3><br/>
+	    - 增加了"减速"功能<br>
+		- 增加了4个里程碑<br>
+		- Endgame:9次永恒<br>`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -287,7 +291,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:???'
+	function(){a = '当前Endgame:9次永恒'
 		if (getPointGen().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (getPointGen().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
@@ -311,7 +315,8 @@ function isEndgame() {
 	//return hasUpgrade('I', 71)
 	//return player.E.points.gte(2)
 	//return player.E.etr.gte(3)&&hasUpgrade('I', 21)
-	return player.E.etr.gte(5)
+	//return player.E.etr.gte(5)
+	return player.E.etr.gte(9)
 }
 
 // Less important things beyond this point!

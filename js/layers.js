@@ -26,6 +26,7 @@ addLayer("A", {
         if (inChallenge('I', 13)) dev=dev.div(2)
         if (hasUpgrade('I', 11)&&player.I.bh1activation.eq(1)&&player.I.bhpaused.neq(1)) dev=dev.times(tmp.I.bh1speed)
         dev = dev.times(tmp.E.TSeffect)
+        dev = dev.div(n(10).pow(player.E.slowtime))
 	    if (isEndgame()||player.T.pause.eq(1)) dev=n(0)
 	    return dev
 	   },
@@ -737,6 +738,27 @@ addLayer("A3", {
      onComplete() {player.A3.points = player.A3.points.add(1)},
      tooltip: "永恒5次<br>奖励：获得一个升级点数（每个完成的绿名三级成就都会额外奖励一个升级点数）", 
      textStyle: {'color': '#4bd123'},
+        },
+    21: {
+     name: "请停止抄袭旋转放置",
+     done() {return player.E.slowtime.gt(0)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "进行一次Slowdown", 
+     textStyle: {'color': '#ffe125'},
+        },
+    22: {
+     name: "ID Free",
+     done() {return player.E.etr.gte(7)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得7次永恒的里程碑", 
+     textStyle: {'color': '#ffe125'},
+        },
+    23: {
+     name: "Trillion QqQe308",
+     done() {return player.Q.points.gte(1e12)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得1e12个QqQe308", 
+     textStyle: {'color': '#ffe125'},
         },
     }
 })
@@ -2354,6 +2376,19 @@ addLayer("I", {
         if (player.I.rep.gt(1048576)) player.I.rep = n(1048576)
         if (player.I.points.gt(n(2).pow(1024))) player.I.points = n(2).pow(1024)
         if (player.E.IPmultauto == true&&hasMilestone('I', 2)&&layers.I.buyables[21].canAfford()) layers.I.buyables[21].buy()
+        if ((hasMilestone('E',5)&&player.E.scnerfauto == true&&n(getBuyableAmount('I', 22)).lt(6)&&layers.I.buyables[22].canAfford())) layers.I.buyables[22].buy();
+        if ((hasMilestone('E',5)&&player.E.ipowauto == true&&n(getBuyableAmount('I', 23)).lt(36)&&layers.I.buyables[23].canAfford())) layers.I.buyables[23].buy();
+        if ((hasMilestone('E',5)&&player.E.scnerf2auto == true&&n(getBuyableAmount('I', 24)).lt(10)&&layers.I.buyables[24].canAfford())) layers.I.buyables[24].buy();
+        if ((hasMilestone('E',5)&&player.E.scnerf3auto == true&&n(getBuyableAmount('I', 25)).lt(14)&&layers.I.buyables[25].canAfford())) layers.I.buyables[25].buy();
+        if ((hasMilestone('E',5)&&player.E.ipexpauto == true&&n(getBuyableAmount('I', 26)).lt(6)&&layers.I.buyables[26].canAfford())) layers.I.buyables[26].buy();
+        if ((hasMilestone('E',6)&&player.E.id1auto == true&&layers.I.buyables[11].canAfford())) layers.I.buyables[11].buy();
+        if ((hasMilestone('E',6)&&player.E.id2auto == true&&layers.I.buyables[12].canAfford())) layers.I.buyables[12].buy();
+        if ((hasMilestone('E',6)&&player.E.id3auto == true&&layers.I.buyables[13].canAfford())) layers.I.buyables[13].buy();
+        if ((hasMilestone('E',6)&&player.E.id4auto == true&&layers.I.buyables[14].canAfford())) layers.I.buyables[14].buy();
+        if ((hasMilestone('E',7)&&player.E.id5auto == true&&layers.I.buyables[15].canAfford())) layers.I.buyables[15].buy();
+        if ((hasMilestone('E',7)&&player.E.id6auto == true&&layers.I.buyables[16].canAfford())) layers.I.buyables[16].buy();
+        if ((hasMilestone('E',7)&&player.E.id7auto == true&&layers.I.buyables[17].canAfford())) layers.I.buyables[17].buy();
+        if ((hasMilestone('E',7)&&player.E.id8auto == true&&layers.I.buyables[18].canAfford())) layers.I.buyables[18].buy();
         if (hasMilestone('E', 3)&&player.I.inf.lt(256)) player.I.inf=n(256) //4 etr mil
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
@@ -2439,7 +2474,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id1mult)+"<br>当前数量："+format(player.I.id1)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6)) player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id1 = player.I.id1.add(1)
             },
@@ -2450,7 +2485,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id2mult)+"<br>当前数量："+format(player.I.id2)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6)) player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id2 = player.I.id2.add(1)
             },
@@ -2461,7 +2496,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id3mult)+"<br>当前数量："+format(player.I.id3)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6)) player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id3 = player.I.id3.add(1)
             },
@@ -2472,7 +2507,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id4mult)+"<br>当前数量："+format(player.I.id4)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6))player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id4 = player.I.id4.add(1)
             },
@@ -2483,7 +2518,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id5mult)+"<br>当前数量："+format(player.I.id5)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6))player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id5 = player.I.id5.add(1)
             },
@@ -2494,7 +2529,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id6mult)+"<br>当前数量："+format(player.I.id6)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6))player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id6 = player.I.id6.add(1)
             },
@@ -2505,7 +2540,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id7mult)+"<br>当前数量："+format(player.I.id7)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6))player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id7 = player.I.id7.add(1)
             },
@@ -2516,7 +2551,7 @@ addLayer("I", {
             display() { return "花费："+format(this.cost())+"无限点数<br>维度倍率：x"+format(tmp.I.id8mult)+"<br>当前数量："+format(player.I.id8)+"<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                if (!hasMilestone('E', 6))player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.I.id8 = player.I.id8.add(1)
             },
@@ -2531,7 +2566,7 @@ addLayer("I", {
             unlocked() {return hasMilestone('I', 2)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 5)) player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2543,10 +2578,10 @@ addLayer("I", {
             effect(x) {return new Decimal(0.05).times(x)},
             display() { return "每次购买使四重软上限指数+0.05<br/>当前已购买了"+ getBuyableAmount('I', 22) +"/6次<br/>效果：四重软上限指数+"+format(buyableEffect('I', 22))+'<br/>下一次花费'+format(new Decimal(1000).pow(n(getBuyableAmount('I', 22)).add(1)))+'无限点数' },
             unlocked() {return hasMilestone('I', 3)},
-            canAfford() { return player.I.points.gte(this.cost()) },
+            canAfford() { return player.I.points.gte(this.cost())&&hasMilestone('I', 3) },
             purchaseLimit: n(6),
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 5)) player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2558,10 +2593,10 @@ addLayer("I", {
             effect(x) {return new Decimal(0.125).times(x)},
             display() { return "每次购买使无限之力给点数乘数的指数+0.125<br/>当前已购买了"+ getBuyableAmount('I', 23) +"/36次<br/>效果：无限之力给点数乘数的指数+"+format(buyableEffect('I', 23))+'<br/>下一次花费'+format(new Decimal(8).pow(n(getBuyableAmount('I', 23)).add(3)))+'无限点数' },
             unlocked() {return hasMilestone('I', 4)},
-            canAfford() { return player.I.points.gte(this.cost()) },
+            canAfford() { return player.I.points.gte(this.cost())&&hasMilestone('I', 4) },
             purchaseLimit: n(36),
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 5)) player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2573,10 +2608,10 @@ addLayer("I", {
             effect(x) {return new Decimal(0.01).times(x)},
             display() { return "每次购买使指数软上限指数+0.01<br/>当前已购买了"+ getBuyableAmount('I', 24) +"/10次<br/>效果：指数软上限指数+"+format(buyableEffect('I', 24))+'<br/>下一次花费'+format(new Decimal(1e10).pow(n(getBuyableAmount('I', 24)).add(7)))+'无限点数' },
             unlocked() {return hasMilestone('I', 16)},
-            canAfford() { return player.I.points.gte(this.cost()) },
+            canAfford() { return player.I.points.gte(this.cost())&&hasMilestone('I', 16) },
             purchaseLimit: n(10),
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 5)) player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2588,10 +2623,10 @@ addLayer("I", {
             effect(x) {return new Decimal(0.03).times(x)},
             display() { return "每次购买使指数二重软上限指数+0.03<br/>当前已购买了"+ getBuyableAmount('I', 25) +"/14次<br/>效果：指数二重软上限指数+"+format(buyableEffect('I', 25))+'<br/>下一次花费'+format(new Decimal(1e10).pow(n(getBuyableAmount('I', 25)).add(17)))+'无限点数' },
             unlocked() {return hasMilestone('I', 22)},
-            canAfford() { return player.I.points.gte(this.cost()) },
+            canAfford() { return player.I.points.gte(this.cost())&&hasMilestone('I', 22) },
             purchaseLimit: n(14),
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 5)) player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2603,10 +2638,10 @@ addLayer("I", {
             effect(x) {return new Decimal(0.1).times(x)},
             display() { return "每次购买使无限点数指数+0.1<br/>当前已购买了"+ getBuyableAmount('I', 26) +"/6次<br/>效果：无限点数指数+"+format(buyableEffect('I', 26))+'<br/>下一次花费'+format(new Decimal(1e20).pow(n(getBuyableAmount('I', 26)).add(10)))+'无限点数' },
             unlocked() {return hasMilestone('I', 25)},
-            canAfford() { return player.I.points.gte(this.cost()) },
+            canAfford() { return player.I.points.gte(this.cost())&&hasMilestone('I', 25) },
             purchaseLimit: n(6),
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 5)) player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -3730,7 +3765,9 @@ addLayer("E", {
         timeshard: n(10),
         up: n(0),
         uptotal: n(0),
+        upbybuy: n(0),
         upcost: n(0),
+        slowtime: n(0),
     }},
     color: "#b743de",
     requires(){a = new Decimal(2).pow(1024)
@@ -3763,7 +3800,7 @@ addLayer("E", {
         "Upgrade Tree": {
             unlocked() {return hasMilestone('E',1)},
         content: [["buyables",[1]],"blank",
-     ["display-text", () => "你有" + format(player.E.up) + "升级点数<br>你累计有" + format(player.E.uptotal) + "升级点数"],
+     ["display-text", () => "你有" + format(player.E.up) + "升级点数<br>你累计有" + format(player.E.uptotal) + "升级点数<br>("+format(player.E.upbybuy)+"购买+"+format(tmp.E.upbyach)+"成就奖励)"],
      ['row',[['clickable',11]]],"blank",
        ['row',[['clickable',21]]],"blank","blank","blank","blank","blank",
        ['row',[['clickable',31],"blank",['clickable',32]]],"blank","blank","blank","blank","blank",
@@ -3778,6 +3815,11 @@ addLayer("E", {
             +format(player.E.timeshard)+"时间碎片，使游戏速度x lg("+format(player.E.timeshard)+"+10)="+format(tmp.E.TSeffect)
             +"<br>你当前正在生产"+format(player.E.td1.times(tmp.E.td1mult))+"时间碎片每秒"],
             ["buyables", [2]]]}, 
+        "Slowdown": {
+            unlocked() {return hasMilestone('E', 4)},
+            content: [ ["display-text", () => "你进行了"+format(player.E.slowtime)+"次减速，使时间维度x"+format(tmp.E.slowtotdmult)+
+            "<br>每次减速会使游戏速度/10，并使时间维度x5<br>游戏速度大于10时可以减速"],
+            ['clickable',501],['clickable',502]]}, 
         },
       },
     doReset(resettingLayer) {
@@ -3792,10 +3834,12 @@ addLayer("E", {
         player.E.td7 = gba('E', 27)
         player.E.td8 = gba('E', 28)
         player.devSpeed = n(0)
+        player.E.slowtime = n(0)
         }
     },
     update(diff){
-        player.E.uptotal=n(gba('E', 11)).add(gba('E', 12)).add(gba('E', 13))
+        player.E.upbybuy=n(gba('E', 11)).add(gba('E', 12)).add(gba('E', 13))
+        player.E.uptotal=player.E.upbybuy.add(tmp.E.upbyach)
         player.E.up=player.E.uptotal.sub(player.E.upcost)
         //if (getBuyableAmount(this.layer, 28).gte(1)) player.E.td7 = player.E.td7.add(player.E.td8.times(tmp.E.td8mult).times(diff).div(player.devSpeed))
         //if (getBuyableAmount(this.layer, 27).gte(1)) player.E.td6 = player.E.td6.add(player.E.td7.times(tmp.E.td7mult).times(diff).div(player.devSpeed))
@@ -3842,8 +3886,31 @@ addLayer("E", {
         },
         4: {
             requirementDescription: "5次永恒",
-            effectDescription() {return "获得滚木（将在下一个版本更新）"},
+            effectDescription() {return "解锁“减速”功能"},
             done() { return player.E.etr.gte(5) }
+        },
+        5: {
+            requirementDescription: "6次永恒",
+            effectDescription() {return "解锁其他自动打破无限可购买购买器（5个），购买打破无限可购买不消耗无限点数"},
+            done() { return player.E.etr.gte(6) },
+            toggles:[["E", "scnerfauto"],["E", "ipowauto"],["E", "scnerf2auto"],["E", "scnerf3auto"],["E", "ipexpauto"]]
+        },
+        6: {
+            requirementDescription: "7次永恒",
+            effectDescription() {return "解锁第1~4无限维度自动购买器，购买无限维度不消耗无限点数"},
+            done() { return player.E.etr.gte(7) },
+            toggles:[["E", "id1auto"],["E", "id2auto"],["E", "id3auto"],["E", "id4auto"]]
+        },
+        7: {
+            requirementDescription: "8次永恒",
+            effectDescription() {return "解锁第5~8无限维度自动购买器"},
+            done() { return player.E.etr.gte(8) },
+            toggles:[["E", "id5auto"],["E", "id6auto"],["E", "id7auto"],["E", "id8auto"]]
+        },
+        8: {
+            requirementDescription: "9次永恒",
+            effectDescription() {return "Monika升级太弱了，我给你加强一下"},
+            done() { return player.E.etr.gte(9) },
         },
     },
     buyables: {
@@ -4060,6 +4127,28 @@ addLayer("E", {
            branches(){return ["31","32"]},
             unlocked(){return hasMilestone('E',1)},
         },
+    501:
+    {
+           title(){return "Slowdown" },
+           display() {return ""},
+          canClick() {
+            return player.devSpeed.gte(10)
+          },
+           onClick() {player.E.slowtime = player.E.slowtime.add(1)
+           },
+            unlocked(){return hasMilestone('E',4)},
+        },    
+    502:
+    {
+           title(){return "Speedup" },
+           display() {return ""},
+          canClick() {
+            return player.E.slowtime.gt(0)
+          },
+           onClick() {player.E.slowtime = player.E.slowtime.sub(1)
+           },
+            unlocked(){return hasMilestone('E',4)},
+        },
    },
     mil0effect1() {a = player.E.etr.add(1).pow(3)
         return a
@@ -4088,6 +4177,7 @@ addLayer("E", {
     },
     alltdmult() {a = tmp.E.etrtotdmult
         if (gcs('E', 41)==1) a = a.times(ce('E', 41))
+        a = a.times(tmp.E.slowtotdmult)
         return a
     },
     td1mult() {a = tmp.E.alltdmult
@@ -4122,4 +4212,12 @@ addLayer("E", {
         a = a.times(n(4).pow(gba('E', 28)))
         return a
     },
+    upbyach() {a = n(0)
+        if (hasAchievement('A3', 15)) a = a.add(1)
+        return a
+    },
+    slowtotdmult() {a = n(1)
+        a = a.times(n(5).pow(player.E.slowtime))
+        return a
+    }
 })
