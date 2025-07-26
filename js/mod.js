@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.65.4",
+	num: "0.65.4.5",
 	name: "Eternity Update (IV)",
 }
 
@@ -72,7 +72,12 @@ let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.65.4 Eternity Update (IV) 2025/7/20~2025/7/24</h3><br/>
 	    - 增加了"减速"功能<br>
 		- 增加了4个里程碑<br>
-		- Endgame:9次永恒<br>`
+		- Endgame:9次永恒<br>
+	<h3>v0.65.4.5 a Bug-fixing Update 2025/7/26</h3><br/>
+	    - 修复了1次永恒里程碑中一些奖励不生效的bug<br>
+		- 修复了一次超人次数过多导致无法超人的bug<br>
+		- 增加了一个里程碑与2个成就，并更改了一个成就<br>
+		- Endgame:10次永恒<br>`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -202,80 +207,9 @@ function bhcost1(x){s = n(1.5e11)
 
 // Calculate points/sec!
 function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
+    gain = ptgainbeforeexp()
 
-	let gain = new Decimal(0.01)
-	if (hasUpgrade('T', 11)) gain = new Decimal(0.01)
-	if (hasUpgrade('T', 21)) gain = gain.add(0.001)
-	if (hasUpgrade('T', 22)) gain = gain.add(0.002)
-	if (hasUpgrade('CT', 11)) gain = gain.add(0.005)
-	if (hasUpgrade('T', 12)) gain = gain.times(1.01)
-	if (hasUpgrade('T', 13)) gain = gain.times(1.02)
-	if (hasUpgrade('T', 14)) gain = gain.times(1.03)
-	if (hasUpgrade('T', 15)) gain = gain.times(1.04)
-	if (hasUpgrade('T', 24)) gain = gain.times(1.2)
-	if (hasUpgrade('T', 25)) gain = gain.times((upgradeEffect('T', 25)))
-	if (hasChallenge('T', 11)) gain = gain.times(2.085)
-	if (hasUpgrade('T', 33)) gain = gain.times((upgradeEffect('T', 33)))
-	if (hasUpgrade('T', 41)) gain = gain.times((upgradeEffect('T', 41)))
-	if (hasUpgrade('T', 43)) gain = gain.times((upgradeEffect('T', 43)))
-	if (hasAchievement('A', 25)) gain = gain.times(5)
-	if (hasUpgrade('CT', 12)) gain = gain.times(buyableEffect('CT', 11))
-	if (hasUpgrade('CT', 13)) gain = gain.times(buyableEffect('CT', 12))
-	if (hasUpgrade('CT', 21)) gain = gain.times(buyableEffect('CT', 13))
-	if (hasUpgrade('CT', 22)) gain = gain.times(upgradeEffect('CT', 22))
-	if (hasUpgrade('CT', 24)) gain = gain.times(upgradeEffect('CT', 24))
-	if (hasUpgrade('CT', 34)) gain = gain.times(upgradeEffect('CT', 34))
-	if (hasUpgrade('CT', 52)) gain = gain.times(upgradeEffect('CT', 52))
-	if (challengeCompletions('CT', 12)) gain = gain.times(challengeEffect('CT', 12))
-	if (hasMilestone('Q', 0)&&!inChallenge('DC', 13)) gain = gain.times(1.5)
-	if (hasMilestone('Q', 1)&&!inChallenge('DC', 13)) gain = gain.times(2)
-	if (hasMilestone('Q', 2)&&!inChallenge('DC', 13)) gain = gain.times(2)
-	if (hasMilestone('Q', 3)&&!inChallenge('DC', 13)) gain = gain.times(2)
-	if (hasMilestone('Q', 4)&&!inChallenge('DC', 13)) gain = gain.times(2)
-	if (hasMilestone('Q', 5)&&!inChallenge('DC', 13)) gain = gain.times(3)
-	if (hasMilestone('Qi', 0)&&!inChallenge('DC', 13)) gain = gain.times(5)
-	if (hasMilestone('DC', 0)) gain = gain.times(2)
-	if (hasMilestone('DC', 2)) gain = gain.times(tmp.DC.effect)
-	if (hasAchievement('DC', 12)) gain = gain.times(achievementEffect('DC', 12))
-	if (n(challengeCompletions('DC', 14)).gte(1)&&!hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
-	if (hasAchievement('DC', 43)) gain = gain.times(achievementEffect('DC', 43))
-	if (tmp.I.ipowereffect.gte(1)&&!hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
-	if (hasUpgrade('T', 54)&&!inChallenge('T',13)) gain = gain.times(buyableEffect('T', 11))
-	gain = gain.times(buyableEffect('qa', 11))
-    gain = gain.times(tmp.E.mil0effect1)
-
-	if (hasUpgrade('T', 23)&&gain.lt(1)) gain = gain.pow(0.5)
-	if (hasChallenge('T', 12)) gain = gain.pow(1.01)
-	if (hasMilestone('DC', 1)) gain = gain.pow(1.01)
-	if (hasAchievement('DC', 12)) gain = gain.pow(1.01)
-	if (hasChallenge('CT', 11)) gain = gain.pow(1.05)
-	if (inChallenge('T', 11)&&gain.lt(1)) gain = gain.pow(2)
-	if (inChallenge('T', 11)&&gain.gt(1)) gain = gain.pow(0.5)
-	if (inChallenge('I', 11)) gain = gain.pow(0.5)
-	if (inChallenge('CT', 12)) gain = gain.pow(0.5)
-	if (inChallenge('T', 12)||inChallenge('CT', 14)) gain = gain.add(1).log(10)
-	if (inChallenge('T', 13)) gain = new Decimal(0.01)
-	if (inChallenge('T', 13)) gain = gain.times(buyableEffect('T', 11))
-
-	if (gain.gte(n(sc1start()))&&!hasAchievement('A2', 25)) gain = gain.div(n(sc1start())).pow(sc1power()).times(n(sc1start())) //sc1
-	if (gain.gte(n(1e9))&&!hasAchievement('A2', 25)) gain = gain.div(n(1e9)).pow(sc2power()).times(n(1e9)) //sc2
-	if (gain.gte(n(1e13))&&!hasAchievement('A2', 25)) gain = gain.div(n(1e13)).pow(sc3power()).times(n(1e13)) //sc3
-
-	if (hasMilestone('co', 0)) gain = gain.times(1.5)
-	if (n(challengeCompletions('DC', 14)).gte(1)&&hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
-	if (hasMilestone('Qi', 1)&&!inChallenge('DC', 13)) gain = gain.times(10)
-	if (hasMilestone('co', 1)) gain = gain.times(3)
-	if (hasMilestone('co', 2)) gain = gain.times(10)
-	if (hasMilestone('co', 3)&&!inChallenge('I', 16)) gain = gain.times(tmp.co.effect)
-	if (tmp.I.ipowereffect.gte(1)&&hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
-
-	if (gain.gte(n(1.79e308))) gain = gain.div(n(1e308)).pow(sc4power()).times(n(1e308)) //sc4
-	if (gain.gte(n('1e616'))) gain = powsoftcap(gain,n('1e616'),sc5power()) //sc5
-	if (gain.gte(n('1e10000'))) gain = powsoftcap(gain,n('1e10000'),sc6power()) //sc6
-	if (gain.gte(n('1e50000'))) gain = powsoftcap(gain,n('1e50000'),sc7power()) //sc7
-	if (gain.gte(n('1e208500'))) gain = expRootSoftcap(gain,n('1e208500'),sc8power()) //sc8
+	if (hasMilestone('E', 8)) gain = gain.pow(tmp.qa.upg1effect2)
 
 	if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) gain = n(0)
 	if (player.points.gte(1.79e308)&&inChallenge('I', 16)) gain = n(0)
@@ -291,7 +225,8 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:9次永恒'
+	function(){a = '当前Endgame:???'
+		if (hasMilestone('E', 8)) a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'+format(tmp.qa.upg1effect2)+'</sup>='+format(getPointGen())
 		if (getPointGen().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (getPointGen().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (getPointGen().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
@@ -316,7 +251,8 @@ function isEndgame() {
 	//return player.E.points.gte(2)
 	//return player.E.etr.gte(3)&&hasUpgrade('I', 21)
 	//return player.E.etr.gte(5)
-	return player.E.etr.gte(9)
+	return player.E.etr.gte(10)
+	//return false
 }
 
 // Less important things beyond this point!
@@ -328,7 +264,7 @@ var backgroundStyle = {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(86400) // Default is 1 hour which is just arbitrarily large
+	return(1e100) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
@@ -403,3 +339,88 @@ function gba(a,b){return getBuyableAmount(a,b)}
 function gcs(a,b){return getClickableState(a,b)}
 
 function ce(a,b) {return clickableEffect(a,b)}
+
+function max(a,b) {if (n(a).gte(n(b))) return n(a)
+	else return n(b)
+}
+
+function min(a,b) {if (n(a).gte(n(b))) return n(b)
+	else return n(a)
+}
+
+function ptgainbeforeexp() {	if(!canGenPoints())
+		return new Decimal(0)
+
+	let gain = new Decimal(0.01)
+	if (hasUpgrade('T', 11)) gain = new Decimal(0.01)
+	if (hasUpgrade('T', 21)) gain = gain.add(0.001)
+	if (hasUpgrade('T', 22)) gain = gain.add(0.002)
+	if (hasUpgrade('CT', 11)) gain = gain.add(0.005)
+	if (hasUpgrade('T', 12)) gain = gain.times(1.01)
+	if (hasUpgrade('T', 13)) gain = gain.times(1.02)
+	if (hasUpgrade('T', 14)) gain = gain.times(1.03)
+	if (hasUpgrade('T', 15)) gain = gain.times(1.04)
+	if (hasUpgrade('T', 24)) gain = gain.times(1.2)
+	if (hasUpgrade('T', 25)) gain = gain.times((upgradeEffect('T', 25)))
+	if (hasChallenge('T', 11)) gain = gain.times(2.085)
+	if (hasUpgrade('T', 33)) gain = gain.times((upgradeEffect('T', 33)))
+	if (hasUpgrade('T', 41)) gain = gain.times((upgradeEffect('T', 41)))
+	if (hasUpgrade('T', 43)) gain = gain.times((upgradeEffect('T', 43)))
+	if (hasAchievement('A', 25)) gain = gain.times(5)
+	if (hasUpgrade('CT', 12)) gain = gain.times(buyableEffect('CT', 11))
+	if (hasUpgrade('CT', 13)) gain = gain.times(buyableEffect('CT', 12))
+	if (hasUpgrade('CT', 21)) gain = gain.times(buyableEffect('CT', 13))
+	if (hasUpgrade('CT', 22)) gain = gain.times(upgradeEffect('CT', 22))
+	if (hasUpgrade('CT', 24)) gain = gain.times(upgradeEffect('CT', 24))
+	if (hasUpgrade('CT', 34)) gain = gain.times(upgradeEffect('CT', 34))
+	if (hasUpgrade('CT', 52)) gain = gain.times(upgradeEffect('CT', 52))
+	if (challengeCompletions('CT', 12)) gain = gain.times(challengeEffect('CT', 12))
+	if (hasMilestone('Q', 0)&&!inChallenge('DC', 13)) gain = gain.times(1.5)
+	if (hasMilestone('Q', 1)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 2)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 3)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 4)&&!inChallenge('DC', 13)) gain = gain.times(2)
+	if (hasMilestone('Q', 5)&&!inChallenge('DC', 13)) gain = gain.times(3)
+	if (hasMilestone('Qi', 0)&&!inChallenge('DC', 13)) gain = gain.times(5)
+	if (hasMilestone('DC', 0)) gain = gain.times(2)
+	if (hasMilestone('DC', 2)) gain = gain.times(tmp.DC.effect)
+	if (hasAchievement('DC', 12)) gain = gain.times(achievementEffect('DC', 12))
+	if (n(challengeCompletions('DC', 14)).gte(1)&&!hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
+	if (hasAchievement('DC', 43)) gain = gain.times(achievementEffect('DC', 43))
+	if (tmp.I.ipowereffect.gte(1)&&!hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
+	if (hasUpgrade('T', 54)&&!inChallenge('T',13)) gain = gain.times(buyableEffect('T', 11))
+	gain = gain.times(buyableEffect('qa', 11))
+    gain = gain.times(tmp.E.mil0effect1)
+
+	if (hasUpgrade('T', 23)&&gain.lt(1)) gain = gain.pow(0.5)
+	if (hasChallenge('T', 12)) gain = gain.pow(1.01)
+	if (hasMilestone('DC', 1)) gain = gain.pow(1.01)
+	if (hasAchievement('DC', 12)) gain = gain.pow(1.01)
+	if (hasChallenge('CT', 11)) gain = gain.pow(1.05)
+	if (inChallenge('T', 11)&&gain.lt(1)) gain = gain.pow(2)
+	if (inChallenge('T', 11)&&gain.gt(1)) gain = gain.pow(0.5)
+	if (inChallenge('I', 11)) gain = gain.pow(0.5)
+	if (inChallenge('CT', 12)) gain = gain.pow(0.5)
+	if (inChallenge('T', 12)||inChallenge('CT', 14)) gain = gain.add(1).log(10)
+	if (inChallenge('T', 13)) gain = new Decimal(0.01)
+	if (inChallenge('T', 13)) gain = gain.times(buyableEffect('T', 11))
+
+	if (gain.gte(n(sc1start()))&&!hasAchievement('A2', 25)) gain = gain.div(n(sc1start())).pow(sc1power()).times(n(sc1start())) //sc1
+	if (gain.gte(n(1e9))&&!hasAchievement('A2', 25)) gain = gain.div(n(1e9)).pow(sc2power()).times(n(1e9)) //sc2
+	if (gain.gte(n(1e13))&&!hasAchievement('A2', 25)) gain = gain.div(n(1e13)).pow(sc3power()).times(n(1e13)) //sc3
+
+	if (hasMilestone('co', 0)) gain = gain.times(1.5)
+	if (n(challengeCompletions('DC', 14)).gte(1)&&hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
+	if (hasMilestone('Qi', 1)&&!inChallenge('DC', 13)) gain = gain.times(10)
+	if (hasMilestone('co', 1)) gain = gain.times(3)
+	if (hasMilestone('co', 2)) gain = gain.times(10)
+	if (hasMilestone('co', 3)&&!inChallenge('I', 16)) gain = gain.times(tmp.co.effect)
+	if (tmp.I.ipowereffect.gte(1)&&hasUpgrade('I', 33)) gain = gain.times(tmp.I.ipowereffect)
+
+	if (gain.gte(n(1.79e308))) gain = gain.div(n(1e308)).pow(sc4power()).times(n(1e308)) //sc4
+	if (gain.gte(n('1e616'))) gain = powsoftcap(gain,n('1e616'),sc5power()) //sc5
+	if (gain.gte(n('1e10000'))) gain = powsoftcap(gain,n('1e10000'),sc6power()) //sc6
+	if (gain.gte(n('1e50000'))) gain = powsoftcap(gain,n('1e50000'),sc7power()) //sc7
+	if (gain.gte(n('1e208500'))) gain = expRootSoftcap(gain,n('1e208500'),sc8power()) //sc8
+	return gain
+}
