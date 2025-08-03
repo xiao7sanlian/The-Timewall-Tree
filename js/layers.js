@@ -422,7 +422,8 @@ addLayer("A2", {
     doReset(resettingLayer) {
         if (resettingLayer == 'E') {
             let kept = []
-            layerDataReset(this.layer, kept)
+            if (hasMilestone('E', 12)) kept.push('achievements')
+            if(!hasMilestone('E', 12)) layerDataReset(this.layer, kept)
         }
     },
     achievementPopups: true,
@@ -658,8 +659,8 @@ addLayer("A2", {
         name: "这个成就是用来凑数的",
             done() {return player.points.gte('1e200000')}, 
             onComplete() {player.A2.points = player.A2.points.add(1)},
-            tooltip: "获得1e200000点数", 
-            textStyle: {'color': '#ffe125'},
+            tooltip: "获得1e200000点数<br>奖励：削弱点数获取量指数的指数的软上限指数", 
+            textStyle: {'color': '#4bd123'},
     },
     74: {
         name: "最终的试炼",
@@ -740,6 +741,14 @@ addLayer("A3", {
      tooltip: "永恒5次<br>奖励：获得一个升级点数（每个完成的绿名三级成就都会额外奖励一个升级点数）", 
      textStyle: {'color': '#4bd123'},
         },
+    26: {
+     name: "This isn't Cookie Clicker",
+     done() {return player.E.clicktime.gte(308)}, 
+     unlocked() {return hasAchievement('A3', 26)},
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "点击'永恒后刷新提示开关'按钮308次", 
+     textStyle: {'color': '#ffffffff'},
+        },
     21: {
      name: "请停止抄袭旋转放置",
      done() {return player.E.slowtime.gt(0)}, 
@@ -765,8 +774,8 @@ addLayer("A3", {
      name: "qaqe308的反击",
      done() {return player.E.etr.gte(9)}, 
      onComplete() {player.A3.points = player.A3.points.add(1)},
-     tooltip: "获得9次永恒的里程碑", 
-     textStyle: {'color': '#ffe125'},
+     tooltip: "获得9次永恒的里程碑<br>获得此成就时，二级成就“这个成就是用来凑数的”的奖励效果被禁用<br>作为补偿，你将额外获得2个升级点数", 
+     textStyle: {'color': '#ab4308'},
         },
     25: {
      name: "游戏速度大神啊",
@@ -774,6 +783,35 @@ addLayer("A3", {
      onComplete() {player.A3.points = player.A3.points.add(1)},
      tooltip: "游戏速度到达1000000<br>奖励：游戏速度x2", 
      textStyle: {'color': '#4bd123'},
+        },
+    16: {
+     name: "Don't miss the Black Hole!",
+     done() {return hasMilestone('Qi', 100)&&!hasUpgrade('I', 11)}, 
+     unlocked() {return hasAchievement('A3', 16)},
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "在解锁黑洞前超市QqQe308", 
+     textStyle: {'color': '#ffffffff'},
+        },
+    31: {
+     name: "Trillion QqQe308",
+     done() {return player.Q.points.gte(1e12)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得1e12个QqQe308", 
+     textStyle: {'color': '#ffe125'},
+        },
+    32: {
+     name: "Eternity Breakdown",
+     done() {return player.E.etr.gte(16)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "打破永恒<br>由于IP增益太过逆天了，这个树将不会再有EP增益了", 
+     textStyle: {'color': '#ffe125'},
+        },
+    33: {
+     name: "年度IP",
+     done() {return player.I.points.gte('1e365')}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得1e365无限点数", 
+     textStyle: {'color': '#ffe125'},
         },
     }
 })
@@ -1674,9 +1712,9 @@ addLayer("Qi", {
             if (player.Qi.Superqaqe308time.gt(0)) {player.Qi.qaqe308 = player.Qi.qaqe308.add(player.Qi.Superqaqe308time.div(tmp.Qi.Superqaqe308speed))
                 player.Qi.Superqaqe308time = n(0)
             }
-            if (hasMilestone('Qi', 0)&&player.Qi.choice.eq(n(2))&&!isEndgame()) player.Qi.QqQe308 = player.Qi.QqQe308.add(min(n(diff).div(tmp.Qi.Supermanspeed),n(10000)));
-            if (hasMilestone('Qi', 1)&&player.Qi.choice.eq(n(3))&&!isEndgame()) player.Qi.cokecole = player.Qi.cokecole.add(min(n(diff).div(tmp.Qi.Supermanspeed2),n(5000)));
-            if (hasUpgrade('I', 63)&&player.Qi.choice.eq(n(4))&&!isEndgame()) player.Qi.qaqe308 = player.Qi.qaqe308.add(min(n(diff).div(tmp.Qi.Superqaqe308speed),n(1000)));
+            if (hasMilestone('Qi', 0)&&player.Qi.choice.eq(n(2))&&!isEndgame()) player.Qi.QqQe308 = player.Qi.QqQe308.add(min(n(diff).div(tmp.Qi.Supermanspeed),n(500)));
+            if (hasMilestone('Qi', 1)&&player.Qi.choice.eq(n(3))&&!isEndgame()) player.Qi.cokecole = player.Qi.cokecole.add(min(n(diff).div(tmp.Qi.Supermanspeed2),n(500)));
+            if (hasUpgrade('I', 63)&&player.Qi.choice.eq(n(4))&&!isEndgame()) player.Qi.qaqe308 = player.Qi.qaqe308.add(min(n(diff).div(tmp.Qi.Superqaqe308speed),n(500)));
         }
 
     },
@@ -1801,6 +1839,7 @@ addLayer("Qi", {
         if (hasMilestone('I', 25)) a = a.div(tmp.I.mil25effect)
         if(gcs('E', 31, 1)) a = a.div(ce('E', 31))
         if (player.Qi.QqQe308.gte(50000)) a = a.times(n(10).pow(player.Qi.QqQe308.div(50000).sub(1)))
+        if (a.lte(player.devSpeed.div(50000))&&player.devSpeed.neq(0)) a = player.devSpeed.div(50000)
         return a
     },
     Supermanspeed2() {
@@ -1812,6 +1851,7 @@ addLayer("Qi", {
         if (hasMilestone('I', 25)) a = a.div(tmp.I.mil25effect)
         if(gcs('E', 31, 1)) a = a.div(ce('E', 31))
         if (player.Qi.cokecole.gte(25000)) a = a.times(n(10).pow(player.Qi.cokecole.div(25000).sub(1)))
+        if (a.lte(player.devSpeed.div(25000))&&player.devSpeed.neq(0)) a = player.devSpeed.div(25000)
         return a
     },
     Superqaqe308speed() {
@@ -1822,6 +1862,7 @@ addLayer("Qi", {
         if (hasMilestone('I', 25)) a = a.div(tmp.I.mil25effect)
         if(gcs('E', 31, 1)) a = a.div(ce('E', 31))
         if (player.Qi.qaqe308.gte(5000)) a = a.times(n(10).pow(player.Qi.qaqe308.div(5000).sub(1)))
+        if (a.lte(player.devSpeed.div(5000))&&player.devSpeed.neq(0)) a = player.devSpeed.div(5000)
         return a
     },
     Showdetail() {
@@ -2345,7 +2386,7 @@ addLayer("I", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         mult = mult.times(buyableEffect('I', 21))
-        if (hasMilestone('qa', 1)) mult = mult.times(tmp.qa.effect)
+        if (hasMilestone('qa', 1)&&!hasMilestone('qa', 3)) mult = mult.times(tmp.qa.effect)
         mult = mult.times(buyableEffect('qa', 14))
         if (hasChallenge('I', 26)) mult = mult.times(challengeEffect('I', 26))
         if (hasMilestone('Qi', 102)) mult = mult.times(tmp.Qi.qaqe308effect2)
@@ -2363,9 +2404,10 @@ addLayer("I", {
         if (hasMilestone('I', 23)) a = a.times(77777)
         if (hasAchievement('A2', 65)) a = a.times(achievementEffect('A2', 65))
         if (hasMilestone('E', 8)) a = a.times(buyableEffect('qa', 14))
+        if (hasMilestone('qa', 3)) a = a.times(tmp.qa.effect)
             return a
     },
-    canReset() {return player.points.gte(1.79e308)&&player.I.points.lt(n(2).pow(1024))},
+    canReset() {return player.points.gte(1.79e308)&&(player.I.points.lt(n(2).pow(1024))||hasMilestone('E', 15))},
     softcap: n(1e140),
     softcapPower: 0.1,
     update(diff){
@@ -2390,7 +2432,7 @@ addLayer("I", {
         if (inChallenge('I', 27)||inChallenge('I', 28)) player.I.bhpaused = n(1)
         if (hasUpgrade('I', 71)&&player.devSpeed.gte(1)&&player.I.rep.lt(1048576)) player.I.rep = player.I.rep.times(tmp.I.repmult.pow(n(diff).div(player.devSpeed)))
         if (player.I.rep.gt(1048576)) player.I.rep = n(1048576)
-        if (player.I.points.gt(n(2).pow(1024))) player.I.points = n(2).pow(1024)
+        if (player.I.points.gt(n(2).pow(1024))&&!hasMilestone('E', 15)) player.I.points = n(2).pow(1024)
         if (player.E.IPmultauto == true&&hasMilestone('I', 2)&&layers.I.buyables[21].canAfford()) layers.I.buyables[21].buy()
         if ((hasMilestone('E',5)&&player.E.scnerfauto == true&&n(getBuyableAmount('I', 22)).lt(6)&&layers.I.buyables[22].canAfford())) layers.I.buyables[22].buy();
         if ((hasMilestone('E',5)&&player.E.ipowauto == true&&n(getBuyableAmount('I', 23)).lt(36)&&layers.I.buyables[23].canAfford())) layers.I.buyables[23].buy();
@@ -2405,6 +2447,12 @@ addLayer("I", {
         if ((hasMilestone('E',7)&&player.E.id6auto == true&&layers.I.buyables[16].canAfford())) layers.I.buyables[16].buy();
         if ((hasMilestone('E',7)&&player.E.id7auto == true&&layers.I.buyables[17].canAfford())) layers.I.buyables[17].buy();
         if ((hasMilestone('E',7)&&player.E.id8auto == true&&layers.I.buyables[18].canAfford())) layers.I.buyables[18].buy();
+        if ((hasMilestone('E',10)&&player.E.bhupg1auto == true&&layers.I.buyables[31].canAfford())) layers.I.buyables[31].buy();
+        if ((hasMilestone('E',10)&&player.E.bhupg2auto == true&&layers.I.buyables[32].canAfford())) layers.I.buyables[32].buy();
+        if ((hasMilestone('E',10)&&player.E.bhupg3auto == true&&layers.I.buyables[33].canAfford())) layers.I.buyables[33].buy();
+        if ((hasMilestone('E',12)&&player.E.repupg1auto == true&&layers.I.buyables[41].canAfford())) layers.I.buyables[41].buy();
+        if ((hasMilestone('E',12)&&player.E.repupg2auto == true&&layers.I.buyables[42].canAfford())) layers.I.buyables[42].buy();
+        if ((hasMilestone('E',12)&&player.E.repupg3auto == true&&layers.I.buyables[43].canAfford())) layers.I.buyables[43].buy();
         if (hasMilestone('E', 3)&&player.I.inf.lt(256)) player.I.inf=n(256) //4 etr mil
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
@@ -2456,6 +2504,7 @@ addLayer("I", {
     tabFormat: [
         "main-display",
         "prestige-button",
+        ["display-text", () => "无限点数gainMult："+format(tmp.I.gainMult)+"<br>无限点数gainExp："+format(tmp.I.gainExp)+"<br>无限点数directMult："+format(tmp.I.directMult)],
         "resource-display",
         ["microtabs", "stuff"],
         ["blank", "25px"],
@@ -2475,6 +2524,8 @@ addLayer("I", {
         }
         if (layers[resettingLayer].row > layers[this.layer].row) {
      let kept = []
+     if (hasMilestone('E', 10)) kept.push('milestones')
+    if (hasMilestone('E', 12)) kept.push('challenges')
      layerDataReset(this.layer, kept)
         }
     },
@@ -2676,7 +2727,7 @@ addLayer("I", {
             unlocked() {return hasUpgrade('I', 11)&&!tmp.I.bh1percent.gte(0.9999)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 10))player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2694,7 +2745,7 @@ addLayer("I", {
             unlocked() {return hasUpgrade('I', 11)&&tmp.I.bh1speed.lt(72000)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 10))player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2712,7 +2763,7 @@ addLayer("I", {
             unlocked() {return hasUpgrade('I', 11)&&!tmp.I.bh1percent.gte(0.9999)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 10))player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2730,7 +2781,7 @@ addLayer("I", {
             unlocked() {return hasMilestone('I', 19)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 12))player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2748,7 +2799,7 @@ addLayer("I", {
             unlocked() {return hasMilestone('I', 19)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 12))player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -2766,7 +2817,7 @@ addLayer("I", {
             unlocked() {return hasMilestone('I', 19)},
             canAfford() { return player.I.points.gte(this.cost()) },
             buy() {
-                player.I.points = player.I.points.sub(this.cost())
+                if (!hasMilestone('E', 12))player.I.points = player.I.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
@@ -3322,7 +3373,7 @@ addLayer("I", {
         a = a.times(tmp.E.mil0effect4)
             return a
     },
-    id1mult() {a = n(1)
+    id1mult() {b = n(1)
         a = a.times(tmp.I.idmult)
         a = a.times(tmp.I.allidmult)
         a = a.times(tmp.I.chaltoidmult)
@@ -3556,7 +3607,7 @@ addLayer("qa", {
     update(diff){
         player.qa.monika = player.qa.monika.add(tmp.qa.effect2.times(diff))
     },
-    autoPrestige() {a = false
+    autoPrestige() {a = player.E.qaqe308auto
         return a
     },
     resetsNothing() {return false},
@@ -3683,12 +3734,15 @@ addLayer("qa", {
     effect(){
         a = n(2).pow(player.qa.points)
         if (hasMilestone('qa', 2)) a = n(3).pow(player.qa.points)
-            if (hasMilestone('qa', 3)) a = n(1e10).pow(player.qa.points)
+            if (hasMilestone('qa', 3)) a = n(10).pow(player.qa.points)
+                if (a.gte(1e100)) a = a.div(1e100).pow(0.5).times(1e100)
             return a
       },
       effectDescription() { 
         if (hasMilestone('qa', 1)) {
             a = "使无限点数获取x"+format(tmp.qa.effect)
+            if (tmp.qa.effect.gte(1e100)) a = a + '(受软上限限制)'
+            if (hasMilestone('qa', 3)) a = a + '(无视IP软上限)'
         } else {
             a = "使无限点数获取x1.00"
         }
@@ -3696,6 +3750,10 @@ addLayer("qa", {
     },
     upg1effect2() {a = gba('qa', 11).times(0.005).add(1)
         return a
+    },
+    ptExp() {a = n(tmp.qa.upg1effect2)
+	if (gcs('E', 51)==1) a = a.add(ce('E', 51))
+		return a
     }
 })
 
@@ -3806,6 +3864,7 @@ addLayer("E", {
         upbybuy: n(0),
         upcost: n(0),
         slowtime: n(0),
+        clicktime: n(0),
     }},
     color: "#b743de",
     requires(){a = new Decimal(2).pow(1024)
@@ -3843,6 +3902,7 @@ addLayer("E", {
        ['row',[['clickable',21]]],"blank","blank","blank","blank","blank",
        ['row',[['clickable',31],"blank",['clickable',32]]],"blank","blank","blank","blank","blank",
        ['row',[['clickable',41]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',51]]],"blank","blank","blank","blank","blank",
        //tabf
         ],
     },
@@ -3897,6 +3957,7 @@ addLayer("E", {
         "main-display",
         "prestige-button",
         "resource-display",
+        ['clickable',511],
         ["microtabs", "stuff"],
         ["blank", "25px"],
     ],
@@ -3955,6 +4016,39 @@ addLayer("E", {
             effectDescription() {return "解锁无限升级自动购买器"},
             done() { return player.E.etr.gte(10) },
             toggles:[["E", "infupgauto"]]
+        },
+        10: {
+            requirementDescription: "11次永恒",
+            effectDescription() {return "解锁黑洞相关的可购买自动购买器，购买相关可购买不消耗无限点数"},
+            done() { return player.E.etr.gte(11) },
+            toggles:[["E", "bhupg1auto"],["E", "bhupg2auto"],["E", "bhupg3auto"]]
+        },
+        11: {
+            requirementDescription: "12次永恒",
+            effectDescription() {return "永恒后保留所有点数里程碑"},
+            done() { return player.E.etr.gte(12) },
+        },
+        12: {
+            requirementDescription: "13次永恒",
+            effectDescription() {return "解锁复制器相关的可购买自动购买器，购买相关可购买不消耗无限点数"},
+            done() { return player.E.etr.gte(13) },
+            toggles:[["E", "repupg1auto"],["E", "repupg2auto"],["E", "repupg3auto"]]
+        },
+        13: {
+            requirementDescription: "14次永恒",
+            effectDescription() {return "永恒后保留所有无限挑战与二级成就"},
+            done() { return player.E.etr.gte(14) },
+        },
+        14: {
+            requirementDescription: "15次永恒",
+            effectDescription() {return "解锁qaqe308自动重置器"},
+            done() { return player.E.etr.gte(15) },
+            toggles:[["E", "qaqe308auto"]]
+        },
+        15: {
+            requirementDescription: "16次永恒",
+            effectDescription() {return "打破永恒，允许你获得超过1.79e308无限点数"},
+            done() { return player.E.etr.gte(16) },
         },
     },
     buyables: {
@@ -4084,10 +4178,13 @@ addLayer("E", {
            },
            onClick() {
             //setClickableState("E",21,0)
+            doReset('E',true)
             setClickableState("E",31,0)
             setClickableState("E",32,0)
+            setClickableState("E",41,0)
+            setClickableState("E",51,0)
+            doReset("E")
             player.E.upcost=n(0).add(n(gcs('E', 21)))
-             doReset('E')
            },
             unlocked(){return hasMilestone('E',1)},
         },
@@ -4159,9 +4256,9 @@ addLayer("E", {
            tooltip() {
            return "购买要求: 21|22"
            },
-   style() { return { 'background-color': getClickableState('E',32)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+   style() { return { 'background-color': getClickableState('E',41)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
           canClick() {
-           if(getClickableState('E',41)==1||(!gcs('E', 21)==1&&!gcs('E', 22)==1)) return false
+           if(getClickableState('E',41)==1||(!gcs('E', 31)==1&&!gcs('E', 32)==1)) return false
            //if(inChallenge('r',13)) return false
            return player.E.up.gte(2)
           },
@@ -4169,6 +4266,27 @@ addLayer("E", {
              player.E.upcost=player.E.upcost.add(2)
            },
            branches(){return ["31","32"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        51: {
+           title(){return "41" },
+           display() {return "基于QqQe308数量增加点数获取的指数<br>当前：+"+format(this.effect())+"<br>价格: 6 升级点数"},
+           effect() {a = max(player.Q.points.pow(0.005).sub(1),n(0))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 31"
+           },
+   style() { return { 'background-color': getClickableState('E',51)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',51)==1||(!gcs('E', 41)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(6)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(6)
+           },
+           branches(){return ["41"]},
             unlocked(){return hasMilestone('E',1)},
         },
     501:
@@ -4193,6 +4311,24 @@ addLayer("E", {
            },
             unlocked(){return hasMilestone('E',4)},
         },
+    511:
+    {
+           title(){return "永恒后刷新提示开关" },
+           display() {a = "<br>当前："
+            if(gcs('E', 511)==1) a = a+'关'
+            if(gcs('E', 511)==0) a = a+'开'
+            return a
+           },
+                     canClick() {
+            return true
+          },
+           onClick() {player.E.clicktime = player.E.clicktime.add(1)
+            if(gcs('E', 511)==0) setClickableState(this.layer, this.id,1)
+            else setClickableState(this.layer, this.id,0)
+           
+           },
+            unlocked(){return hasMilestone('E',13)},
+        }, 
    },
     mil0effect1() {a = player.E.etr.add(1).pow(3)
         return a
@@ -4259,6 +4395,7 @@ addLayer("E", {
     },
     upbyach() {a = n(0)
         if (hasAchievement('A3', 15)) a = a.add(1)
+        if (hasAchievement('A3', 24)) a = a.add(2)
         if (hasAchievement('A3', 25)) a = a.add(1)
         return a
     },
