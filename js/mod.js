@@ -230,7 +230,7 @@ function addedPlayerData() { return {
 // Display extra things at the top of the page
 var displayThings = [
 	function(){a = '当前Endgame:1e365无限点数'
-		if (tmp.qa.ptExp.neq(1)) {a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'
+		if (hasMilestone('E', 8)) {a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'
 			a = a+format(tmp.qa.ptExp)+'</sup>='
 			a =a+format(getPointGen())}
 		if (ptgainbeforeexp().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
