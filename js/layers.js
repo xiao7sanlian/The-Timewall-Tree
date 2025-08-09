@@ -27,6 +27,7 @@ addLayer("A", {
         if (hasUpgrade('I', 11)&&player.I.bh1activation.eq(1)&&player.I.bhpaused.neq(1)) dev=dev.times(tmp.I.bh1speed)
         dev = dev.times(tmp.E.TSeffect)
         if (hasAchievement('A3', 25)) dev = dev.times(2)
+        if (gcs('E',93)==1) dev = dev.times(ce('E', 93))
         dev = dev.div(n(10).pow(player.E.slowtime))
 	    if (isEndgame()||player.T.pause.eq(1)) dev=n(0)
 	    return dev
@@ -710,7 +711,7 @@ addLayer("A3", {
      name: "Time is relative",
      done() {return player.E.etr.gte(1)}, 
      onComplete() {player.A3.points = player.A3.points.add(1)},
-     tooltip: "永恒一次", 
+     tooltip: "永恒一次<br>每行的第六个成就是隐藏成就，尝试去完成吧！", 
      textStyle: {'color': '#ffe125'},
         },
     12: {
@@ -744,9 +745,12 @@ addLayer("A3", {
     26: {
      name: "This isn't Cookie Clicker",
      done() {return player.E.clicktime.gte(308)}, 
-     unlocked() {return hasAchievement('A3', 26)},
+     //unlocked() {return hasAchievement('A3', 26)},
      onComplete() {player.A3.points = player.A3.points.add(1)},
-     tooltip: "点击'永恒后刷新提示开关'按钮308次", 
+     tooltip() {a = "点击'永恒后刷新提示开关'按钮308次"
+        if (!hasAchievement('A3', 26)) a = 'Tip:游戏里有一个显眼的按钮……'
+        return a
+     }, 
      textStyle: {'color': '#ffffffff'},
         },
     21: {
@@ -787,9 +791,12 @@ addLayer("A3", {
     16: {
      name: "Don't miss the Black Hole!",
      done() {return hasMilestone('Qi', 100)&&!hasUpgrade('I', 11)}, 
-     unlocked() {return hasAchievement('A3', 16)},
+     //unlocked() {return hasAchievement('A3', 16)},
      onComplete() {player.A3.points = player.A3.points.add(1)},
-     tooltip: "在解锁黑洞前超市QqQe308", 
+     tooltip() {a = "在解锁黑洞前超市QqQe308"
+        if (!hasAchievement('A3', 16)) a = "Tip:你可能错过了一些东西……"
+        return a
+     }, 
      textStyle: {'color': '#ffffffff'},
         },
     31: {
@@ -811,6 +818,98 @@ addLayer("A3", {
      done() {return player.I.points.gte('1e365')}, 
      onComplete() {player.A3.points = player.A3.points.add(1)},
      tooltip: "获得1e365无限点数", 
+     textStyle: {'color': '#ffe125'},
+        },
+    34: {
+     name: "墙的不能再墙了",
+     done() {return player.Qi.rg.gte(1)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "超一次ReplicantiGalaxy<br>在15三级成就时，解锁新的支线层级", 
+     textStyle: {'color': '#ffe125'},
+        },
+    35: {
+     name: "Distorted Fate",
+     done() {return player.df.points.gte(1)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得一个DeFe308<br>奖励：永恒重置时保留QqQeInfinity层级内容", 
+     textStyle: {'color': '#4bd123'},
+        },
+    36: {
+     name: "Happy Year 3473!",
+     done() {return n(player.timePlayed).gte(45664128000)}, 
+     //unlocked() {return hasAchievement('A3', 16)},
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip() {a = "游戏时间达到1448年"
+        if (!hasAchievement('A3', 36)) a = "Tip:3473-2025=?"
+        return a
+     }, 
+     textStyle: {'color': '#ffffffff'},
+        },
+    41: {
+     name: "一箭双雕 IV",
+     done() {return player.I.points.gte('1.83e378')}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得1.83e378无限点数（允许你一次获得2个永恒点数）", 
+     textStyle: {'color': '#ffe125'},
+        },
+    42: {
+     name: "DeFe616",
+     done() {return player.df.points.gte(2)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得2个DeFe308", 
+     textStyle: {'color': '#ffe125'},
+        },
+    43: {
+     name: "三星",
+     done() {return player.rg.points.gte(3)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得3个ReplicantiGalaxy", 
+     textStyle: {'color': '#ffe125'},
+        },
+    44: {
+     name: "一键三连",
+     done() {return player.I.points.gte('1.63e419')}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得1.63e419无限点数（允许你一次获得3个永恒点数）", 
+     textStyle: {'color': '#ffe125'},
+        },
+    45: {
+     name: "DeFe924",
+     done() {return player.df.points.gte(3)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得3个DeFe308<br>奖励：无限次数获取x2", 
+     textStyle: {'color': '#4bd123'},
+        },
+    46: {
+     name: "Maybe you need to refresh",
+     done() {return player.I.points.gte(n(2).pow(1024))&&tmp.I.id1mult.eq(0)}, 
+     //unlocked() {return hasAchievement('A3', 16)},
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip() {a = "在无限维度倍率为0的情况下达到1.79e308无限点数"
+        if (!hasAchievement('A3', 46)) a = "Tip:你完全不刷新的是吗？"
+        return a
+     }, 
+     textStyle: {'color': '#ffffffff'},
+        },
+    51: {
+     name: "Quadra Eternity",
+     done() {return player.I.points.gte('1.86e448')}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "获得1.86e448无限点数（允许你一次获得4个永恒点数）", 
+     textStyle: {'color': '#ffe125'},
+        },
+    52: {
+     name: "永恒挑战者",
+     done() {return gcs('E', 111)==1}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "解锁永恒挑战", 
+     textStyle: {'color': '#ffe125'},
+        },
+    53: {
+     name: "First EC complete!",
+     done() {return n(challengeCompletions('E',11)).gte(1)}, 
+     onComplete() {player.A3.points = player.A3.points.add(1)},
+     tooltip: "完成一个永恒挑战", 
      textStyle: {'color': '#ffe125'},
         },
     }
@@ -880,6 +979,7 @@ addLayer("T", {
     },
     update(diff){
         if ((hasUpgrade('CT',51)||hasChallenge('I', 12))&&layers.T.buyables[11].canAfford()&&n(getBuyableAmount('T', 11)).lt(500)) layers.T.buyables[11].buy();
+        if (gcs('E', 71)==1) setBuyableAmount(this.layer, 11, max(player.points,n(0.001)).log(10).add(3))
         player.devSpeed = tmp.A.devSpeedCal
     },
     passiveGeneration()
@@ -1119,7 +1219,10 @@ addLayer("T", {
             display() { return "每次购买使点数x3<br/>当前已购买了"+ getBuyableAmount('T', 11) +"次<br/>效果：点数获取x"+format(buyableEffect('T', 11))+'<br/>下一次花费'+format(new Decimal(10).pow(getBuyableAmount('T', 11).sub(3)))+'点数' },
             unlocked() {return inChallenge('T', 13)||hasUpgrade('T', 54)},
             canAfford() { return player.points.gte(this.cost()) },
-            purchaseLimit: n(500),
+            purchaseLimit() {a = n(500)
+                if (gcs('E', 71)==1) a = n(1.79e309)
+                    return a
+            },
             buy() {
                 if(!hasUpgrade('CT', 51)) player.points = player.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -1645,9 +1748,11 @@ addLayer("Qi", {
         QqQe308: new Decimal(0),
         cokecole: n(0),
         qaqe308: n(0),
+        rg: n(0),
         Supermantime: new Decimal(0),
         Supermantime2: new Decimal(0),
         Superqaqe308time: n(0),
+        Superrgtime: n(0),
         choice: new Decimal(1),
     }},
     color: "#aee308",
@@ -1680,7 +1785,7 @@ addLayer("Qi", {
     ],
     layerShown(){return hasMilestone('Q', 6)},
     doReset(resettingLayer) {
-        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)||resettingLayer == 'E') {
+        if (resettingLayer == 'I'&&!hasAchievement('A2', 15)||(resettingLayer == 'E'&&!hasAchievement('A3', 35))) {
             let kept = []
             layerDataReset(this.layer, kept)
         }
@@ -1715,6 +1820,7 @@ addLayer("Qi", {
             if (hasMilestone('Qi', 0)&&player.Qi.choice.eq(n(2))&&!isEndgame()) player.Qi.QqQe308 = player.Qi.QqQe308.add(min(n(diff).div(tmp.Qi.Supermanspeed),n(500)));
             if (hasMilestone('Qi', 1)&&player.Qi.choice.eq(n(3))&&!isEndgame()) player.Qi.cokecole = player.Qi.cokecole.add(min(n(diff).div(tmp.Qi.Supermanspeed2),n(500)));
             if (hasUpgrade('I', 63)&&player.Qi.choice.eq(n(4))&&!isEndgame()) player.Qi.qaqe308 = player.Qi.qaqe308.add(min(n(diff).div(tmp.Qi.Superqaqe308speed),n(500)));
+            if (hasMilestone('E', 16)&&player.Qi.choice.eq(n(5))&&!isEndgame()) player.Qi.rg = player.Qi.rg.add(min(n(diff).div(tmp.Qi.Superrgspeed),n(500)));
         }
 
     },
@@ -1739,7 +1845,7 @@ addLayer("Qi", {
                 "clickables"]},
             "Supermarket": {
                 unlocked() {return hasMilestone('Qi', 0)},
-                content: [ ["milestones",[100,101,102]]]}, 
+                content: [ ["milestones",[100,101,102,103]]]}, 
         },
         },
     tabFormat: [
@@ -1775,6 +1881,11 @@ addLayer("Qi", {
             effectDescription: "超qaqe308次数也加成无限点数<br>在超5000次qaqe308后，超qaqe308的速度将减慢！",
             done() { return player.Qi.qaqe308.gte(9190) }
         },
+        103: {
+            requirementDescription: "超市ReplicantiGalaxy（需要超10000次）",
+            effectDescription: "超ReplicantiGalaxy次数也给予你额外的升级点数<br>在超20000次ReplicantiGalaxy后，超ReplicantiGalaxy的速度将减慢！",
+            done() { return player.Qi.rg.gte(10000) }
+        },
     },
     clickables:{
         11: {
@@ -1804,6 +1915,13 @@ addLayer("Qi", {
             canClick() {return hasUpgrade('I', 63)},
             onClick() {player.Qi.choice = n(4)},
         },
+        15: {
+            title: "超ReplicantiGalaxy",
+            display() {return "点击以选择超ReplicantiGalaxy"},
+            unlocked() {return hasMilestone('E', 16)},
+            canClick() {return hasMilestone('E', 16)&&hasAchievement('A2', 35)},
+            onClick() {player.Qi.choice = n(5)},
+        },
     },
     QqQe308effect() {
         a = n(player.Qi.QqQe308).add(1)
@@ -1828,6 +1946,11 @@ addLayer("Qi", {
     },
     qaqe308effect2() {
         a = player.Qi.qaqe308.pow(10)
+        return a
+    },
+    RGeffect() {
+        a = n(10).pow(player.Qi.rg)
+        if (a.gte(n(10).pow(308))) a = powsoftcap(a,n(10).pow(308),2)
         return a
     },
     Supermanspeed() {
@@ -1865,6 +1988,17 @@ addLayer("Qi", {
         if (a.lte(player.devSpeed.div(5000))&&player.devSpeed.neq(0)) a = player.devSpeed.div(5000)
         return a
     },
+        Superrgspeed() {
+        a = n(1e20)
+        if (player.Qi.points.gte(1)) a = a.div(player.Qi.points)
+        if (hasAchievement('A', 95)) a = a.div(1.05)
+        if (hasMilestone('I', 24)) a = a.div(tmp.I.mil24effect)
+        if (hasMilestone('I', 25)) a = a.div(tmp.I.mil25effect)
+        if(gcs('E', 31, 1)) a = a.div(ce('E', 31))
+        //if (player.Qi.rg.gte(5000)) a = a.times(n(10).pow(player.Qi.rg.div(5000).sub(1)))
+        //if (a.lte(player.devSpeed.div(5000))&&player.devSpeed.neq(0)) a = player.devSpeed.div(5000)
+        return a
+    },
     Showdetail() {
         a = "你超了QqQe308 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.QqQe308) + "</h3> 次, 使QqQe308的获取需求 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'> " + "/" +format(tmp.Qi.QqQe308effect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Supermanspeed) +"</h3> 秒超一次QqQe308<br>"
             if (!hasAchievement('A2', 35)) a = a + "当前剩余 <h3 style='color: #eee308; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.Qi.Supermanspeed).sub(player.Qi.Supermantime))+"</h3> 秒<br/>"
@@ -1872,12 +2006,17 @@ addLayer("Qi", {
         if (hasMilestone('Qi', 1)) {a = a + "<br/>你超了cokecole <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.cokecole) + "</h3> 次, 使二重压缩时间墙的获取需求 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'> " + "/" +format(tmp.Qi.cokecoleffect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Supermanspeed2) +"</h3> 秒超一次cokecole<br>" 
             if (!hasAchievement('A2', 35)) a = a + "当前剩余 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.Qi.Supermanspeed2).sub(player.Qi.Supermantime2))+"</h3> 秒<br/>"
             if (hasAchievement('A2', 35)) a = a + "等效于每秒超 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Supermanspeed2))+"</h3> 次cokecole<br/>算上游戏速度，你每秒正在超 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Supermanspeed2).times(player.devSpeed))+"</h3> 次cokecole<br/>"
-        }
         if (hasMilestone('DC', 9)) a = a + "由于200二重压缩时间墙里程碑，这也使二重压缩时间墙获取 <h3 style='color: #cce308; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.cokecoleffect2)+ "</h3>.<br>"
+        }
         if (hasUpgrade('I', 63)) {a = a + "<br/>你超了qaqe308 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.qaqe308) + "</h3> 次, 使无限维度 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.qaqe308effect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Superqaqe308speed) +"</h3> 秒超一次qaqe308<br>"
             if (!hasAchievement('A2', 35)) a = a + "当前剩余 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.Qi.Superqaqe308speed).sub(player.Qi.Superqaqe308time))+"</h3> 秒<br/>"
             if (hasAchievement('A2', 35)) a = a + "等效于每秒超 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superqaqe308speed))+"</h3> 次qaqe308<br/>算上游戏速度，你每秒正在超 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superqaqe308speed).times(player.devSpeed))+"</h3> 次qaqe308<br/>"
             if (hasMilestone('Qi', 102)) a = a + "由于“超市qaqe308”里程碑，这也使无限点数获取 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.qaqe308effect2)+ "</h3>.<br>"
+        }
+        if (hasMilestone('E', 16)) {a = a + "<br/>你超了ReplicantiGalaxy <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.rg) + "</h3> 次, 使复制器上限 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.RGeffect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Superrgspeed) +"</h3> 秒超一次ReplicantiGalaxy<br>"
+            //if (!hasAchievement('A2', 35)) a = a + "当前剩余 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.Qi.Superrgspeed).sub(player.Qi.Superqaqe308time))+"</h3> 秒<br/>"
+            if (hasAchievement('A2', 35)) a = a + "等效于每秒超 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superrgspeed))+"</h3> 次ReplicantiGalaxy<br/>算上游戏速度，你每秒正在超 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superrgspeed).times(player.devSpeed))+"</h3> 次ReplicantiGalaxy<br/>"
+            
         }
         a = a + tmp.Qi.Showchoice
         return a
@@ -1888,6 +2027,7 @@ addLayer("Qi", {
         if (player.Qi.choice.eq(n(2))) a = a + "正在超QqQe308"
         if (player.Qi.choice.eq(n(3))) a = a + "正在超cokecole"
         if (player.Qi.choice.eq(n(4))) a = a + "正在超qaqe308"
+        if (player.Qi.choice.eq(n(5))) a = a + "正在超ReplicantiGalaxy"
         return a
     },
 })
@@ -2405,6 +2545,8 @@ addLayer("I", {
         if (hasAchievement('A2', 65)) a = a.times(achievementEffect('A2', 65))
         if (hasMilestone('E', 8)) a = a.times(buyableEffect('qa', 14))
         if (hasMilestone('qa', 3)) a = a.times(tmp.qa.effect)
+        a = a.times(tmp.df.effect3)
+        if (gcs('E', 61)==1) a = a.times(1e10)
             return a
     },
     canReset() {return player.points.gte(1.79e308)&&(player.I.points.lt(n(2).pow(1024))||hasMilestone('E', 15))},
@@ -2430,8 +2572,8 @@ addLayer("I", {
             player.I.bh1activation = n(0)}}
         if (tmp.I.bh1percent.gte(0.9999)) player.I.bh1activation = n(1)
         if (inChallenge('I', 27)||inChallenge('I', 28)) player.I.bhpaused = n(1)
-        if (hasUpgrade('I', 71)&&player.devSpeed.gte(1)&&player.I.rep.lt(1048576)) player.I.rep = player.I.rep.times(tmp.I.repmult.pow(n(diff).div(player.devSpeed)))
-        if (player.I.rep.gt(1048576)) player.I.rep = n(1048576)
+        if (hasUpgrade('I', 71)&&player.devSpeed.gte(1)&&player.I.rep.lt(tmp.I.rephardcap)) player.I.rep = player.I.rep.times(tmp.I.repmult.pow(n(diff).div(player.devSpeed)))
+        if (player.I.rep.gt(tmp.I.rephardcap)) player.I.rep = n(tmp.I.rephardcap)
         if (player.I.points.gt(n(2).pow(1024))&&!hasMilestone('E', 15)) player.I.points = n(2).pow(1024)
         if (player.E.IPmultauto == true&&hasMilestone('I', 2)&&layers.I.buyables[21].canAfford()) layers.I.buyables[21].buy()
         if ((hasMilestone('E',5)&&player.E.scnerfauto == true&&n(getBuyableAmount('I', 22)).lt(6)&&layers.I.buyables[22].canAfford())) layers.I.buyables[22].buy();
@@ -2510,7 +2652,7 @@ addLayer("I", {
         ["blank", "25px"],
     ],
     doReset(resettingLayer) {
-        if (resettingLayer=='I') {player.I.inf = player.I.inf.add(1)
+        if (resettingLayer=='I') {player.I.inf = player.I.inf.add(tmp.I.infgain)
             player.I.ipower = n(1)
         player.I.id1 = n(getBuyableAmount(this.layer, 11))
         player.I.id2 = n(getBuyableAmount(this.layer, 12))
@@ -3371,6 +3513,7 @@ addLayer("I", {
         if (inChallenge('I', 28)) a = a.div(n(1e10).pow(player.I.resetTime))
         if (hasAchievement('A2', 25)) a = a.times(2)
         a = a.times(tmp.E.mil0effect4)
+        a = a.times(tmp.df.effect2)
             return a
     },
     id1mult() {b = n(1)
@@ -3384,6 +3527,7 @@ addLayer("I", {
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = a.pow(2)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+        if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     id2mult() {a = n(1)
@@ -3396,6 +3540,7 @@ addLayer("I", {
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+            if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     id3mult() {a = n(1)
@@ -3407,6 +3552,7 @@ addLayer("I", {
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+            if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     id4mult() {a = n(1)
@@ -3418,6 +3564,7 @@ addLayer("I", {
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+            if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     id5mult() {a = n(1)
@@ -3429,6 +3576,7 @@ addLayer("I", {
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+            if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     id6mult() {a = n(1)
@@ -3440,6 +3588,7 @@ addLayer("I", {
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+            if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     id7mult() {a = n(1)
@@ -3451,6 +3600,7 @@ addLayer("I", {
         if (hasChallenge('I', 28)) a = a.times(challengeEffect('I', 28))
         if (inChallenge('I', 22)) a = n(1)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+            if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     id8mult() {a = n(1)
@@ -3461,6 +3611,7 @@ addLayer("I", {
         a = a.times(n(2).pow(0.125).pow(n(getBuyableAmount(this.layer, 18))))
         if (inChallenge('I', 22)) a = n(1)
         if (hasUpgrade('I', 71)) a = a.pow(tmp.I.repeff)
+            if (inChallenge('E',11)) a = a.pow(tmp.E.ec1effect)
         return a
     },
     NcComp() {a = n(0)
@@ -3512,7 +3663,7 @@ addLayer("I", {
             a = "你有 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>" + format(player.I.rep) + "</h3> 个复制器，使无限维度^ <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(tmp.I.repeff)+"</h3><br>" + a
             a = a + "<br>乘数公式：y=a<sup>x</sup>，其中a="+format(tmp.I.formulaa)+",x="+format(tmp.I.formulax)
             if (player.I.rep.gte(tmp.I.repmultsoft)) a = a + "<br>由于你的复制器数量超过了 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(tmp.I.repmultsoft)+"</h3> ，复制速度将变为原来的 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.I.repmultsoft).log(player.I.rep).pow(2))+"</h3> 次方！"
-            if (player.I.rep.gte(1048576)) a = a + "<br>由于你的复制器数量到达了 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(1048576)+"</h3> ，复制器将停止增长！"
+            if (player.I.rep.gte(tmp.I.rephardcap)) a = a + "<br>由于你的复制器数量到达了 <h3 style='color:rgb(0, 17, 255); text-shadow: 0 0 3px #c2b280'>"+format(tmp.I.rephardcap)+"</h3> ，复制器将停止增长！"
         }
         return a
         },
@@ -3523,6 +3674,7 @@ addLayer("I", {
     formulax() {x = n(0.01)
         x = x.add(buyableEffect('I', 42))
         x = x.times(tmp.E.mil0effect6)
+        if (gcs('E', 102)==1) x = x.times(ce('E', 102))
         return x
             },
     repmultsoft() {s = n(5)
@@ -3544,6 +3696,16 @@ addLayer("I", {
         return a
     },
     mil25effect() {a = player.DC.points.add(10).log(10)
+        return a
+    },
+    rephardcap() {a = n(1048576)
+        if (hasMilestone('E', 16)) a = a.times(tmp.Qi.RGeffect)
+            a= a.times(tmp.df.effect)
+            return a
+    },
+    infgain() {a = n(1)
+        a = a.times(tmp.df.effect4)
+        if (hasAchievement('A3', 45)) a = a.times(2)
         return a
     },
 })
@@ -3606,11 +3768,15 @@ addLayer("qa", {
     },
     update(diff){
         player.qa.monika = player.qa.monika.add(tmp.qa.effect2.times(diff))
+        if ((hasMilestone('E',17)&&player.E.moupg1auto == true&&layers.qa.buyables[11].canAfford())) layers.qa.buyables[11].buy();
+        if ((hasMilestone('E',17)&&player.E.moupg2auto == true&&n(getBuyableAmount('qa', 12)).lt(8)&&layers.qa.buyables[12].canAfford())) layers.qa.buyables[12].buy();
+        if ((hasMilestone('E',17)&&player.E.moupg3auto == true&&layers.qa.buyables[13].canAfford())) layers.qa.buyables[13].buy();
+        if ((hasMilestone('E',17)&&player.E.moupg4auto == true&&layers.qa.buyables[14].canAfford())) layers.qa.buyables[14].buy();
     },
     autoPrestige() {a = player.E.qaqe308auto
         return a
     },
-    resetsNothing() {return false},
+    resetsNothing() {return hasMilestone('E', 17)},
     passiveGeneration()
     {
         mult = 0
@@ -3753,6 +3919,7 @@ addLayer("qa", {
     },
     ptExp() {a = n(tmp.qa.upg1effect2)
 	if (gcs('E', 51)==1) a = a.add(ce('E', 51))
+    if (gcs('E', 62)==1) a = a.add(0.05)
 		return a
     }
 })
@@ -3802,7 +3969,7 @@ addLayer("rg", {
     update(diff){
 
     },
-    autoPrestige() {a = false
+    autoPrestige() {a = player.E.rgauto
         return a
     },
     resetsNothing() {return true},
@@ -3897,12 +4064,18 @@ addLayer("E", {
         "Upgrade Tree": {
             unlocked() {return hasMilestone('E',1)},
         content: [["buyables",[1]],"blank",
-     ["display-text", () => "你有" + format(player.E.up) + "升级点数<br>你累计有" + format(player.E.uptotal) + "升级点数<br>("+format(player.E.upbybuy)+"购买+"+format(tmp.E.upbyach)+"成就奖励)"],
+     ["display-text", () => "你有" + format(player.E.up) + "升级点数<br>你累计有" + format(player.E.uptotal) + "升级点数<br>("+format(player.E.upbybuy)+"购买+"+format(tmp.E.upbyach)+"成就奖励+"+format(tmp.E.upbydef)+"DeFe308奖励)"],
      ['row',[['clickable',11]]],"blank",
        ['row',[['clickable',21]]],"blank","blank","blank","blank","blank",
        ['row',[['clickable',31],"blank",['clickable',32]]],"blank","blank","blank","blank","blank",
        ['row',[['clickable',41]]],"blank","blank","blank","blank","blank",
        ['row',[['clickable',51]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',61],"blank",['clickable',62]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',71],'blank',['clickable',72],'blank',['clickable',73]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',81],'blank',['clickable',82],'blank',['clickable',83]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',91],'blank',['clickable',92],'blank',['clickable',93]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',101],'blank',['clickable',102],'blank',['clickable',103]]],"blank","blank","blank","blank","blank",
+       ['row',[['clickable',111]]],"blank","blank","blank","blank","blank",
        //tabf
         ],
     },
@@ -3918,7 +4091,12 @@ addLayer("E", {
             content: [ ["display-text", () => "你进行了"+format(player.E.slowtime)+"次减速，使时间维度x"+format(tmp.E.slowtotdmult)+
             "<br>每次减速会使游戏速度/10，并使时间维度x5<br>游戏速度大于10时可以减速"],
             ['clickable',501],['clickable',502]]}, 
+            "Eternity Challenges": {
+                unlocked() {return hasAchievement('A3', 52)},
+                content: [ ["display-text", () => "你完成了"+format(tmp.E.EcComp)+"个永恒挑战，给予"+format(tmp.E.upbyec)+"个额外的升级点数<br>永恒挑战只有解锁后才会显示，每个永恒挑战最多可以完成5次"],
+                ["challenges", [1]]]}, 
         },
+        
       },
     doReset(resettingLayer) {
         if(resettingLayer == 'E'&&player.I.points.gte(n(2).pow(1024))) player.E.etr = player.E.etr.add(1)
@@ -3937,7 +4115,7 @@ addLayer("E", {
     },
     update(diff){
         player.E.upbybuy=n(gba('E', 11)).add(gba('E', 12)).add(gba('E', 13))
-        player.E.uptotal=player.E.upbybuy.add(tmp.E.upbyach)
+        player.E.uptotal=player.E.upbybuy.add(tmp.E.upbyach).add(tmp.E.upbydef)
         player.E.up=player.E.uptotal.sub(player.E.upcost)
         //if (getBuyableAmount(this.layer, 28).gte(1)) player.E.td7 = player.E.td7.add(player.E.td8.times(tmp.E.td8mult).times(diff).div(player.devSpeed))
         //if (getBuyableAmount(this.layer, 27).gte(1)) player.E.td6 = player.E.td6.add(player.E.td7.times(tmp.E.td7mult).times(diff).div(player.devSpeed))
@@ -4047,8 +4225,28 @@ addLayer("E", {
         },
         15: {
             requirementDescription: "16次永恒",
-            effectDescription() {return "打破永恒，允许你获得超过1.79e308无限点数"},
+            effectDescription() {return "打破永恒，允许你获得超过1.79e308无限点数，并解锁无限点数里程碑"},
             done() { return player.E.etr.gte(16) },
+        },
+        16: {
+            requirementDescription: "1e365无限点数",
+            effectDescription() {return "解锁QqQeInfinity超ReplicantiGalaxy的功能"},
+            done() { return player.I.points.gte('1e365') },
+            unlocked() {return player.E.etr.gte(16)}
+        },
+        17: {
+            requirementDescription: "1e400无限点数",
+            effectDescription() {return "qaqe308不重置任何东西，解锁monika升级自动购买器"},
+            done() { return player.I.points.gte('1e400') },
+            toggles:[["E", "moupg1auto"],["E", "moupg2auto"],["E", "moupg3auto"],["E", "moupg4auto"]],
+            unlocked() {return player.E.etr.gte(16)}
+        },
+        18: {
+            requirementDescription: "1e450无限点数",
+            effectDescription() {return "解锁ReplicantiGalaxy自动重置器"},
+            done() { return player.I.points.gte('1e450') },
+            toggles:[["E", "rgauto"]],
+            unlocked() {return player.E.etr.gte(16)}
         },
     },
     buyables: {
@@ -4183,6 +4381,21 @@ addLayer("E", {
             setClickableState("E",32,0)
             setClickableState("E",41,0)
             setClickableState("E",51,0)
+            setClickableState("E",61,0)
+            setClickableState("E",62,0)
+            setClickableState("E",71,0)
+            setClickableState("E",73,0)
+            setClickableState("E",72,0)
+            setClickableState("E",81,0)
+            setClickableState("E",82,0)
+            setClickableState("E",83,0)
+            setClickableState("E",91,0)
+            setClickableState("E",92,0)
+            setClickableState("E",93,0)
+            setClickableState("E",101,0)
+            setClickableState("E",102,0)
+            setClickableState("E",103,0)
+            setClickableState("E",111,0)
             doReset("E")
             player.E.upcost=n(0).add(n(gcs('E', 21)))
            },
@@ -4289,6 +4502,312 @@ addLayer("E", {
            branches(){return ["41"]},
             unlocked(){return hasMilestone('E',1)},
         },
+        61: {
+           title(){return "51" },
+           display() {return "获得1e10倍的无限点数（无视软上限）<br>价格: 4 升级点数"},
+           tooltip() {
+           return "购买要求: 41"
+           },
+   style() { return { 'background-color': getClickableState('E',61)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',61)==1||(!gcs('E', 51)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(4)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(4)
+           },
+           branches(){return ["51"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        62: {
+           title(){return "52" },
+           display() {return "点数获取指数增加0.05<br>价格: 5 升级点数"},
+           tooltip() {
+           return "购买要求: 51"
+           },
+   style() { return { 'background-color': getClickableState('E',62)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',62)==1||(!gcs('E', 61)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(5)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(5)
+           },
+           branches(){return ["61"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        71: {
+           title(){return "61 pre-Infinity" },
+           display() {return "“点数翻倍”可购买可以被无限购买，其效果的0.05次方无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 2 升级点数"},
+           effect() {a = max(buyableEffect('T', 11).pow(0.05),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 51&&!62&&!63"
+           },
+   style() { return { 'background-color': getClickableState('E',71)==1?"#4db123":layers.E.clickables[this.id].canClick()?"#4bd123":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',71)==1||(!gcs('E', 61)==1)||gcs('E', 73)==1||gcs('E', 72)==1) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(2)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(2)
+           },
+           branches(){return ["61"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        81: {
+           title(){return "71 pre-Infinity" },
+           display() {return "压缩时间墙层级点数加成可购买效果的0.25次方无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 3 升级点数"},
+           effect() {a = max(buyableEffect('CT', 11).times(buyableEffect('CT', 12)).times(buyableEffect('CT', 13)).pow(0.25),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 61"
+           },
+   style() { return { 'background-color': getClickableState('E',81)==1?"#4db123":layers.E.clickables[this.id].canClick()?"#4bd123":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',81)==1||(!gcs('E', 71)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(3)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(3)
+           },
+           branches(){return ["71"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        91: {
+           title(){return "81 pre-Infinity" },
+           display() {return "基于QqQeInfinity数量加成点数，无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 3 升级点数"},
+           effect() {a = n(1e100).pow(player.Qi.points)
+            return a
+           },
+           tooltip() {
+           return "购买要求: 71"
+           },
+   style() { return { 'background-color': getClickableState('E',91)==1?"#4db123":layers.E.clickables[this.id].canClick()?"#4bd123":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',91)==1||(!gcs('E', 81)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(3)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(3)
+           },
+           branches(){return ["81"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        101: {
+           title(){return "91 pre-Infinity" },
+           display() {return "基于二重压缩时间墙加成点数，无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 3 升级点数"},
+           effect() {a = max(player.DC.points.pow(8),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 71"
+           },
+   style() { return { 'background-color': getClickableState('E',101)==1?"#4db123":layers.E.clickables[this.id].canClick()?"#4bd123":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',101)==1||(!gcs('E', 91)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(3)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(3)
+           },
+           branches(){return ["91"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        111: {
+           title(){return "EC1" },
+           display() {return "解锁永恒挑战1<br>价格: 1 升级点数"},
+           tooltip() {
+           return "购买要求: 91"
+           },
+   style() { return { 'background-color': getClickableState('E',111)==1?"#d8ade6":layers.E.clickables[this.id].canClick()?"#d8bee6ff":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',111)==1||(!gcs('E', 101)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(1)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(1)
+           },
+           branches(){return ["101"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        72: {
+           title(){return "62 Infinity" },
+           display() {return "无限之力给点数加成的0.025次方无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 3 升级点数"},
+           effect() {a = max(player.I.ipower.pow(0.025),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 51&&!61&&!63"
+           },
+   style() { return { 'background-color': getClickableState('E',72)==1?"#b67f33":layers.E.clickables[this.id].canClick()?"#b69f33":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',72)==1||(!gcs('E', 61)==1)||gcs('E', 71)==1||gcs('E', 73)==1) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(3)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(3)
+           },
+           branches(){return ["61"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        82: {
+           title(){return "72 Infinity" },
+           display() {return "基于无限点数增加点数获取，无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 4 升级点数"},
+           effect() {a = max(player.I.points.pow(25),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 62"
+           },
+   style() { return { 'background-color': getClickableState('E',82)==1?"#b67f33":layers.E.clickables[this.id].canClick()?"#b69f33":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',82)==1||(!gcs('E', 72)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(4)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(4)
+           },
+           branches(){return ["72"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        92: {
+           title(){return "82 Infinity" },
+           display() {return "基于无限次数增加点数获取，无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 3 升级点数"},
+           effect() {a = max(player.I.inf.pow(5000),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 72"
+           },
+   style() { return { 'background-color': getClickableState('E',92)==1?"#b67f33":layers.E.clickables[this.id].canClick()?"#b69f33":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',92)==1||(!gcs('E', 82)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(3)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(3)
+           },
+           branches(){return ["82"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        102: {
+           title(){return "92 Infinity" },
+           display() {return "基于无限次数增加复制器复制速度中的x值<br>当前：x"+format(this.effect())+"<br>价格: 4 升级点数"},
+           effect() {a = max(player.I.inf.pow(0.05),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 82"
+           },
+   style() { return { 'background-color': getClickableState('E',102)==1?"#b67f33":layers.E.clickables[this.id].canClick()?"#b69f33":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',102)==1||(!gcs('E', 92)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(4)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(4)
+           },
+           branches(){return ["92"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        73: {
+           title(){return "63 Eternity" },
+           display() {return "基于总升级点数加成点数，无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 3 升级点数"},
+           effect() {a = max(player.E.uptotal.pow(10000),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 51&&!61&&!62"
+           },
+   style() { return { 'background-color': getClickableState('E',73)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',73)==1||(!gcs('E', 61)==1)||gcs('E', 71)==1||gcs('E', 72)==1) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(3)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(3)
+           },
+           branches(){return ["61"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        83: {
+           title(){return "73 Eternity" },
+           display() {return "基于永恒次数加成点数，无视软上限<br>当前：x"+format(this.effect())+"<br>价格: 4 升级点数"},
+           effect() {a = max(player.E.etr.pow(8888),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 63"
+           },
+   style() { return { 'background-color': getClickableState('E',83)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',83)==1||(!gcs('E', 73)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(4)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(4)
+           },
+           branches(){return ["73"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        93: {
+           title(){return "83 Eternity" },
+           display() {return "基于永恒次数加成游戏速度<br>当前：x"+format(this.effect())+"<br>价格: 4 升级点数"},
+           effect() {a = min(player.E.etr.times(0.5).pow(0.75),n(100000))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 73<br>硬上限：100000"
+           },
+   style() { return { 'background-color': getClickableState('E',93)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',93)==1||(!gcs('E', 83)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(4)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(4)
+           },
+           branches(){return ["83"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
+        103: {
+           title(){return "93 Eternity" },
+           display() {return "基于复制器加成时间维度<br>当前：x"+format(this.effect())+"<br>价格: 4 升级点数"},
+           effect() {a = max(player.I.rep.pow(0.25),n(1))
+            return a
+           },
+           tooltip() {
+           return "购买要求: 83"
+           },
+   style() { return { 'background-color': getClickableState('E',103)==1?"#b743de":layers.E.clickables[this.id].canClick()?"#d8ade6":"#BF8F8F"}},
+          canClick() {
+           if(getClickableState('E',103)==1||(!gcs('E', 93)==1)) return false
+           //if(inChallenge('r',13)) return false
+           return player.E.up.gte(4)
+          },
+           onClick() {setClickableState(this.layer, this.id,1)
+             player.E.upcost=player.E.upcost.add(4)
+           },
+           branches(){return ["83"]},
+            unlocked(){return hasMilestone('E',1)},
+        },
     501:
     {
            title(){return "Slowdown" },
@@ -4330,6 +4849,28 @@ addLayer("E", {
             unlocked(){return hasMilestone('E',13)},
         }, 
    },
+   challenges: {
+        11: {
+            name: "Eternity Challenge 1",
+            challengeDescription(){return "基于点数给点数与无限维度一个小于1的指数<br>当前：^"+tmp.E.ec1effect+"<br>完成次数："+challengeCompletions(this.layer,this.id)+"/5"},
+            goalDescription(){return format(this.goal())+" 无限点数"},
+            rewardDescription(){return "降低用点数购买升级点数的价格<br>当前：^"+format(this.rewardEffect())},
+            unlocked(){return gcs('E',111)==1},
+            onComplete(){
+            },
+        goal(){
+                let a=[n('1.79e308'),n('e600'),n('e1300'),n('e3000'),n('e5000'),n('e5000')]
+                return a[challengeCompletions(this.layer,this.id)]
+            },
+        rewardEffect() {let a=[n(1.0),n(0.8),n(0.65),n(0.5),n(0.35),n(0.3)]
+                return a[challengeCompletions(this.layer,this.id)]
+        },
+            onEnter(){},
+            onExit(){},
+            canComplete: function() {
+                return player.I.points.gte(this.goal())},
+        },
+    },
     mil0effect1() {a = player.E.etr.add(1).pow(3)
         return a
     },//pre-inf mainline
@@ -4358,6 +4899,7 @@ addLayer("E", {
     },
     alltdmult() {a = tmp.E.etrtotdmult
         if (gcs('E', 41)==1) a = a.times(ce('E', 41))
+        if (gcs('E', 103)==1) a = a.times(ce('E', 103)) 
         a = a.times(tmp.E.slowtotdmult)
         return a
     },
@@ -4397,6 +4939,11 @@ addLayer("E", {
         if (hasAchievement('A3', 15)) a = a.add(1)
         if (hasAchievement('A3', 24)) a = a.add(2)
         if (hasAchievement('A3', 25)) a = a.add(1)
+        if (hasAchievement('A3', 35)) a = a.add(1)
+        if (hasAchievement('A3', 45)) a = a.add(1)
+        return a
+    },
+    upbydef(){a = tmp.df.effect6
         return a
     },
     slowtotdmult() {a = n(1)
@@ -4406,5 +4953,109 @@ addLayer("E", {
     tsbase() {a = n(10)
         if (hasMilestone('E',8)) a = a.sub(gba('qa', 12))
             return a
-    }
+    },
+    EcComp() {a = n(0)
+        return a
+    },
+    upbyec() {a = tmp.E.EcComp
+        return a
+    },
+    ec1effect() {a = n(1.03)
+                b = player.points.add(1).log(2).add(1).log(2)
+                c = a.pow(b).sub(n(a).pow(b.times(-1))).div(a.pow(b).add(a.pow(b.times(-1))))
+            return c}
+})
+
+addLayer("df", {
+    name: "DeFe308", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "DF", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: n(0),
+    }},
+    color: "#d8ade6",
+    requires(){a = new Decimal('1e250000')
+        return a
+    }, // Can be a function that takes requirement increases into account
+    resource: "DeFe308", // Name of prestige currency
+    baseResource: "点数", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 2, // Prestige currency exponent
+    base: n('1e10000'),
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 5, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "d", description: "D: 获得DeFe308", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return player.A3.points.gte(15)},
+    branches: ['E'],
+    //microtabs: {
+
+      //  },
+    doReset(resettingLayer) {        
+        if (layers[resettingLayer].row > layers[this.layer].row) {
+        let kept = []
+        layerDataReset(this.layer, kept)
+           }
+    },
+    update(diff){
+
+    },
+    autoPrestige() {a = false
+        return a
+    },
+    resetsNothing() {return false},
+    passiveGeneration()
+    {
+        mult = 0
+        return mult
+    },
+    //tabFormat: [
+    //    "main-display",
+    //    "prestige-button",
+    //    ["microtabs", "stuff"],
+    //    ["blank", "25px"],
+    //],
+    milestones: {
+        0: {
+            requirementDescription: "1 DeFe308",
+            effectDescription(){return "基于DeFe308数量获得各种加成 当前：<br>复制器上限x"+format(tmp.df.effect)+"<br>无限维度x"+format(tmp.df.effect2)+"(基于Monika点数)<br>无限点数DirectMult x"+format(tmp.df.effect3)+"(基于永恒点数)<br>无限次数获取x"+format(tmp.df.effect4)+"<br>双指数软上限指数+"+format(tmp.df.effect5)+"<br>升级点数+"+format(tmp.df.effect6)},
+            done() { return player.df.points.gte(1) }
+        },
+
+    },
+    effect(){
+        c = n(1e3).pow(player.df.points)
+            return c
+      },
+    effect2(){
+        c = max(player.qa.monika,1).pow(player.df.points.times(50))
+            return c
+      },
+    effect3(){
+        c = max(player.E.points,1).pow(player.df.points.pow(0.5).times(10))
+            return c
+      },
+    effect4(){
+        c = player.df.points.pow(2).add(1)
+            return c
+      },
+    effect5(){
+        c = max(n(1.015).pow(player.df.points).sub(n(1.015).pow(player.df.points.times(-1))).div(n(1.015).pow(player.df.points).add(n(1.015).pow(player.df.points.times(-1)))).sub(0.01),n(0))
+            return c
+      },
+    effect6(){
+        c = player.df.points.times(2)
+        return c
+    },
+
 })

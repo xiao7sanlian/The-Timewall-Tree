@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.65.5",
-	name: "Break-Eternity Update",
+	num: "0.70",
+	name: "The 2nd Breaking Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -80,7 +80,12 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Endgame:10次永恒<br>
 	<h3>v0.65.5 Break-Eternity Update 2025/7/28~2025/8/3</h3><br/>
 	    - 增加了6个里程碑与1个升级树上的升级，还有5个成就<br>
-		- Endgame:1e365无限点数<br>`
+		- Endgame:1e365无限点数<br>
+	<h3>v0.70 The 2nd Breaking Update 2025/8/7~2025/8/9</h3><br/>
+	    - 升级树增加了51~93的升级<br>
+		- 增加了3个里程碑，1个新层级与12个新成就<br>
+		- 增加了1个永恒挑战<br>
+		- Endgame:完成一次永恒挑战1<br>`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -163,6 +168,7 @@ function sc7power(){
 function sc8power(){
 	power = new Decimal(0.01)
 	if (hasAchievement('A2', 73)&&!hasAchievement('A3', 24)) power = power.add(0.49)
+	power = power.add(tmp.df.effect5)
 	root = n(1).div(power)
 	return root
 }
@@ -214,7 +220,9 @@ function getPointGen() {
     gain = ptgainbeforeexp()
 
 	if (hasMilestone('E', 8)) gain = gain.pow(tmp.qa.ptExp)
+	gain = gain.times(ptdirmult())
 
+	if (inChallenge('E',11)) gain = gain.pow(tmp.E.ec1effect)
 	if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) gain = n(0)
 	if (player.points.gte(1.79e308)&&inChallenge('I', 16)) gain = n(0)
 	return gain
@@ -224,14 +232,16 @@ function getPointGen() {
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-	devSpeed:new Decimal(1)
+	devSpeed:new Decimal(1),
+	timePlayed:n(0),//游戏时间
+    timeplayed:n(0),//现实时间
 }}
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:1e365无限点数'
+	function(){a = '当前Endgame:完成一次永恒挑战1'
 		if (hasMilestone('E', 8)) {a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'
-			a = a+format(tmp.qa.ptExp)+'</sup>='
+			a = a+format(tmp.qa.ptExp)+'</sup>x'+format(ptdirmult())+'='
 			a =a+format(getPointGen())}
 		if (ptgainbeforeexp().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (ptgainbeforeexp().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
@@ -259,7 +269,8 @@ function isEndgame() {
 	//return player.E.etr.gte(3)&&hasUpgrade('I', 21)
 	//return player.E.etr.gte(5)
 	//return player.E.etr.gte(10)
-	return player.I.points.gte('1e365')
+	//return player.I.points.gte('1e365')
+	return n(challengeCompletions('E',11)).gte(1)
 }
 
 // Less important things beyond this point!
@@ -432,4 +443,17 @@ function ptgainbeforeexp() {	if(!canGenPoints())
 	if (gain.gte(n('1e50000'))) gain = powsoftcap(gain,n('1e50000'),sc7power()) //sc7
 	if (gain.gte(n('1e208500'))) gain = expRootSoftcap(gain,n('1e208500'),sc8power()) //sc8
 	return gain
+}
+
+function ptdirmult(){mult = n(1)
+	if (gcs('E',71)==1) mult = mult.times(ce('E', 71))
+	if (gcs('E',72)==1) mult = mult.times(ce('E', 72))
+	if (gcs('E',73)==1) mult = mult.times(ce('E', 73))
+	if (gcs('E',81)==1) mult = mult.times(ce('E', 81))
+	if (gcs('E',82)==1) mult = mult.times(ce('E', 82))
+	if (gcs('E',83)==1) mult = mult.times(ce('E', 83))
+	if (gcs('E',91)==1) mult = mult.times(ce('E', 91))
+	if (gcs('E',92)==1) mult = mult.times(ce('E', 92))
+	if (gcs('E',101)==1) mult = mult.times(ce('E', 101))
+		return mult
 }
