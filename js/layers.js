@@ -1946,7 +1946,7 @@ addLayer("Qi", {
             if (hasMilestone('Qi', 0)&&(player.Qi.choice.eq(n(2))||(hasMilestone('E',102)&&player.Qi.choice.neq(1)))&&!isEndgame()) player.Qi.QqQe308 = player.Qi.QqQe308.add(min(n(diff).div(tmp.Qi.Supermanspeed),n(500)));
             if (hasMilestone('Qi', 1)&&(player.Qi.choice.eq(n(3))||(hasMilestone('E',102)&&player.Qi.choice.neq(1)))&&!isEndgame()) player.Qi.cokecole = player.Qi.cokecole.add(min(n(diff).div(tmp.Qi.Supermanspeed2),n(500)));
             if (hasUpgrade('I', 63)&&(player.Qi.choice.eq(n(4))||(hasMilestone('E',102)&&player.Qi.choice.neq(1)))&&!isEndgame()) player.Qi.qaqe308 = player.Qi.qaqe308.add(min(n(diff).div(tmp.Qi.Superqaqe308speed),n(500)));
-            if (hasMilestone('E', 16)&&(player.Qi.choice.eq(n(5))||(hasMilestone('E',102)&&player.Qi.choice.neq(1)))&&!isEndgame()) player.Qi.rg = player.Qi.rg.add(min(n(diff).div(tmp.Qi.Superrgspeed),n(500)));
+            if (hasMilestone('E', 17)&&(player.Qi.choice.eq(n(5))||(hasMilestone('E',102)&&player.Qi.choice.neq(1)))&&!isEndgame()) player.Qi.rg = player.Qi.rg.add(min(n(diff).div(tmp.Qi.Superrgspeed),n(500)));
         }
 
     },
@@ -2044,8 +2044,8 @@ addLayer("Qi", {
         15: {
             title: "超ReplicantiGalaxy",
             display() {return "点击以选择超ReplicantiGalaxy"},
-            unlocked() {return hasMilestone('E', 16)},
-            canClick() {return hasMilestone('E', 16)&&hasAchievement('A2', 35)},
+            unlocked() {return hasMilestone('E', 17)},
+            canClick() {return hasMilestone('E', 17)&&hasAchievement('A2', 35)},
             onClick() {player.Qi.choice = n(5)},
         },
         
