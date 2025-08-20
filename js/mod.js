@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.75.1",
+	num: "0.75.1.1",
 	name: "Eternity Challenge Update(I)",
 }
 
@@ -86,10 +86,12 @@ let changelog = `<h1>Changelog:</h1><br>
 		- 增加了3个里程碑，1个新层级与12个新成就<br>
 		- 增加了1个永恒挑战<br>
 		- Endgame:完成一次永恒挑战1<br>
-	<h3>v0.75 Eternity Challenge Update(I) 2025/8/13~2025/8/16</h3><br/>
+	<h3>v0.75.1 Eternity Challenge Update(I) 2025/8/13~2025/8/16</h3><br/>
 	    - 升级树做到133，增加5个永恒挑战<br>
 		- 增加了3个里程碑与15个成就<br>
-		- Endgame:42三级成就<br>`
+		- Endgame:42三级成就<br>
+	<h3>v0.75.1.1 bug-fix 2025/8/20</h3><br>
+	    - 修复了永恒里程碑相关的bug`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 

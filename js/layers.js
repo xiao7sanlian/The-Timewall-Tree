@@ -2131,7 +2131,7 @@ addLayer("Qi", {
             if (hasAchievement('A2', 35)) a = a + "等效于每秒超 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superqaqe308speed))+"</h3> 次qaqe308<br/>算上游戏速度，你每秒正在超 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superqaqe308speed).times(player.devSpeed))+"</h3> 次qaqe308<br/>"
             if (hasMilestone('Qi', 102)) a = a + "由于“超市qaqe308”里程碑，这也使无限点数获取 <h3 style='color: #ab4308; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.qaqe308effect2)+ "</h3>.<br>"
         }
-        if (hasMilestone('E', 16)) {a = a + "<br/>你超了ReplicantiGalaxy <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.rg) + "</h3> 次, 使复制器上限 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.RGeffect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Superrgspeed) +"</h3> 秒超一次ReplicantiGalaxy<br>"
+        if (hasMilestone('E', 17)) {a = a + "<br/>你超了ReplicantiGalaxy <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>" + format(player.Qi.rg) + "</h3> 次, 使复制器上限 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'> " + "x" +format(tmp.Qi.RGeffect)+ "</h3>.<br>" + "基于你的QqQeInfinity数量，QqQeInfinity每 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+ format(tmp.Qi.Superrgspeed) +"</h3> 秒超一次ReplicantiGalaxy<br>"
             //if (!hasAchievement('A2', 35)) a = a + "当前剩余 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+format(n(tmp.Qi.Superrgspeed).sub(player.Qi.Superqaqe308time))+"</h3> 秒<br/>"
             if (hasAchievement('A2', 35)) a = a + "等效于每秒超 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superrgspeed))+"</h3> 次ReplicantiGalaxy<br/>算上游戏速度，你每秒正在超 <h3 style='color: #998e15; text-shadow: 0 0 3px #c2b280'>"+format(n(1).div(tmp.Qi.Superrgspeed).times(player.devSpeed))+"</h3> 次ReplicantiGalaxy<br/>"
             
@@ -3929,7 +3929,7 @@ addLayer("qa", {
     autoPrestige() {a = player.E.qaqe308auto
         return a
     },
-    resetsNothing() {return hasMilestone('E', 17)},
+    resetsNothing() {return hasMilestone('E', 18)},
     passiveGeneration()
     {
         mult = 0
@@ -5617,7 +5617,7 @@ addLayer("df", {
     },
     row: 5, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "d", description: "D: 获得DeFe308", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "D", description: "D(大写): 获得DeFe308", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return player.A3.points.gte(15)},
     branches: ['E'],
