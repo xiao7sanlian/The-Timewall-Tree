@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.75.1.1",
-	name: "Eternity Challenge Update(I)",
+	num: "0.75.2",
+	name: "Eternity Challenge Update(II)",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -91,7 +91,14 @@ let changelog = `<h1>Changelog:</h1><br>
 		- 增加了3个里程碑与15个成就<br>
 		- Endgame:42三级成就<br>
 	<h3>v0.75.1.1 bug-fix 2025/8/20</h3><br>
-	    - 修复了永恒里程碑相关的bug`
+	    - 修复了永恒里程碑相关的bug
+	<h3>v0.75.2 Eternity Challenge Update(II) 2025/10/3~2025/10/19</h3><br>
+	    - 为无限维度增加了软上限<br>
+		- 升级树做到171，增加3个永恒挑战<br>
+		- 增加了1个EC里程碑，一个DeFe308里程碑与13个成就<br>
+		- <img src="s297.jpg" width="25" height="25"><br>
+		- Endgame:24永恒挑战完成次数<br>`
+		
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -152,6 +159,8 @@ function sc5power(){
 	power = new Decimal(0.5)
 	if (inChallenge('I', 26)||inChallenge('E', 12)) power = power.sub(0.01)
 	power = power.add(buyableEffect('I', 24))
+	if (gcs('E',192)==1) power=power.add(0.15)
+	if (gcs('E',193)==1) power=power.add(0.25)
 	root = n(1).div(power)
 	return root
 }
@@ -246,7 +255,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:42三级成就'
+	function(){a = '当前Endgame:24个永恒挑战'
 		if (hasMilestone('E', 8)) {a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'
 			a = a+format(tmp.qa.ptExp)+'</sup>x'+format(ptdirmult())+'='
 			a =a+format(getPointGen())}
@@ -254,8 +263,8 @@ var displayThings = [
 		if (ptgainbeforeexp().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (ptgainbeforeexp().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
 		if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) a = a + '<br/>点数到达硬上限！'
-		if (ptgainbeforeexp().gte(1.79e308)&&hasUpgrade('I', 21)) a = a + '<br/>由于点数获取量超过1.79e308，点数获取量受到四重软上限限制！<br/>四重软上限指数：' + format(sc4power())
-		if (ptgainbeforeexp().gte('1e616')) a = a + '<br/>由于点数获取量超过1e616，点数获取量指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc5power()))
+		if (ptgainbeforeexp().gte(1.79e308)&&hasUpgrade('I', 21)&&!(sc4power().gte(1))) a = a + '<br/>由于点数获取量超过1.79e308，点数获取量受到四重软上限限制！<br/>四重软上限指数：' + format(sc4power())
+		if (ptgainbeforeexp().gte('1e616')&&!(sc5power().gte(1))) a = a + '<br/>由于点数获取量超过1e616，点数获取量指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc5power()))
 		if (ptgainbeforeexp().gte('1e10000')) a = a + '<br/>由于点数获取量超过1e10000，点数获取量指数受到二重软上限限制！<br/>二重软上限指数：' + format(n(1).div(sc6power()))
 		if (ptgainbeforeexp().gte('1e50000')) a = a + '<br/>由于点数获取量超过1e50000，点数获取量指数受到三重软上限限制！<br/>三重软上限指数：' + format(n(1).div(sc7power()))
 			if (ptgainbeforeexp().gte('1e208500')) a = a + '<br/>由于点数获取量超过1e208500，点数获取量指数的指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc8power()))
@@ -279,7 +288,8 @@ function isEndgame() {
 	//return player.E.etr.gte(10)
 	//return player.I.points.gte('1e365')
 	//return n(challengeCompletions('E',11)).gte(1)
-	return player.A3.points.gte(42)
+	//return player.A3.points.gte(42)
+	return hasAchievement('A3',103)
 }
 
 // Less important things beyond this point!
@@ -467,5 +477,8 @@ function ptdirmult(){mult = n(1)
 	if (gcs('E',151)==1) mult = mult.times(ce('E', 151))
 	if (gcs('E',152)==1) mult = mult.times(ce('E', 152))
 	if (gcs('E',153)==1) mult = mult.times(ce('E', 153))
+	if (gcs('E',161)==1) mult = mult.times(ce('E', 161))
+	if(n(challengeCompletions('E',23)).gte(1)) mult=mult.times(challengeEffect('E',23))
+	if(inChallenge('E',23)) mult=n(1)
 		return mult
 }
