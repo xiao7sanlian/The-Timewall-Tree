@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.75.2",
-	name: "Eternity Challenge Update(II)",
+	num: "0.99.9",
+	name: "Eternity Challenge Update(END)",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -91,13 +91,16 @@ let changelog = `<h1>Changelog:</h1><br>
 		- 增加了3个里程碑与15个成就<br>
 		- Endgame:42三级成就<br>
 	<h3>v0.75.1.1 bug-fix 2025/8/20</h3><br>
-	    - 修复了永恒里程碑相关的bug
+	    - 修复了永恒里程碑相关的bug<br>
 	<h3>v0.75.2 Eternity Challenge Update(II) 2025/10/3~2025/10/19</h3><br>
 	    - 为无限维度增加了软上限<br>
 		- 升级树做到171，增加3个永恒挑战<br>
 		- 增加了1个EC里程碑，一个DeFe308里程碑与13个成就<br>
-		- <img src="s297.jpg" width="25" height="25"><br>
-		- Endgame:24永恒挑战完成次数<br>`
+		- Endgame:24永恒挑战完成次数<br>
+	<h3>v0.99.9 Eternity Challenge Update(END) 2025/11/8~2025/11/9</h3><br>
+		- 增加了1个EC里程碑与3个成就<br>
+		- 增加了膨胀与<img src="s297.jpg" width="25" height="25"><br>
+		- Endgame:购买升级U1-1<br>`
 		
 
 let winText = `恭喜！你 >暂时< 通关了！`
@@ -233,7 +236,8 @@ function bhcost1(x){s = n(1.5e11)
 
 // Calculate points/sec!
 function getPointGen() {
-    gain = ptgainbeforeexp()
+	if(player.bx.points.lt(1)){
+	gain = ptgainbeforeexp()
 
 	if (hasMilestone('E', 8)) gain = gain.pow(tmp.qa.ptExp)
 	gain = gain.times(ptdirmult())
@@ -241,6 +245,8 @@ function getPointGen() {
 	if (inChallenge('E',11)) gain = gain.pow(tmp.E.ec1effect)
 	if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) gain = n(0)
 	if (player.points.gte(1.79e308)&&inChallenge('I', 16)) gain = n(0)
+	if (player.points.gte('e1.79e308')) gain=n(0)}
+	if(player.bx.points.gte(1)) gain=tmp.bx.effect
 	return gain
 }
 
@@ -255,21 +261,23 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:24个永恒挑战'
-		if (hasMilestone('E', 8)) {a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'
+	function(){a = '当前Endgame:购买升级U1-1'
+	if(player.bx.points.lte(1)){
+		if (hasMilestone('E', 8)&&!player.points.gte('e1.79e308')&&!player.bx.points.gte(1)) {a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'
 			a = a+format(tmp.qa.ptExp)+'</sup>x'+format(ptdirmult())+'='
 			a =a+format(getPointGen())}
 		if (ptgainbeforeexp().gte(sc1start())&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过'+format(sc1start())+'，点数获取量受到软上限限制！<br/>软上限指数：' + format(sc1power())
 		if (ptgainbeforeexp().gte(1e9)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e9，点数获取量受到二重软上限限制！<br/>二重软上限指数：' + format(sc2power())
 		if (ptgainbeforeexp().gte(1e13)&&!getPointGen().gte(1.79e308)&&!hasAchievement('A2', 25)) a = a + '<br/>由于点数获取量超过1e13，点数获取量受到三重软上限限制！<br/>三重软上限指数：' + format(sc3power())
 		if (player.points.gte(1.79e308)&&!hasUpgrade('I', 21)) a = a + '<br/>点数到达硬上限！'
-		if (ptgainbeforeexp().gte(1.79e308)&&hasUpgrade('I', 21)&&!(sc4power().gte(1))) a = a + '<br/>由于点数获取量超过1.79e308，点数获取量受到四重软上限限制！<br/>四重软上限指数：' + format(sc4power())
-		if (ptgainbeforeexp().gte('1e616')&&!(sc5power().gte(1))) a = a + '<br/>由于点数获取量超过1e616，点数获取量指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc5power()))
-		if (ptgainbeforeexp().gte('1e10000')) a = a + '<br/>由于点数获取量超过1e10000，点数获取量指数受到二重软上限限制！<br/>二重软上限指数：' + format(n(1).div(sc6power()))
-		if (ptgainbeforeexp().gte('1e50000')) a = a + '<br/>由于点数获取量超过1e50000，点数获取量指数受到三重软上限限制！<br/>三重软上限指数：' + format(n(1).div(sc7power()))
-			if (ptgainbeforeexp().gte('1e208500')) a = a + '<br/>由于点数获取量超过1e208500，点数获取量指数的指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc8power()))
+		if (ptgainbeforeexp().gte(1.79e308)&&hasUpgrade('I', 21)&&!(sc4power().gte(1))&&!player.points.gte('e9e15')) a = a + '<br/>由于点数获取量超过1.79e308，点数获取量受到四重软上限限制！<br/>四重软上限指数：' + format(sc4power())
+		if (ptgainbeforeexp().gte('1e616')&&!(sc5power().gte(1))&&!player.points.gte('e9e15')) a = a + '<br/>由于点数获取量超过1e616，点数获取量指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc5power()))
+		if (ptgainbeforeexp().gte('1e10000')&&!player.points.gte('e9e15')) a = a + '<br/>由于点数获取量超过1e10000，点数获取量指数受到二重软上限限制！<br/>二重软上限指数：' + format(n(1).div(sc6power()))
+		if (ptgainbeforeexp().gte('1e50000')&&!player.points.gte('e9e15')) a = a + '<br/>由于点数获取量超过1e50000，点数获取量指数受到三重软上限限制！<br/>三重软上限指数：' + format(n(1).div(sc7power()))
+			if (ptgainbeforeexp().gte('1e208500')&&!player.points.gte('e9e15')) a = a + '<br/>由于点数获取量超过1e208500，点数获取量指数的指数受到软上限限制！<br/>软上限指数：' + format(n(1).div(sc8power()))
 			if (hasMilestone('E', 13)&&gcs('E', 511)==0&&!hasAchievement('A3',46)) a = a + quickColor('<br>由于不可抗力因素，从现在开始永恒后无限维度乘数将变成0，需要刷新以恢复！',"#ff0000")
 			if (hasMilestone('E', 13)&&gcs('E', 511)==0&&hasAchievement('A3',46)) a = a + quickColor('<br>由于你完成了相关的隐藏成就，不可抗力因素已被移除',"#4bd123")
+		if(player.points.gte('e1.79e308')) a=a + quickColor('<br>由于你的点数太膨胀了，点数被限制在e1.79e308！',"#ff0000")}
 		return a
 	}
 ]
@@ -289,7 +297,8 @@ function isEndgame() {
 	//return player.I.points.gte('1e365')
 	//return n(challengeCompletions('E',11)).gte(1)
 	//return player.A3.points.gte(42)
-	return hasAchievement('A3',103)
+	//return hasAchievement('A3',103)
+	return hasUpgrade('bx',11)
 }
 
 // Less important things beyond this point!
