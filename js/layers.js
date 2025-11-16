@@ -6324,6 +6324,41 @@ addLayer("A4", {
      tooltip: "获得你的第一个拜谢帝！", 
      textStyle: {'color': '#ffe125'},
         },
+        12: {
+     name: "66686太膨胀了",
+     done() {return player.bx.points.gte(1)&&player.points.gte(6.6686)}, 
+     onComplete() {player.A4.points = player.A4.points.add(1)},
+     tooltip: "获得6.6686点数", 
+     textStyle: {'color': '#ffe125'},
+        },
+        13: {
+     name: "Clicker Heroes?",
+     done() {return player.bx.bestlevel.gt(5)}, 
+     onComplete() {player.A4.points = player.A4.points.add(1)},
+     tooltip: "通过Liuliu66686关卡5", 
+     textStyle: {'color': '#ffe125'},
+        },
+        14: {
+     name: "攻击破百",
+     done() {return tmp.bx.dps.gte(100)}, 
+     onComplete() {player.A4.points = player.A4.points.add(1)},
+     tooltip: "每秒伤害达到100", 
+     textStyle: {'color': '#ffe125'},
+        },
+        15: {
+     name: "攻击破千",
+     done() {return tmp.bx.dps.gte(1000)}, 
+     onComplete() {player.A4.points = player.A4.points.add(1)},
+     tooltip: "每秒伤害达到1000", 
+     textStyle: {'color': '#ffe125'},
+        },
+        21: {
+     name: "点数膨胀 II",
+     done() {return player.bx.points.gte(1)&&player.points.gte(10000)}, 
+     onComplete() {player.A4.points = player.A4.points.add(1)},
+     tooltip: "获得10000点数<br>还记得点数膨胀 I在哪里吗？", 
+     textStyle: {'color': '#ffe125'},
+        },
     }
 })
 
@@ -6334,6 +6369,12 @@ addLayer("bx", {
     startData() { return {
         unlocked: true,
 		points: n(0),
+        daheiHP:n(10),
+        bestlevel:n(1),
+        level:n(1),
+        defeat:n(0),
+        leveltime:n(0),
+        mode:n(0),
     }},
     color: "#d3f928ff",
     requires(){a = new Decimal('e1.79e308')
@@ -6357,7 +6398,7 @@ addLayer("bx", {
     },
     row: 7, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "b", description: "B: 获得拜谢帝", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        //{key: "b", description: "B: 获得拜谢帝", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return player.A3.points.gte(60)||player.bx.points.gt(0)},
     branches: ['E','df'],
@@ -6387,7 +6428,27 @@ player.rg.points=n(0)
 player.E.points=n(0)
 player.df.points=n(0)
 player.A3.points=n(0)
-player.A3.achievements=[]}//kill previous resources
+player.A.points=n(0)
+player.A2.points=n(0)
+player.A3.achievements=[]
+player.A.achievements=[]
+player.A2.achievements=[]}//kill previous resources
+            player.bx.daheiHP=player.bx.daheiHP.sub(tmp.bx.dps.times(diff))
+        if(player.bx.daheiHP.lte(0)){player.bx.defeat=player.bx.defeat.add(1)
+            player.points=player.points.add(tmp.bx.getpt)
+            if (player.bx.defeat.gte(tmp.bx.levelgoal)){player.bx.defeat=n(0)
+                if(player.bx.level.eq(player.bx.bestlevel))player.bx.bestlevel = player.bx.bestlevel.add(1)
+                if(player.bx.mode.eq(0))player.bx.level=player.bx.level.add(1)
+            }
+            player.bx.leveltime=n(0)
+            player.bx.daheiHP = HPformula(player.bx.level)
+        }//defeat
+        player.bx.leveltime=player.bx.leveltime.add(diff)
+        if(player.bx.leveltime.gte(tmp.bx.timelimit)){player.bx.level=player.bx.level.sub(1)
+            player.bx.defeat=n(0)
+        player.bx.leveltime=n(0)
+            player.bx.daheiHP = HPformula(player.bx.level)
+        }
     },
     autoPrestige() {a = false
         return a
@@ -6398,12 +6459,23 @@ player.A3.achievements=[]}//kill previous resources
         mult = 0
         return mult
     },
-    //tabFormat: [
-    //    "main-display",
-    //    "prestige-button",
-    //    ["microtabs", "stuff"],
-    //    ["blank", "25px"],
-    //],
+    tabFormat: [
+        "main-display",
+        "prestige-button",
+        ["microtabs", "stuff"],
+        ["blank", "25px"],
+    ],
+        microtabs: {
+        stuff: {       
+            "General": {
+                unlocked() {return true},
+                content: [ "milestones",'upgrades']}, 
+            "Liuliu66686": {
+                unlocked() {return hasMilestone('bx', 0)},
+                content: [["display-text", () => tmp.bx.Showdetail
+                    ],["blank", "25px"],'clickables','buyables']},
+            }
+        },
     upgrades: {
         11: {
             fullDisplay(){a= '<h3>U1-1</h3><br>拜谢帝效果x2<br>花费：1 点数'
@@ -6412,12 +6484,318 @@ player.A3.achievements=[]}//kill previous resources
             canAfford(){return player.bx.points.gte(1)&&player.points.gte(1)},
             pay(){player.points = player.points.sub(1)},
         },
+        12: {
+            fullDisplay(){a= '<h3>U1-2</h3><br>拜谢帝效果x2<br>花费：2.5 点数'
+                return a
+            },
+            unlocked(){return true},
+            canAfford(){return player.bx.points.gte(1)&&player.points.gte(2.5)},
+            pay(){player.points = player.points.sub(2.5)},
+        },
+        13: {
+            fullDisplay(){a= '<h3>U1-3</h3><br>解锁攻击<br>购买时清除所有点数<br>需求：6.6686 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',11)},
+            canAfford(){return player.bx.points.gte(1)&&player.points.gte(6.6686)},
+            pay(){player.points = n(0)},
+        },
+        21: {
+            fullDisplay(){a= '<h3>U2-1</h3><br>解锁关卡切换功能<br>本行每个升级使你的攻击按钮伤害+1<br>花费：1.15 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',13)},
+            canAfford(){return player.bx.points.gte(1)&&player.points.gte(1.15)},
+            pay(){player.points = player.points.sub(1.15)},
+        },
+        22: {
+            fullDisplay(){a= '<h3>U2-2</h3><br>解锁第零拜谢维度<br>花费：2.3 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',13)},
+            canAfford(){return player.bx.points.gte(1)&&player.points.gte(2.3)},
+            pay(){player.points = player.points.sub(2.3)},
+        },
+        23: {
+            fullDisplay(){a= '<h3>U2-3</h3><br>解锁游玩模式切换功能<br><br>花费：3.7 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',13)},
+            canAfford(){return player.bx.points.gte(1)&&player.points.gte(3.7)},
+            pay(){player.points = player.points.sub(3.7)},
+        },
+        24: {
+            fullDisplay(){a= '<h3>U2-4</h3><br>解锁拜谢维度<br>与无限维度、时间维度不同，拜谢维度不会生产上一级拜谢维度<br>花费：8.9 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',13)},
+            canAfford(){return player.bx.points.gte(1)&&player.points.gte(8.9)},
+            pay(){player.points = player.points.sub(8.9)},
+        },
+        25: {
+            fullDisplay(){a= '<h3>U2-5</h3><br>解锁与拜谢维度有关的升级<br>花费：25 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',13)},
+            canAfford(){return player.bx.points.gte(1)&&player.points.gte(25)},
+            pay(){player.points = player.points.sub(25)},
+        },
+        31: {
+            fullDisplay(){a= '<h3>U3-1</h3><br>第一维度与第零维度效果x2<br>需求：10 第一维度<br>花费：15 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',21).gte(1)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',21).gte(10)&&player.points.gte(15)},
+            pay(){player.points = player.points.sub(15)},
+        },
+        32: {
+            fullDisplay(){a= '<h3>U3-2</h3><br>第一维度与第零维度效果x2<br>需求：25 第一维度<br>花费：150 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',21).gte(10)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',21).gte(25)&&player.points.gte(150)},
+            pay(){player.points = player.points.sub(150)},
+        },
+        33: {
+            fullDisplay(){a= '<h3>U3-3</h3><br>第一维度与第零维度效果x2<br>需求：50 第一维度<br>花费：5000 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',21).gte(25)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',21).gte(50)&&player.points.gte(5000)},
+            pay(){player.points = player.points.sub(5000)},
+        },
+        34: {
+            fullDisplay(){a= '<h3>U3-3</h3><br>第一维度与第零维度效果x2<br>需求：75 第一维度<br>花费：250000 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',21).gte(50)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',21).gte(75)&&player.points.gte(250000)},
+            pay(){player.points = player.points.sub(250000)},
+        },
+        41: {
+            fullDisplay(){a= '<h3>U4-1</h3><br>第二维度与拜谢帝效果x2<br>需求：10 第二维度<br>花费：200 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',22).gte(1)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',22).gte(10)&&player.points.gte(200)},
+            pay(){player.points = player.points.sub(200)},
+        },
+        42: {
+            fullDisplay(){a= '<h3>U4-2</h3><br>第二维度与拜谢帝效果x1.5<br>需求：25 第二维度<br>花费：2500 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',22).gte(10)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',22).gte(25)&&player.points.gte(2500)},
+            pay(){player.points = player.points.sub(2500)},
+        },
+        43: {
+            fullDisplay(){a= '<h3>U4-3</h3><br>第二维度效果x2<br>需求：50 第二维度<br>花费：20000 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',22).gte(25)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',22).gte(50)&&player.points.gte(2e4)},
+            pay(){player.points = player.points.sub(2e4)},
+        },
+        51: {
+            fullDisplay(){a= '<h3>U5-1</h3><br>第三维度效果x2，除第零维度外所有维度效果x1.5<br>需求：10 第三维度<br>花费：30000 点数'
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',25)&&getBuyableAmount('bx',23).gte(1)},
+            canAfford(){return player.bx.points.gte(1)&&getBuyableAmount('bx',23).gte(10)&&player.points.gte(3e4)},
+            pay(){player.points = player.points.sub(3e4)},
+        },
+    },
+    clickables:{
+        12: {
+            title: "攻击",
+            display() {return "对溜溜溜达嘿造成"+format(tmp.bx.attackeffect)+"伤害"},
+            unlocked(){return hasUpgrade('bx',13)},
+            canClick() {return player.devSpeed.gt(0)},
+            onClick() {player.bx.daheiHP = player.bx.daheiHP.sub(tmp.bx.attackeffect)
+            },
+        },
+        11: {
+            title: "上一关",
+            display() {return "清除本关进度，切换到上一关"},
+            unlocked(){return hasUpgrade('bx',21)},
+            canClick() {return player.devSpeed.gt(0)&&player.bx.level.gt(1)},
+            onClick() {player.bx.level=player.bx.level.sub(1)
+            player.bx.defeat=n(0)
+            player.bx.leveltime=n(0)
+            player.bx.daheiHP = HPformula(player.bx.level)
+            },
+        },
+        13: {
+            title: "下一关",
+            display() {return "清除本关进度，切换到下一关"},
+            unlocked(){return hasUpgrade('bx',21)},
+            canClick() {return player.devSpeed.gt(0)&&player.bx.level.lt(player.bx.bestlevel)},
+            onClick() {player.bx.level=player.bx.level.add(1)
+            player.bx.defeat=n(0)
+            player.bx.leveltime=n(0)
+            player.bx.daheiHP = HPformula(player.bx.level)
+            },
+        },
+        21: {
+            title: "切换游玩模式",
+            display() {a= "当前游玩模式为："
+                if(player.bx.mode.eq(0)) a=a+'推关模式'
+                if(player.bx.mode.eq(1)) a=a+'刷怪模式'
+                return a
+            },
+            tooltip(){return '推关模式：通过一关后立即进入下一关<br>刷怪模式：通过一关后留在这一关'},
+            unlocked(){return hasUpgrade('bx',23)},
+            canClick() {return player.devSpeed.gt(0)},
+            onClick() {player.bx.mode=n(1).sub(player.bx.mode)
+            },
+        },
+    },
+    buyables: {
+        11: {
+            cost(x) { return new Decimal(1.1).pow(x) },
+            title: '第零拜谢维度',
+            display() { return "花费："+format(this.cost())+"点数<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次，使攻击伤害+"+format(buyableEffect(this.layer,this.id))+'<br>每购买25次，该维度效果翻倍'},
+            canAfford() { return player.points.gte(this.cost()) },
+            effect(){a=getBuyableAmount(this.layer,this.id).times(n(2).pow(getBuyableAmount(this.layer,this.id).div(25).floor()))
+                if(hasUpgrade('bx',31)) a=a.times(2)
+                if(hasUpgrade('bx',32)) a=a.times(2)
+                if(hasUpgrade('bx',33)) a=a.times(2)
+                if(hasUpgrade('bx',34)) a=a.times(2)
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',22)},
+            buy() {
+                player.points = player.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        21: {
+            cost(x) { return new Decimal(1.1).pow(x).times(5) },
+            title: '第一拜谢维度',
+            display() { return "花费："+format(this.cost())+"点数<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次，使每秒伤害+"+format(buyableEffect(this.layer,this.id))},
+            canAfford() { return player.points.gte(this.cost()) },
+            effect(){a=getBuyableAmount(this.layer,this.id)
+                a=a.times(tmp.bx.allbxdmult)
+                if(hasUpgrade('bx',31)) a=a.times(2)
+                if(hasUpgrade('bx',32)) a=a.times(2)
+                if(hasUpgrade('bx',33)) a=a.times(2)
+                if(hasUpgrade('bx',34)) a=a.times(2)
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',24)},
+            buy() {
+                player.points = player.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        22: {
+            cost(x) { return new Decimal(1.1).pow(x).times(100) },
+            title: '第二拜谢维度',
+            display() { return "花费："+format(this.cost())+"点数<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次，使每秒伤害+"+format(buyableEffect(this.layer,this.id))},
+            canAfford() { return player.points.gte(this.cost()) },
+            effect(){a=getBuyableAmount(this.layer,this.id).times(10)
+                if(hasUpgrade('bx',41)) a=a.times(2)
+                if(hasUpgrade('bx',42)) a=a.times(1.5)
+                if(hasUpgrade('bx',43)) a=a.times(2)
+                a=a.times(tmp.bx.allbxdmult)
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',24)&&getBuyableAmount(this.layer,21).gte(1)},
+            buy() {
+                player.points = player.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        23: {
+            cost(x) { return new Decimal(1.1).pow(x).times(1.25e4) },
+            title: '第三拜谢维度',
+            display() { return "花费："+format(this.cost())+"点数<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次，使每秒伤害+"+format(buyableEffect(this.layer,this.id))},
+            canAfford() { return player.points.gte(this.cost()) },
+            effect(){a=getBuyableAmount(this.layer,this.id).times(150)
+                if(hasUpgrade('bx',51)) a=a.times(2)
+                a=a.times(tmp.bx.allbxdmult)
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',24)&&getBuyableAmount(this.layer,22).gte(1)},
+            buy() {
+                player.points = player.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        24: {
+            cost(x) { return new Decimal(1.1).pow(x).times(2e6) },
+            title: '第四拜谢维度',
+            display() { return "花费："+format(this.cost())+"点数<br>已购买了"+format(getBuyableAmount(this.layer, this.id))+"次，使每秒伤害+"+format(buyableEffect(this.layer,this.id))},
+            canAfford() { return player.points.gte(this.cost()) },
+            effect(){a=getBuyableAmount(this.layer,this.id).times(2e3)
+                a=a.times(tmp.bx.allbxdmult)
+                return a
+            },
+            unlocked(){return hasUpgrade('bx',24)&&getBuyableAmount(this.layer,23).gte(1)},
+            buy() {
+                player.points = player.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+    },
+    milestones: {
+        0: {
+            requirementDescription: "6.6686点数",
+            effectDescription(){return "由于你的点数太膨胀了，引来了溜溜溜达嘿入侵，使你的点数获取/4！"},
+            done() { return player.bx.points.gte(1)&&player.points.gte(6.6686) }
+        },
     },
     effect(){a=n(0.001).times(player.bx.points)
         if(hasUpgrade('bx',11))a=a.times(2)
+        if(hasUpgrade('bx',12))a=a.times(2)
+        if(hasMilestone('bx',0)) a=a.times(0.25)
+        if(hasUpgrade('bx',41)) a=a.times(2)
+        if(hasUpgrade('bx',42)) a=a.times(1.5)
         return a
     },
     effectDescription(){a='每秒生产'+format(tmp.bx.effect)+'点数'
+        return a
+    },
+    Showdetail() {a='<h2>关卡'+format(player.bx.level,0)+'/'+format(player.bx.bestlevel,0)
+        if(player.bx.level.div(5).floor().eq(player.bx.level.div(5))) a=quickColor(a,'#FF0000')
+        a=a+'</h2><br>本关你击败了'+format(player.bx.defeat,0)+'/'+format(tmp.bx.levelgoal,0)+'个溜溜溜达嘿'
+        a=a+'<br>当前溜溜溜达嘿血量为'+format(player.bx.daheiHP)
+        if(tmp.bx.dps.gt(0)) a=a+'(-'+format(tmp.bx.dps)+'/s)'
+        a=a+'<br>击败后掉落'+format(tmp.bx.getpt)+'点数'
+        if(player.bx.level.div(5).floor().eq(player.bx.level.div(5))) a=a+'<br>BOSS关卡限时：'+formatTime(player.bx.leveltime)+'/'+formatTime(tmp.bx.timelimit)
+        return a
+    },
+    getpt(){a=player.bx.level.pow(1.1).times(tmp.bx.effect).times(10)
+        if(player.bx.level.gt(25)) a=a.times(n(1.15).pow(player.bx.level.sub(25)).pow(1.05))
+        if(player.bx.level.div(5).floor().eq(player.bx.level.div(5))) a=a.times(10)
+        return a
+    },
+    levelgoal(){a=player.bx.level.div(100).floor().add(10)
+        if(player.bx.level.div(5).floor().eq(player.bx.level.div(5))) a=n(1)
+        return a
+    },
+    timelimit(){a=n(1.79e309)
+        if(player.bx.level.div(5).floor().eq(player.bx.level.div(5))) a=n(30).sub(player.bx.level.sub(1).div(20).floor())
+        return a
+    },
+    attackeffect(){a=n(1)
+        if(hasUpgrade('bx',21))a=a.add(1)
+        if(hasUpgrade('bx',22))a=a.add(1)
+        if(hasUpgrade('bx',23))a=a.add(1)
+        if(hasUpgrade('bx',24))a=a.add(1)
+        if(hasUpgrade('bx',25))a=a.add(1)
+        a=a.add(buyableEffect(this.layer,11))
+        return a
+    },
+    dps(){a=n(0)
+        a=a.add(buyableEffect('bx',21))
+        a=a.add(buyableEffect('bx',22))
+        a=a.add(buyableEffect('bx',23))
+        a=a.add(buyableEffect('bx',24))
+        return a
+    },
+    allbxdmult(){a=n(1)
+        if(hasUpgrade('bx',51)) a=a.times(1.5)
         return a
     },
 })
