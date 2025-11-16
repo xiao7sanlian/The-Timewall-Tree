@@ -6481,6 +6481,7 @@ player.A2.achievements=[]}//kill previous resources
             fullDisplay(){a= '<h3>U1-1</h3><br>拜谢帝效果x2<br>花费：1 点数'
                 return a
             },
+            unlocked(){return player.bx.points.gte(1)},
             canAfford(){return player.bx.points.gte(1)&&player.points.gte(1)},
             pay(){player.points = player.points.sub(1)},
         },
@@ -6488,7 +6489,7 @@ player.A2.achievements=[]}//kill previous resources
             fullDisplay(){a= '<h3>U1-2</h3><br>拜谢帝效果x2<br>花费：2.5 点数'
                 return a
             },
-            unlocked(){return true},
+            unlocked(){return player.bx.points.gte(1)},
             canAfford(){return player.bx.points.gte(1)&&player.points.gte(2.5)},
             pay(){player.points = player.points.sub(2.5)},
         },
@@ -6742,7 +6743,8 @@ player.A2.achievements=[]}//kill previous resources
         0: {
             requirementDescription: "6.6686点数",
             effectDescription(){return "由于你的点数太膨胀了，引来了溜溜溜达嘿入侵，使你的点数获取/4！"},
-            done() { return player.bx.points.gte(1)&&player.points.gte(6.6686) }
+            unlocked(){return player.bx.points.gte(1)},
+            done() { return player.bx.points.gte(1)&&player.points.gte(6.6686)&&hasUpgrade('bx',11) }
         },
     },
     effect(){a=n(0.001).times(player.bx.points)
