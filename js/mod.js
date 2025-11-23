@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.99.9.05",
-	name: 'Baixie Update(I)',
+	num: "0.99.9.10",
+	name: 'Baixie Update(II)',
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -103,7 +103,10 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Endgame:购买升级U1-1<br>
 	<h3>v0.99.9.05 <img src="s297.jpg" width="25" height="25"> Update(I) 2025/11/15~2025/11/16</h3><br>
 		- 增加了Liuliu66686相关内容与5个成就<br>
-		- Endgame:完成关卡45<br>`
+		- Endgame:完成关卡45<br>
+	<h3>v0.99.9.10 <img src="s297.jpg" width="25" height="25"> Update(II) 2025/11/21~2025/11/23</h3><br>
+		- 增加了转生相关内容与4个成就<br>
+		- Endgame:完成关卡100<br>`
 		
 
 let winText = `恭喜！你 >暂时< 通关了！`
@@ -239,9 +242,11 @@ function bhcost1(x){s = n(1.5e11)
 
  function HPformula(x){a=n(7).add(n(1.1).pow(x.pow(1.05).sub(1))).add(x.times(2))
 		if(x.gt(30)) a=a.times(n(1.1).pow(x.sub(30).pow(1.1).sub(1)))
+		if(x.gt(100))a=a.times(n(1.5).pow(x.sub(100).pow(1.15).sub(1)))
         if(x.div(5).floor().eq(x.div(5))) {a=a.times(x.pow(2))
 			if(x.gt(40)) a=a.div(x.pow(0.2))
 		}
+		if(x.div(5).floor().neq(x.div(5))) a=a.times(n(Math.random()).times(0.4).add(0.8))
         return a
     }
 
@@ -272,7 +277,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){a = '当前Endgame:完成关卡45'
+	function(){a = '当前Endgame:???'
 	if(player.bx.points.lte(1)){
 		if (hasMilestone('E', 8)&&!player.points.gte('e1.79e308')&&!player.bx.points.gte(1)) {a = a + '<br>当前点数获取量：'+format(ptgainbeforeexp())+'<sup>'
 			a = a+format(tmp.qa.ptExp)+'</sup>x'+format(ptdirmult())+'='
@@ -310,7 +315,8 @@ function isEndgame() {
 	//return player.A3.points.gte(42)
 	//return hasAchievement('A3',103)
 	//return hasUpgrade('bx',11)
-	return player.bx.level.gt(45)
+	return player.bx.level.gt(100)
+	//return false
 }
 
 // Less important things beyond this point!
